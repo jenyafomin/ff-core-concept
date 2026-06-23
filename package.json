@@ -1,0 +1,19 @@
+{
+  "name": "ff-personal-management",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Personal management system — a node-graph substrate with an agent layer, built for Claude Code.",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "demo": "npm run demo -w @ff/core"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

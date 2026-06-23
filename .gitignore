@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.tsbuildinfo
+*.log
+.DS_Store
+
+# local agent graph data (the user's own store) — not committed
+packages/*/.data/
+.data/
