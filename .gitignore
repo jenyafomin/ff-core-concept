@@ -7,3 +7,5 @@ dist/
 # local agent graph data (the user's own store) — not committed
 packages/*/.data/
 .data/
+
+**/transcripts/*
