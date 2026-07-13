@@ -1,0 +1,24 @@
+{
+  "type": "attention-list",
+  "id": "decision-D2-agent-memory-location-2026-07-12",
+  "title": "🗂️ D2 — Память агента: внутри Session или тонкая ссылка на домен 01",
+  "summary": "Объяснение для владельца: Session=рабочий стол, домен01=общая библиотека. Рекомендация — гибрид (thin-ref по умолчанию + короткий локальный буфер-черновик), не чистое А/Б. Открыт follow-up: момент консолидации черновика в факт.",
+  "relatesTo": "docs/02-project/core/01-brain/decisions/D2-agent-memory-location/EXPLAIN.md",
+  "pool": "decisions",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/decisions/D2-agent-memory-location/EXPLAIN.md",
+    "docs/02-project/core/01-brain/domains/02-agents-orchestration/node-types.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/decisions/D2-agent-memory-location/EXPLAIN.md", "role": "start", "pool": "объяснение", "note": "📖 Разбор для владельца: аналогия стол/библиотека, 3 варианта (А/Б/гибрид), таблица плюс-минус, рекомендация." },
+    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration/node-types.md", "role": "key", "pool": "источник", "note": "🎛️ Определение Session (домен 02) — где вопрос сформулирован дословно, рабочая гипотеза thin-ref." },
+    { "path": "docs/02-project/core/01-brain/domains/01-knowledge-graph/README.md", "role": "key", "pool": "источник", "note": "🧠 Домен 01: главный открытый вопрос — граница с доменом 02 по памяти агента (один субстрат, два читателя)." },
+    { "path": "docs/02-project/core/01-brain/domains/01-knowledge-graph/edge-types.md", "role": "doc", "pool": "опора", "note": "🔗 Класс thin-ref (поле узла, без паспорта, судьба=судьба владельца) — на чём строится вариант Б/гибрид." },
+    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G2-orchestrator/README.md", "role": "doc", "pool": "опора", "note": "🎛️ M-G2: «память НЕ шарится между репликами», открытый вопрос про клонирование Session-памяти при репликации." },
+    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "контекст", "note": "🧩 Форк назван в своде 8 агентов: «Session хранит память или thin-ref» — 2 агента независимо сошлись на thin-ref." }
+  ],
+  "children": [],
+  "childrenNote": "Follow-up не блокирующий текущее решение: правило «момент консолидации» — когда содержимое локального буфера-черновика Session переносится в домен 01 как настоящий узел."
+}

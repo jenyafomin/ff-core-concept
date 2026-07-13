@@ -1,0 +1,56 @@
+{
+  "type": "investigation-manifest",
+  "version": 1,
+  "id": "2026-07-10-directions-and-agents-mem-flood",
+  "date": "2026-07-10",
+  "title": "Расследование: направления + agents-manager ↔ память (8 развилок)",
+  "status": "draft",
+  "entry": "VERDICT.md",
+  "method": "ресёрч (sonnet) → консилиум 3 линз (архитектор/критик/прагматик, sonnet) → синтез (opus); Fable не задействован",
+  "artifacts": [
+    { "role": "capture",  "path": "CAPTURE.md", "desc": "Сырьё заброса владельца + маршрут 12 идей + ответы Q1/Q3" },
+    { "role": "verdict",  "path": "VERDICT.md", "desc": "Единый вердикт: таблица 8 тем, чек-лист 'заложить сейчас', 22 вопроса для Fable" },
+    { "role": "research", "path": "research/session-theme-turn.md",       "theme": "session-theme-turn",       "desc": "Модель Сессия/Тема/Ход" },
+    { "role": "research", "path": "research/links-as-entity.md",          "theme": "links-as-entity",          "desc": "Связи как первоклассная сущность-роутер" },
+    { "role": "research", "path": "research/plans-as-data.md",            "theme": "plans-as-data",            "desc": "Планы-как-данные (дерево задач)" },
+    { "role": "research", "path": "research/token-tracing.md",            "theme": "token-tracing",            "desc": "Экономический трейс токенов" },
+    { "role": "research", "path": "research/areas-visibility.md",         "theme": "areas-visibility",         "desc": "Области и фильтруемая видимость" },
+    { "role": "research", "path": "research/loop-prompting-hitl.md",      "theme": "loop-prompting-hitl",      "desc": "Loop-prompting + human-in-the-loop" },
+    { "role": "research", "path": "research/prior-art-competitors.md",    "theme": "prior-art-competitors",    "desc": "Конкуренты / prior art (память + оркестраторы)" },
+    { "role": "research", "path": "research/memory-unit-convergence.md",  "theme": "memory-unit-convergence",  "desc": "Сходимость единицы памяти под требования agents-manager" },
+    { "role": "council",  "path": "council/session-theme-turn.md",       "theme": "session-theme-turn",       "desc": "Синтез: Тема 1:N Эпизод 1:N Ход" },
+    { "role": "council",  "path": "council/links-as-entity.md",          "theme": "links-as-entity",          "desc": "Синтез: ребро тонкое, промоушен по gate-тесту" },
+    { "role": "council",  "path": "council/plans-as-data.md",            "theme": "plans-as-data",            "desc": "Синтез: задача=узел, план=view" },
+    { "role": "council",  "path": "council/token-tracing.md",            "theme": "token-tracing",            "desc": "Синтез: append-only ledger, мутация счётчика запрещена" },
+    { "role": "council",  "path": "council/areas-visibility.md",         "theme": "areas-visibility",         "desc": "Синтез: область=ячейка+PEP, ждёт Edge Engine" },
+    { "role": "council",  "path": "council/loop-prompting-hitl.md",      "theme": "loop-prompting-hitl",      "desc": "Синтез: loop в топике, сначала SDK-раннер" },
+    { "role": "council",  "path": "council/prior-art-competitors.md",    "theme": "prior-art-competitors",    "desc": "Синтез: берём форму, не библиотеку" },
+    { "role": "council",  "path": "council/memory-unit-convergence.md",  "theme": "memory-unit-convergence",  "desc": "Синтез: двухплоскостная модель памяти + 5 развилок Fable" },
+    { "role": "rule",     "path": "../../rules-and-skills/investigation-economics/RULE.md", "desc": "Экономика веера (модельная лестница, инструментовка стоимости)" },
+    { "role": "rule",     "path": "../../rules-and-skills/investigation-reporting/RULE.md", "desc": "Отчётность: report + typed JSON manifest" }
+  ],
+  "themes": [
+    { "key": "session-theme-turn",      "title": "Сессия/Тема/Ход",                    "confidence": "medium-high" },
+    { "key": "token-tracing",           "title": "Токен-трейс",                        "confidence": "medium" },
+    { "key": "links-as-entity",         "title": "Связи-как-сущность",                 "confidence": "medium" },
+    { "key": "plans-as-data",           "title": "Планы-как-данные",                   "confidence": "medium" },
+    { "key": "areas-visibility",        "title": "Области/видимость",                  "confidence": "high" },
+    { "key": "loop-prompting-hitl",     "title": "Loop + HITL",                        "confidence": "medium" },
+    { "key": "prior-art-competitors",   "title": "Конкуренты / prior art",             "confidence": "high" },
+    { "key": "memory-unit-convergence", "title": "Сходимость единицы памяти",          "confidence": "0.7" }
+  ],
+  "open_questions": [
+    "F1 — brain: одна плоскость или две (эпистемическая vs операционная)? [мастер]",
+    "F2 — паспорт на ребре или на транзакции/акте (Datomic/XTDB-стиль)? [мастер]",
+    "F3 — единый тест промоушена 'когда сущность получает id+паспорт+lifecycle' в Конституции? [мастер]",
+    "F9/FQ22 — depth=1 vs 5-уровневый scope-резолвер (самое срочное по времени) [мастер]",
+    "F5 — Эпизод/сессия и единица токен-трейса (I-2) — одна сущность или разные? [мастер]",
+    "полный список F1–F22 по 8 кластерам — в VERDICT.md §5"
+  ],
+  "cost": {
+    "agents_started": 36,
+    "agents_returned": 31,
+    "usage_tracked": false,
+    "note": "journal.jsonl мульти-агентного прогона НЕ содержит usage; снято вручную только по 3 синхронным агентам (~235k токенов на добор 2 консилиумов + сборку VERDICT). Это подтверждает срочность темы I-2."
+  }
+}

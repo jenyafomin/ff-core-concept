@@ -1,0 +1,21 @@
+{
+  "type": "attention-list",
+  "id": "brain-domains-2026-07-12",
+  "title": "🗺️ Домены brain — как хранятся данные (вход след. сессии)",
+  "summary": "Рельсы следующей сессии: агентная система как архитектура в БД. Метод двух направлений (данные ↔ модули). Открывай README.",
+  "relatesTo": "docs/02-project/core/01-brain/domains/README.md",
+  "pool": "domains",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/domains/README.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/domains/README.md", "role": "start", "pool": "вход", "note": "🗺️ что такое домен + метод двух направлений + цель след. сессии. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/domains/01-knowledge-graph-domain.md", "role": "key", "pool": "домен-01", "note": "🧠 граф знаний (память/ячейка) — stub." },
+    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration-domain.md", "role": "key", "pool": "домен-02", "note": "🤖 агенты/оркестрация — ГЛАВНЫЙ фокус след. сессии." },
+    { "path": "docs/02-project/core/01-brain/domains/03-category-taxonomy-domain.md", "role": "doc", "pool": "домен-03", "note": "🗂️ категории/таксономия — кандидат-домен." }
+  ],
+  "children": [],
+  "childrenNote": "Каждый домен углубляется в свою папку с под-концептом."
+}

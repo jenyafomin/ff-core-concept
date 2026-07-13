@@ -1,0 +1,23 @@
+{
+  "type": "attention-list",
+  "id": "forks-both-variants-2026-07-12",
+  "title": "🌿 Разветвления РЕШЕНЫ — «как сделать ОБА» (FQ1–24)",
+  "summary": "Весь канон вопросов, решённый в рамке владельца «чаще ОБА». Открывай 00-OVERVIEW (мастер-таблица + 3 правила), дальше — по группам.",
+  "relatesTo": "docs/02-project/core/01-brain/synthesis/2026-07-12-forks-both-variants/00-OVERVIEW.md",
+  "pool": "forks-both",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/synthesis/2026-07-12-forks-both-variants/00-OVERVIEW.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-forks-both-variants/00-OVERVIEW.md", "role": "start", "pool": "обзор", "note": "⭐ мастер-таблица всех FQ + 3 правила совмещения + что осталось за тобой. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-forks-both-variants/GR1-values-basis.md", "role": "key", "pool": "Гр.1", "note": "Ценности/базис: FQ01·02·09·10·21 (базис 6+1, аксиома Тождества)." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-forks-both-variants/GR2-spine-engine.md", "role": "key", "pool": "Гр.2", "note": "Хребет/движок: FQ03·11·14·23 (authority-поле, retrofit-гейт)." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-forks-both-variants/GR3-units-structure.md", "role": "key", "pool": "Гр.3", "note": "Единицы/структура: FQ04·16·17·18·22·24 (планы=грани, профиль=узел)." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-forks-both-variants/GR4-time-ops-origin.md", "role": "key", "pool": "Гр.4", "note": "Время/операции: FQ05·06·07·12·13·19·20 (append-only ↔ hard-erase)." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-forks-both-variants/GR5-significance-input.md", "role": "key", "pool": "Гр.5", "note": "Значимость/вход: FQ08·15 + CANDIDATE (ребро-локус, guard-rail)." }
+  ],
+  "children": [],
+  "childrenNote": "Каждая карточка FQ внутри групп — точка роста; при углублении FQ разворачивается в свою папку."
+}

@@ -1,0 +1,26 @@
+{
+  "type": "attention-list",
+  "id": "module-M-G5-identity-self-2026-07-12",
+  "title": "🪪 M-G5 — Идентичность / самость (глобальный)",
+  "summary": "canonicalId (I-1) = ключ федерации и бесколлизионного слияния БД (идемпотентный union, без перенумерации). Узел-профиль (FQ22) + корневой профиль «Самости» (FQ18 вариант C, НЕ новый род) = вершина каскада и граница «чей я». same-as = assertion-резолюция, не мутация ID. Питает Ц-2 Тождество и Ц-5 Суверенность. NB: узел ≠ 8-я ценность (FQ21).",
+  "relatesTo": "docs/02-project/core/01-brain/architecture/modules/M-G5-identity-self/README.md",
+  "pool": "architecture",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/architecture/modules/M-G5-identity-self/README.md",
+    "docs/02-project/core/01-brain/architecture/MODULES.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G5-identity-self/README.md", "role": "start", "pool": "модуль", "note": "🪪 M-G5 углубление: canonicalId+слияние БД, узел-профиль, корневой профиль самости, каскад, same-as. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/architecture/MODULES.md", "role": "key", "pool": "реестр", "note": "🧩 M-G5 в реестре модулей (global)." },
+    { "path": "docs/02-project/core/01-brain/architecture/README.md", "role": "key", "pool": "цель", "note": "🎯 цель + абстракция МОДУЛЬ (родитель)." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-db-module/00-SYNTHESIS.md", "role": "doc", "pool": "субстрат", "note": "🗄️ I-1 canonicalId = ключ федерации/слияния; риск «второй источник истины» — опора границы самости." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-basis-node-edge.md", "role": "doc", "pool": "базис", "note": "🔗 I-1/I-2 + 2 класса связи (thin-ref vs assertion) — опора для profile-ref и same-as." },
+    { "path": "docs/02-project/core/01-brain/open-questions/FQ18-meta-uzel-samosti/INDEX.md", "role": "doc", "pool": "развилка", "note": "🧭 4 склеенных вопроса самости; вариант C = корневой профиль; bus factor = вероятно runbook. Развилка ждёт владельца." },
+    { "path": "docs/02-project/core/01-brain/open-questions/FQ22-uzel-profil/INDEX.md", "role": "doc", "pool": "профиль", "note": "🧩 узел-профиль: profile-ref+override, каскад глубины 1, blast-radius версии — механика M-G5." },
+    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G3-type-registry-policy/README.md", "role": "doc", "pool": "кросс", "note": "🧩 M-G3: profile/policy = узлы реестра; identity-политики governed-by; каскад через refines." }
+  ],
+  "children": [],
+  "childrenNote": "Кандидат в ADR «Единый граф-субстрат + модульная архитектура» (раздел идентичности/федерации) + возможная spec canonicalId. Развилки FQ18 A/B/C и bus-factor ждут владельца."
+}

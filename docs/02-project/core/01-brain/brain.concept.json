@@ -1,0 +1,27 @@
+{
+  "type": "attention-list",
+  "id": "brain-MASTER-hub-2026-07-13",
+  "title": "🧠 BRAIN — ГЛАВНЫЙ концепт-хаб (ведёт на все ключевые концепты)",
+  "summary": "Единая точка входа в brain. Обзор системы + карта концептов: обзор→архитектура→домены→решения→план. Начни с OVERVIEW.md, дальше вглубь по под-концептам.",
+  "relatesTo": "docs/02-project/core/01-brain/OVERVIEW.md",
+  "pool": "brain-master",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/OVERVIEW.md",
+    "docs/02-project/core/01-brain/DECISIONS-LOG.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/OVERVIEW.md", "role": "start", "pool": "обзор", "note": "🌍 Полная картина: что это, анатомия, 4 примитива, как растёт. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/DECISIONS-LOG.md", "role": "key", "pool": "решения", "note": "🔒 19 ратифицированных решений (DL-01…DL-19) — контракт системы." },
+    { "path": "docs/02-project/core/01-brain/architecture/architecture.concept.json", "role": "key", "pool": "→архитектура", "note": "🏛️ концепт: цель + модуль + реестр модулей M-G*/M-P* + бриф." },
+    { "path": "docs/02-project/core/01-brain/domains/domains.concept.json", "role": "key", "pool": "→домены", "note": "🗺️ концепт: домены данных 01 граф знаний · 02 агенты (03 = грань 01)." },
+    { "path": "docs/02-project/core/01-brain/decisions/decisions.concept.json", "role": "key", "pool": "→решения", "note": "🧭 концепт: 4 разобранных развилки (D1–D4) + единая модель." },
+    { "path": "docs/02-project/core/01-brain/plan/build-milestone-0.concept.json", "role": "key", "pool": "→план", "note": "🚶 концепт: walking-skeleton M0 (первый срез сборки)." },
+    { "path": "docs/02-project/core/01-brain/plan/full-build-plan.concept.json", "role": "key", "pool": "→план", "note": "🗺️ концепт: полный roadmap M0→M8 (Fable + перепроверка критика)." },
+    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-COMPLETENESS-and-model.md", "role": "doc", "pool": "модель", "note": "🧩 единая модель тип/категория/тег + что упущено + вектор расширения." },
+    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "модель", "note": "🧩 матрица домен×модуль + канон-имена + правило проекции-первой." }
+  ],
+  "children": [],
+  "childrenNote": "Под-концепты (architecture/domains/decisions/plan) ведут глубже в свои папки; ссылки могут не открываться сразу — это карта, наполняется по мере входа."
+}

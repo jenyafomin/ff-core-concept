@@ -1,0 +1,24 @@
+{
+  "type": "attention-list",
+  "id": "domain-02-agents-orchestration-2026-07-12",
+  "title": "🤖 Домен 02 — Агенты/оркестрация (раскрыт в папку)",
+  "summary": "Node/edge реестры оркестрации (Personality/AgentSlot/Session/ChannelBinding/Observation-WorkLog), policy global↔project каскад, модули M-P2 (Telegram) и M-P4 (Кокпит). Открытый вопрос: граница с доменом 01 (память агента).",
+  "relatesTo": "docs/02-project/core/01-brain/domains/02-agents-orchestration/README.md",
+  "pool": "domains",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/domains/02-agents-orchestration/README.md",
+    "docs/02-project/core/01-brain/domains/02-agents-orchestration/modules.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration/README.md", "role": "start", "pool": "индекс", "note": "🎯 что за домен, метод, граница с доменом 01 (открытый вопрос). Читать первым." },
+    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration/node-types.md", "role": "key", "pool": "данные", "note": "Personality · AgentSlot · Session · ChannelBinding(conversationRef) · Observation/WorkLog · Pattern/Task (сосед)." },
+    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration/edge-types.md", "role": "key", "pool": "данные", "note": "bound-to · replica-of · channel-bound (thin-ref) / reports-to · verified-by (assertion-edge)." },
+    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration/policy.md", "role": "key", "pool": "policy", "note": "global vs project через scope + override-каскад; прецедент — CLAUDE.md/PROMPT.md шлюза." },
+    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration/modules.md", "role": "key", "pool": "модули", "note": "M-P2 Telegram-адаптер + M-P4 Кокпит/наблюдаемость, по единому шаблону." },
+    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration-domain.md", "role": "doc", "pool": "история", "note": "superseded stub — свёрнут в эту папку." }
+  ],
+  "children": [],
+  "childrenNote": "M-P3 (петли) и M-G2 (оркестратор) — упомянуты как соседи, не раскрыты здесь; углубляются отдельно в architecture/modules/."
+}

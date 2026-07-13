@@ -1,0 +1,23 @@
+{
+  "type": "attention-list",
+  "id": "module-M-G4-locality-residency-2026-07-12",
+  "title": "🗺️ M-G4 — Локальность / резиденция (глобальный)",
+  "summary": "Две ОРТОГОНАЛЬНЫЕ оси: scope (кому) ≠ storageLevel (где). Таблица DataResidency + материализация live/cache/copy. Control-plane (тонкие паспорта) над data-plane (payload). Гасим риск второго источника истины: паспорт = выводимая проекция, поток снизу-вверх, rebuild-from-scratch — операция первого дня.",
+  "relatesTo": "docs/02-project/core/01-brain/architecture/modules/M-G4-locality-residency/README.md",
+  "pool": "architecture",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/architecture/modules/M-G4-locality-residency/README.md",
+    "docs/02-project/core/01-brain/architecture/MODULES.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G4-locality-residency/README.md", "role": "start", "pool": "модуль", "note": "🗺️ M-G4 углубление: 2 оси scope/storageLevel, DataResidency, live/cache/copy, поток снизу-вверх, rebuild. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/architecture/MODULES.md", "role": "key", "pool": "реестр", "note": "🧩 M-G4 в реестре модулей (global)." },
+    { "path": "docs/02-project/core/01-brain/architecture/README.md", "role": "key", "pool": "цель", "note": "🎯 цель + абстракция МОДУЛЬ (родитель)." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-db-module/00-SYNTHESIS.md", "role": "doc", "pool": "субстрат", "note": "🗄️ scope≠storageLevel (инвариант 1) + риск «control-plane как второй источник истины» — несущая опора M-G4." },
+    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G3-type-registry-policy/README.md", "role": "doc", "pool": "policy", "note": "⚖️ residency/sharing-политики живут как policy-узлы в реестре M-G3 + каскад." }
+  ],
+  "children": [],
+  "childrenNote": "Кандидат в ADR «Единый граф-субстрат + модульная архитектура» (раздел локальность/резиденция). Rebuild-from-scratch и матрица scope×storageLevel могут вырасти в отдельную spec."
+}

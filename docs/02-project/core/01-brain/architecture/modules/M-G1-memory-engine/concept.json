@@ -1,0 +1,22 @@
+{
+  "type": "attention-list",
+  "id": "module-M-G1-memory-engine-2026-07-12",
+  "title": "🧩 M-G1 «Движок памяти» — корневой модуль (граф-субстрат + duty-механики)",
+  "summary": "Global-корень: 2 физ. таблицы + паспорт + payload + append-only журнал; исполняет propagation/дедуп/DAG/bitemporal/snapshot-diff. Поведение — данными (M-G3), исполнение — здесь. На нём стоят все модули.",
+  "relatesTo": "docs/02-project/core/01-brain/architecture/modules/M-G1-memory-engine/README.md",
+  "pool": "architecture",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/architecture/modules/M-G1-memory-engine/README.md",
+    "docs/02-project/core/01-brain/architecture/MODULES.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G1-memory-engine/README.md", "role": "start", "pool": "модуль", "note": "🧩 Глубокий разбор M-G1: node/edge-типы, policy-каскад, поведение-в-БД, кросс-связи, 🔴/🟢, вопросы Fable. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/architecture/MODULES.md", "role": "key", "pool": "реестр", "note": "🧩 Реестр модулей — место M-G1 среди M-G*/M-P*." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-db-module/00-SYNTHESIS.md", "role": "doc", "pool": "субстрат", "note": "🗄️ БД=единый граф-субстрат: тезис, 3 инварианта, 🔴-список — прямая опора движка." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-basis-node-edge.md", "role": "doc", "pool": "базис", "note": "🔗 Базис узел/связь: 2 класса ребра, критерий адресуемости, DAG/endpoint=ID — контракт, который движок исполняет." }
+  ],
+  "children": [],
+  "childrenNote": "Углубления M-G1: контракт ребра v1 (кандидат ADR-Edge), спека canonicalId, граница M-G1↔M-G3 — заводить под-концептами здесь."
+}

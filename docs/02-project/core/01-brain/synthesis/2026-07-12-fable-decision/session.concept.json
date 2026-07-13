@@ -1,0 +1,28 @@
+{
+  "type": "report",
+  "id": "fable-decision-brain-edges-flows-2026-07-12",
+  "title": "🎯 Fable-решения: базис ратифицирован, грани ребра NOW/LATER, третьего примитива нет",
+  "summary": "Шесть вердиктов по открытым развилкам брейна (критерий владельца — гибкость). Базис 2 примитива принят + правило промоции thin-ref→assertion-edge; направления сужены до 2 волн; diff — не в объём; папка-оркестрация = узел container; двигаться вариантом (A) + микро-ревью Fable.",
+  "relatesTo": "docs/02-project/core/01-brain/open-questions/2026-07-12-FABLE-Q-brain-concept-edges-flows.md",
+  "pool": "fable-decision",
+  "createdBy": "fable",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/VERDICT.md",
+    "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/03-edge-facets-now-later.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/VERDICT.md", "role": "start", "pool": "вердикт", "note": "все 6 решений одной таблицей + что делаем первым." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/01-basis-ratify.md", "role": "key", "pool": "решения", "note": "Р-1: базис ДА + правило промоции thin-ref→assertion-edge." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/02-directions-priority.md", "role": "key", "pool": "решения", "note": "Р-2: сузить до 2 волн; волна 1 = Н-1+Н-4+Н-6." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/03-edge-facets-now-later.md", "role": "key", "pool": "решения", "note": "Р-3: карта граней ребра NOW/LATER + NOW-минимум контракта." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/04-diff-and-folder-orchestration.md", "role": "key", "pool": "решения", "note": "Р-4: diff — НЕТ; папка-оркестрация = узел container." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/05-third-primitive.md", "role": "key", "pool": "решения", "note": "Р-5: третьего примитива НЕТ + триггер пересмотра." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-decision/06-how-to-proceed.md", "role": "key", "pool": "решения", "note": "Р-6: вариант (A) + микро-ревью Fable по ADR-Edge." },
+    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-basis/fable-basis.concept.json", "role": "doc", "pool": "опора", "note": "базис Fable (заход 1) — на нём стоят решения." },
+    { "path": "docs/02-project/core/01-brain/open-questions/2026-07-12-FABLE-Q-brain-concept-edges-flows.md", "role": "doc", "pool": "опора", "note": "вопрос v2 — что спрашивалось." },
+    { "path": "docs/02-project/core/01-brain/open-questions/CANDIDATE-2026-07-12-edge-type-and-flows.md", "role": "doc", "pool": "опора", "note": "сырьё владельца: грани ребра, раунд 2." }
+  ],
+  "children": [],
+  "childrenNote": "Каждая карточка Р-1…Р-6 — точка роста; волна 1 (Н-1/Н-4/Н-6) породит свои артефакты, которые линкуются сюда."
+}

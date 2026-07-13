@@ -1,0 +1,30 @@
+{
+  "type": "report",
+  "id": "session-2026-07-10-11-directions-agents-mem",
+  "title": "Сессия 2026-07-10/11 — все последние изменения",
+  "relatesTo": "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/HANDOFF.md",
+  "pool": "session",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/HANDOFF.md",
+    "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/VERDICT.md"
+  ],
+  "paths": [
+    { "path": "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/HANDOFF.md", "role": "start", "pool": "хендоф", "note": "с чего начать" },
+    { "path": "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/VERDICT.md", "role": "key", "pool": "расследование", "note": "8 тем + F1-F22" },
+    { "path": "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/CAPTURE.md", "role": "doc", "pool": "заброс", "note": "4 направления" },
+    { "path": "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/CAPTURE-2-theme-management.md", "role": "doc", "pool": "заброс", "note": "TM/RM" },
+    { "path": "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/analysis/agents-manager-current-state.md", "role": "doc", "pool": "разбор", "note": "код как есть" },
+    { "path": "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/analysis/theme-management-vision-and-plan.md", "role": "key", "pool": "разбор", "note": "модель+план" },
+    { "path": "docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/index.json", "role": "support", "pool": "расследование", "note": "манифест (стар. форма)" },
+    { "path": "docs/01-organization/rules-and-skills/investigation-economics/RULE.md", "role": "doc", "pool": "правила", "note": "экономика веера" },
+    { "path": "docs/01-organization/rules-and-skills/investigation-reporting/RULE.md", "role": "doc", "pool": "правила", "note": "формат отчёта" }
+  ],
+  "externalRefs": [
+    { "path": "/Users/mac16/Documents/IT/Apps/TOOLS/agents-manager", "pool": "код", "note": "ВНЕ проекта FF: ветка feat/tg-theme-merged @ cc43b58 — Пакет1+2, 427 зелёных" },
+    { "path": "/Users/mac16/Documents/IT/Apps/TOOLS/agents-manager/docs/01-project/reports/2026-07-11-theme-and-rich-packages.concept.json", "pool": "код", "note": "ВНЕ проекта FF: отчёт по файлам" },
+    { "path": "/Users/mac16/Documents/IT/Apps/TOOLS/agents-manager/docs/architecture/ADR/ADR-0002-access-roles-and-approval-policy.md", "pool": "автопилот", "note": "ВНЕ проекта FF: ADR+addendum" },
+    { "path": "/Users/mac16/Documents/IT/Apps/TOOLS/agents-manager/docs/01-project/ideas/2026-07-09-telegram-file-browser/analysis/2026-07-11-session4-concept-command-and-wizard.md", "pool": "визард", "note": "ВНЕ проекта FF: /concept визион" }
+  ]
+}
