@@ -7,10 +7,10 @@ node_type: analysis
 tags: [deepening, units]
 title: Карта 4 единиц — статус, тугие узлы, порядок углубления
 Related:
-  - 01-method.md
-  - TREE.md
-  - ../01-node/NEXT-STEPS.md
-  - ../../../VISION-SIMPLE.md
+  - 04-deepening-method.md
+  - ../01-model/README.md
+  - ../01-model/01-node/NEXT-STEPS.md
+  - ../01-model/01-node/VISION-SIMPLE.md
 ---
 
 # 🗺️ Карта единиц — 4 кубика модели

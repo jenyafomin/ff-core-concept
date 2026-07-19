@@ -10,7 +10,7 @@ Related:
   - ../../../README.md
   - ../../../01-node/analyses/02-states.md
   - ../../../01-node/analyses/04-plan-task.md
-  - ../../../../../02-agents/loop-system/concept.json
+  - ../../../../../../02-agents/loop-system/concept.json
 ---
 
 # ⚙️ Оркестрация: STATE·PLAN·TASK·LOOP — дизайн (кандидат в ADR)

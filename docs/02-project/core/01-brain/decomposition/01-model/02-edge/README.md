@@ -6,7 +6,7 @@ Scope: project
 node_type: theme-card
 title: Ребро/связь — классы, семантика, стресс-тест
 Related:
-  - ../../domains/01-knowledge-graph/edge-types.md
+  - ../../../domains/01-knowledge-graph/edge-types.md
 ---
 
 # 🔗 Ребро / связь (edge)  ← P11

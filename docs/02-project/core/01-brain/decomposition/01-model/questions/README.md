@@ -7,7 +7,7 @@ node_type: analysis
 tags: [deepening, questions, doc-discipline]
 title: Дом вопросов — где живут, как кристаллизуются (concept ↔ файл)
 Related:
-  - concept.json
+  - ../NAV.concept.json
   - ../../../open-questions/INDEX.md
   - ../01-node/_critique.md
 ---

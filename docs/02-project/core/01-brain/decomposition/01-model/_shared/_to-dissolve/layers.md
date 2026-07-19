@@ -6,7 +6,7 @@ Scope: project
 node_type: theme-card
 title: Слои информации — пользоват./систем./агентский/локальный
 Related:
-  - ../../DECISIONS-LOG.md
+  - ../../../../DECISIONS-LOG.md
 ---
 
 # 🧱 Слои информации  ← P9

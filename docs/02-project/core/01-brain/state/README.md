@@ -7,7 +7,7 @@ node_type: state
 title: L1 состояние — «на чём работаем» (читать ПЕРВЫМ)
 Related:
   - ../plan/PLAN.md
-  - ../../../01-organization/session-handoff/STATE.md
+  - ../../../../01-organization/session-handoff/STATE.md
   - ../decomposition/01-model/NAV.concept.json
 ---
 

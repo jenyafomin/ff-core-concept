@@ -7,9 +7,9 @@ node_type: analysis
 tags: [deepening, method, two-modes]
 title: Метод углубления единицы — шаблон, два режима, закон роста дерева
 Related:
-  - TREE.md
-  - 02-units-map.md
-  - ../01-node/README.md
+  - ../01-model/README.md
+  - 05-units-map.md
+  - ../01-model/01-node/README.md
 ---
 
 # 🧭 Метод углубления единицы — повторяемый шаблон + 2 режима

@@ -6,8 +6,8 @@ Scope: project
 node_type: theme-card
 title: Категории / теги / грани — «умные и продолжительные»
 Related:
-  - ../../DECISIONS-LOG.md
-  - ../../domains/03-category-taxonomy-domain.md
+  - ../../../../DECISIONS-LOG.md
+  - ../../../../domains/03-category-taxonomy-domain.md
 ---
 
 # 🏷️ Категории / теги / грани  ← P10

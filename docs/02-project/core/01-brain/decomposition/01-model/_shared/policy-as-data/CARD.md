@@ -6,8 +6,8 @@ Scope: project
 node_type: theme-card
 title: policy-as-data — правила как данные (+ hard-erase-per-type)
 Related:
-  - ../../architecture/modules/M-G3-type-registry-policy/README.md
-  - ../../decisions/SPEC-DRAFT-forgetting-hard-erase.md
+  - ../../../../architecture/modules/M-G3-type-registry-policy/README.md
+  - ../../../../decisions/SPEC-DRAFT-forgetting-hard-erase.md
 ---
 
 # ⚖️ policy-as-data  ← P8

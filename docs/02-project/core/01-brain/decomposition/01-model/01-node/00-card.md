@@ -6,8 +6,8 @@ Scope: project
 node_type: theme-card
 title: Узел — что хранит, паспорт/payload, три аудитории
 Related:
-  - ../../domains/01-knowledge-graph/node-types.md
-  - ../../OVERVIEW.md
+  - ../../../domains/01-knowledge-graph/node-types.md
+  - ../../../OVERVIEW.md
 ---
 
 # 🟦 Узел (node)  ← P4

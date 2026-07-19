@@ -8,7 +8,7 @@ title: 01-model — КАРТА модели памяти (примитивы · 
 Related:
   - NAV.concept.json
   - plan/README.md
-  - ../../../../01-organization/session-handoff/2026-07-18-ratification-backlog/LEDGER.md
+  - ../../../../../01-organization/session-handoff/2026-07-18-ratification-backlog/LEDGER.md
 ---
 
 # 🧠 01-model — карта модели памяти
