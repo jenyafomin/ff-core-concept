@@ -1,0 +1,41 @@
+{
+  "type": "attention-list",
+  "id": "model-nav-2026-07-18",
+  "title": "🧭 01-model — навигатор: структура + текущие ПРЯМЫЕ задачи",
+  "summary": "Единая точка входа в модель памяти. Карта дерева + что делаем прямо сейчас (после ратификации бэклога 2026-07-18). Ключевое: строить правильными шагами, не переделывать. Фаза: строим структуру → passport-контракт → углубление Акта.",
+  "relatesTo": "docs/02-project/core/01-brain/decomposition/01-model/README.md",
+  "pool": "model",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/decomposition/01-model/README.md",
+    "docs/02-project/core/01-brain/decomposition/01-model/plan/README.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/decomposition/01-model/README.md", "role": "start", "pool": "карта", "note": "🧠 Карта модели: 4 примитива + _shared + закон дерева + 2 режима. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/decomposition/01-model/plan/README.md", "role": "key", "pool": "планы", "note": "📋 Как живут планы: global→module→task→subtask + процесс качества." },
+    { "path": "docs/02-project/core/01-brain/decomposition/01-model/plan/design-queue.md", "role": "key", "pool": "дизайн", "note": "🔴 Следующий дизайн: D-7 разводящее правило + hard-erase кластер." },
+    { "path": "docs/01-organization/session-handoff/2026-07-18-ratification-backlog/LEDGER.md", "role": "doc", "pool": "бэклог", "note": "📒 Свод 71 решения (что ратифицировано / в очереди / отложено)." },
+    { "path": "docs/02-project/core/01-brain/DECISIONS-LOG.md", "role": "doc", "pool": "канон", "note": "🔒 Ратифицированные решения DL-01…29." },
+    { "path": "docs/02-project/core/01-brain/decomposition/01-model/03-act/README.md", "role": "doc", "pool": "next", "note": "⚡ Акт — углубляем первым (H-1 ратифицирован)." }
+  ],
+  "children": [],
+  "thinking": {
+    "goal": "Быстро строить правильными шагами (не переделывать): чистое дерево → passport-контракт → углубление примитивов → engine-spec/ТЗ",
+    "thesis": "Готового много и хорошего; отличать нас будет только скорость правильными шагами. Переделка = испорченный контекст = потеря информации. Строить, не переосмыслять.",
+    "phase": "STRUCTURE→DEEPEN (после ратификации бэклога)",
+    "current_direct_tasks": [
+      { "id": "T-1", "text": "МИГРАЦИЯ контента в чистое дерево: unit/→01-node/, карты→README, deepening→растворить, пути (backup+sed). Ждёт «мигрируй».", "status": "ready", "priority": 1 },
+      { "id": "T-2", "text": "Общий passport-контракт в _shared/passport/ (база+расширения) — дёшево, разблокирует edge/act/lens.", "status": "next", "priority": 1 },
+      { "id": "T-3", "text": "Углубить АКТ (03-act/) волной fable-orchestrator: passport·journal·idempotency·propagation·plugin-api. (H-1 ратифицирован).", "status": "next", "priority": 2 },
+      { "id": "T-4", "text": "ДИЗАЙН-очередь: D-7 разводящее правило + hard-erase кластер (не штамп — проектируем). См. plan/design-queue.md.", "status": "queued", "priority": 2 },
+      { "id": "T-5", "text": "Корневой фикс схемы concept.json + правило «2 режима» в doc-discipline (иначе ошибки повторятся).", "status": "queued", "priority": 3 }
+    ],
+    "ratified_today": ["DL-20 Акт", "DL-21 Postgres", "DL-22 namespace@version", "DL-23 паспорт", "DL-24 policy", "DL-25 рёбра", "DL-26 движок/доступ", "DL-27 снапшот", "DL-28 reply-binding", "DL-29 закон дерева"],
+    "horizons": ["plug-in/marketplace: клиент строит приложение НА базе; плагины хостятся, монетизация (подписка/оплата за использование). Захвачено в plan/GLOBAL.md — НЕ трогаем сейчас."],
+    "next_moves": [
+      "Владелец смотрит инфраструктуру (папки) → говорит «мигрируй» → перенос контента одним заходом",
+      "Затем passport-контракт → углубление Акта (делегирование)"
+    ]
+  }
+}

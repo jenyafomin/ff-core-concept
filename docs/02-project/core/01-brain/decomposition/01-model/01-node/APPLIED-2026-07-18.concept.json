@@ -1,0 +1,38 @@
+{
+  "node_type": "concept",
+  "title": "Статус применения ратифицированных конвенций (R1-R5) + остаток",
+  "owner": "jenya.stasik@gmail.com",
+  "date": "2026-07-18",
+  "status": "partial",
+  "summary": "Applier (agent-builder) остановился с прошлым процессом. Файлы-данные созданы; правки в СКИЛЛЫ не внесены. Ниже: что легло, что осталось, последовательность и как перепроверить.",
+  "applied": [
+    { "id": "A1", "what": "docs/00-states/README.md — каркас состояний (R2)", "verify": "test -f docs/00-states/README.md" },
+    { "id": "A2", "what": "docs/01-organization/registry.seed.json — сид реестра, 10 типов (R5-seed)", "verify": "test -f docs/01-organization/registry.seed.json" },
+    { "id": "A3", "what": "PROCESS-UPGRADE мигрирован в docs/01-organization/process/", "verify": "test -f docs/01-organization/process/PROCESS-UPGRADE-2026-07-17.md" },
+    { "id": "A4", "what": "analyses/ — 7 файлов (RECOMMENDATIONS + RATIFIED + 5 разборов)", "verify": "ls docs/02-project/core/01-brain/decomposition/01-model/01-node/analyses/" }
+  ],
+  "pending": [
+    { "id": "P1", "what": "doc-discipline SKILL.md — вшить R1 нумерация · R2 states · R4 план/задача", "spec": "analyses/RECOMMENDATIONS.md", "verify_should_pass_after": "grep -c '2026-07-17' ~/.claude/skills/doc-discipline/SKILL.md  # сейчас 0", "note": "перед правкой — бэкап .bak" },
+    { "id": "P2", "what": "session-logging — переписать схему на R3 (logs/ + conversations/NN + concept.json)", "spec": "analyses/03-logs.md", "flag": "скилл, возможно, НЕ установлен в ~/.claude/skills/ (лежит в docs/) — проверить и НЕ ставить глобально без владельца", "verify": "ls ~/.claude/skills/session-logging/ 2>/dev/null || echo not-installed" },
+    { "id": "P3", "what": "оставить в исходном PROCESS-UPGRADE (unit/) 1-строчный указатель на новое место", "verify": "head -5 docs/02-project/core/01-brain/decomposition/01-model/01-node/PROCESS-UPGRADE-2026-07-17.md" }
+  ],
+  "deferred_concepts": [
+    { "id": "C1", "what": "Реестр+навигация как механизм (concept.json-как-ГРАФ, версии, tool в шлюз)", "link": "analyses/RATIFIED-and-new-concepts-2026-07-17.md#Концепт-1" },
+    { "id": "C2", "what": "GitHub-модель = измерение policy-as-data (history-mode+TTL+volume, cost-tradeoff)", "link": "analyses/RATIFIED-and-new-concepts-2026-07-17.md#Концепт-2" },
+    { "id": "C3", "what": "Полнота примитивов: вещь·связь·акт·линза → 5-я/6-я грань + как миксуются", "link": "analyses/RATIFIED-and-new-concepts-2026-07-17.md#Концепт-3" },
+    { "id": "C4", "what": "Волна по АКТУ (глагол) — следующий несущий узел", "link": "NEXT-STEPS.md#1" }
+  ],
+  "sequence_next_session": [
+    "1. Перезапустить applier ТОЛЬКО на остаток P1-P3 (правки скиллов + указатель), с бэкапами, без коммита.",
+    "2. Перепроверить по блоку applied+pending.verify.",
+    "3. Затем волны concept-first: C1 навигация · C2 GitHub-как-policy · C3 примитивы · C4 АКТ."
+  ],
+  "reverify_all": "for f in docs/00-states/README.md docs/01-organization/registry.seed.json docs/01-organization/process/PROCESS-UPGRADE-2026-07-17.md; do test -f \"$f\" && echo OK $f || echo MISS $f; done; echo dd:$(grep -c 2026-07-17 ~/.claude/skills/doc-discipline/SKILL.md)",
+  "links": {
+    "spec": "analyses/RECOMMENDATIONS.md",
+    "ratified": "analyses/RATIFIED-and-new-concepts-2026-07-17.md",
+    "handoff_night": "HANDOFF-2026-07-16.md",
+    "vision": "VISION-SIMPLE.md",
+    "pickup_order": "NEXT-STEPS.md#6"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "type": "attention-list",
+  "id": "loop-system-concept-2026-07-15",
+  "title": "🔁 Loop System — концепт-навигатор (система-петля + команда агентов)",
+  "summary": "Виток 3 concept-first (restructuring). Абстракция выше: ХРЕБЕТ = 'петля стоит на памяти' → brain-DB несущий, ATOM/LOOP надстройка. Концепт делится на ДВА: Loop-system (эта папка) + Brain-readiness (n8n-level стресс-тест, отдельная тема). Личность = глубокий конструктор; режимы→статус+план; лог системно-авто; сессия=ключевая связь. Фаза DESIGN.",
+  "relatesTo": "docs/02-project/core/02-agents/loop-system/DEFEKTOVKA-2026-07-15.md",
+  "pool": "loop-system",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/02-agents/loop-system/DEFEKTOVKA-2026-07-15.md",
+    "docs/02-project/core/02-agents/loop-system/NAV.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/02-agents/loop-system/DEFEKTOVKA-2026-07-15.md", "role": "start", "pool": "разбор", "note": "🔎 Виток 3: дефектовка длинного запроса — атомы, уходы (T1 петля-на-памяти), общий вопрос, деление на 2 концепта. Читать первым." },
+    { "path": "docs/02-project/core/02-agents/loop-system/NAV.md", "role": "key", "pool": "картина", "note": "🌍 Картина слоёв D-ATOM/D-LOOP/D-BRAIN/D-MEM + решения." },
+    { "path": "docs/01-organization/session-handoff/2026-07-14-agents-audit-and-vision/skills-scan/CANDIDATES.md", "role": "key", "pool": "источник", "note": "🧩 Разведка скиллов: 20 установленных + паттерны (evaluator-optimizer/orchestrator-workers)." },
+    { "path": "docs/02-project/core/01-brain/OVERVIEW.md", "role": "key", "pool": "хранение", "note": "🧠 Модель памяти (узел/ребро/view/паспорт) — сюда ложатся узлы петли: топик, участник-контекст, лог-этапа, связи." },
+    { "path": "docs/01-organization/session-handoff/2026-07-14-agents-audit-and-vision/HANDOFF.md", "role": "doc", "pool": "источник", "note": "🧭 Очередь: doc-discipline → личности vs навыки → state-management." },
+    { "path": "docs/01-organization/session-handoff/2026-07-14-agents-audit-and-vision/mechanisms/CROSS-shared-concepts-and-order.md", "role": "doc", "pool": "пример", "note": "⚙️ 3 механизма + словарь (личность/агент/сессия/акт/грант/куратор) — только как иллюстрация." }
+  ],
+  "children": [],
+  "thinking": {
+    "goal": "Спроектировать систему-петлю НАД памятью: команда личностей-конструкторов, оркеструемая петлёй; несущее = готовность brain-DB",
+    "status": "restructuring",
+    "iteration": 3,
+    "spine": "ПЕТЛЯ СТОИТ НА ПАМЯТИ — brain-DB несущий, ATOM/LOOP надстройка",
+    "split_into": ["Концепт-1 Loop-system (эта папка)", "Концепт-2 Brain-readiness n8n-level (отдельная тема)"],
+    "layers": ["D-ATOM единица-конструктор", "D-LOOP процесс(статус+план)", "D-BRAIN хранение(несущее)", "D-MEM память", "D-READINESS n8n-стресс-тест", "D-LOAD пример-only"],
+    "directions": [
+      {
+        "id": "D-ATOM", "name": "Единица = личность-КОНСТРУКТОР (глубоко настраиваемая: tools/scope/data/поля)", "status": "path-clearer",
+        "questions": [
+          { "id": "Q-A1", "text": "Личность носит скиллы или скилл есть личность?", "type": "open-question", "priority": 1, "status": "answered", "answer_ref": "DEC-1: личность носит скиллы" },
+          { "id": "Q-A3", "text": "Как скиллы/поля комбинируются в личность-конструктор (2-в-1/3-в-1): рантайм-композиция или обёртка?", "type": "open-question", "priority": 2, "status": "open", "answer_ref": "DEC-8: личность = глубокий конструктор" }
+        ]
+      },
+      {
+        "id": "D-LOOP", "name": "Петля = системный оркестратор (триггеры, инициаторы, режимы исполнения, ресурсы, lifecycle, контекст-бюджет)", "status": "expanded",
+        "questions": [
+          { "id": "Q-L2", "text": "Петля в сессии или через шлюз?", "type": "open-question", "priority": 1, "status": "answered", "answer_ref": "DEC-2: системный конструкт со смесью режимов" },
+          { "id": "Q-L3", "text": "Где живёт состояние между витками?", "type": "verification", "priority": 3, "status": "answered", "answer_ref": "DEC-4: лог этапа в brain + end-of-session" },
+          { "id": "Q-L1", "text": "Границы одного витка/участка и что триггерит следующий?", "type": "open-question", "priority": 2, "status": "open" },
+          { "id": "Q-L4", "text": "Фиксирован ли старт хода 'инициатор->оркестратор->исполнители'?", "type": "open-question", "priority": 1, "status": "answered", "answer_ref": "DEC-7: НЕ фиксирован; лупы под нужду, переиспользуемы, рекурсивны (агент несёт свой луп)" },
+          { "id": "Q-L5", "text": "Режимы исполнения — явный набор?", "type": "verification", "priority": 1, "status": "answered", "answer_ref": "DEC-9: не режимы, а СТАТУС+ПЛАН (очередь FIFO/приоритет, план на ходу, N ждущих статусов)" },
+          { "id": "Q-L6", "text": "end-of-session после КАЖДОГО участка?", "type": "open-question", "priority": 2, "status": "answered", "answer_ref": "DEC-10: не обязателен; главное системный авто-лог; сессия=ключевая связь" }
+        ]
+      },
+      {
+        "id": "D-BRAIN", "name": "Хранение петли в brain (НЕСУЩЕЕ: топик · участник-контекст · лог-этапа · связи · сессия-узел)", "status": "load-bearing",
+        "questions": [
+          { "id": "Q-A2", "text": "Контекст/правила участника где живут?", "type": "open-question", "priority": 2, "status": "answered", "answer_ref": "DEC-3: brain-узлы, двусторонние связи" },
+          { "id": "Q-B1", "text": "Модель узлов/связей петли в brain-DB (стык с архитектурой памяти)?", "type": "open-question", "priority": 2, "status": "open" },
+          { "id": "Q-B2", "text": "Узлы добавляются 'таблично' по правилам + валидация по готовым схемам (+схема-пример) — как модель роста типов?", "type": "open-question", "priority": 2, "status": "open", "answer_ref": "DEC-11: brain-DB агентно-растущая" }
+        ]
+      },
+      {
+        "id": "D-MEM", "name": "Взаимодействие с памятью — кто и как", "status": "open",
+        "questions": [
+          { "id": "Q-M1", "text": "D-MEM — подраздел D-BRAIN или самостоятельное; связь петля<->память двусторонняя или петля пишет?", "type": "open-question", "priority": 2, "status": "open", "note": "владелец не до конца понял прошлый разбор — переформулировать, не давить" }
+        ]
+      },
+      {
+        "id": "D-READINESS", "name": "Brain-readiness (n8n-level стресс-тест) — ФОРК в отдельный концепт", "status": "fork-proposed",
+        "questions": [
+          { "id": "Q-R1", "text": "Пройдёт ли brain-DB 'версию n8n' как прошла 'google-таблицу'? (хранить всё, что в n8n)", "type": "open-question", "priority": 1, "status": "open" },
+          { "id": "Q-R2", "text": "Дубли идентичных узлов между проектами/n8n-инстансами — системное решение (canonicalId-слияние)?", "type": "open-question", "priority": 1, "status": "open" },
+          { "id": "Q-R3", "text": "n8n через MCP как внешний инструмент + наша память — дееспособна/оправдана?", "type": "open-question", "priority": 2, "status": "open" },
+          { "id": "Q-R4", "text": "Визуализация связей агент<->нода через маршруты/policies-of-data для типов?", "type": "open-question", "priority": 3, "status": "open" }
+        ]
+      },
+      {
+        "id": "D-LOAD", "name": "3 механизма — пример-only (не драйвер дизайна)", "status": "demoted",
+        "questions": [
+          { "id": "Q-D1", "text": "3 механизма в scope?", "type": "open-question", "priority": 3, "status": "answered", "answer_ref": "DEC-5: вне scope, иллюстрация" }
+        ]
+      }
+    ],
+    "decisions": [
+      { "id": "DEC-1", "text": "Личность носит скиллы (личность = носитель); отдельный агент в своём промпте тоже носит скиллы", "date": "2026-07-15" },
+      { "id": "DEC-2", "text": "Петля — системный конструкт с триггером старт/финиш; оркеструет смесь режимов исполнения, выбор по ресурсам", "date": "2026-07-15" },
+      { "id": "DEC-3", "text": "Контекст/правила участника + топик + связи петли живут в brain-узлах; связи двусторонние, авто с агентами", "date": "2026-07-15" },
+      { "id": "DEC-4", "text": "Каждый этап логируется в brain; участок = серия Q-A -> end-of-session; контекст-бюджет управляется (авто/подсказанный compaction)", "date": "2026-07-15" },
+      { "id": "DEC-5", "text": "3 механизма — вне scope дизайна, только иллюстративный пример", "date": "2026-07-15" },
+      { "id": "DEC-6", "text": "Память (кто и как взаимодействует) — отдельное направление D-MEM", "date": "2026-07-15" },
+      { "id": "DEC-7", "text": "Старт хода НЕ фиксирован; лупы создаются под нужду и переиспользуются; рекурсия — агент может нести свой личный луп-коннектор", "date": "2026-07-15" },
+      { "id": "DEC-8", "text": "Личность = глубокий КОНСТРУКТОР (инструменты/scope/данные/поля), собираемый по-разному; триггер = запрос", "date": "2026-07-15" },
+      { "id": "DEC-9", "text": "Режимы исполнения переописаны как СТАТУС+ПЛАН: очередь (FIFO/приоритет) + план обновляемый на ходу + несколько ждущих статусов", "date": "2026-07-15" },
+      { "id": "DEC-10", "text": "Логирование системно/авто; сессия = ключевая связывающая единица; end-of-session НЕ обязателен после каждого участка", "date": "2026-07-15" },
+      { "id": "DEC-11", "text": "brain-DB агентно-растущая: агент сам развивает; узлы добавляются по правилам + валидация по готовым схемам (+схема-пример)", "date": "2026-07-15" }
+    ],
+    "common_question": "Готов ли субстрат brain-DB нести систему-петлю (типы/схемы-валидация/дубли/агентный рост) — и что в связке 'петля-над-памятью' несущее, а что надстройка?",
+    "tensions": [
+      "T1 (главный уход): запрос уехал из loop-system в готовность brain-DB — вскрыта зависимость 'петля стоит на памяти' -> предложен форк на 2 концепта.",
+      "T2: 'режимы исполнения' -> переописаны в статус+план (DEC-9).",
+      "T3: end-of-session -> не обязателен, главное авто-лог (DEC-10 смягчает DEC-4).",
+      "T4: не смешать 'петля-оркестратор системы' и 'личный луп агента' — один паттерн, два масштаба."
+    ],
+    "external_needed": [ "GitHub-библиотека дизайн-паттернов агентов — путь от владельца (на диске не найдена, 2х)" ],
+    "next_moves": [
+      "Развилка владельцу: (1) подтвердить хребет 'петля-на-памяти'; (2) делить на 2 концепта? (3) запускать ли fable-orchestrator по направлениям сейчас",
+      "При 'да' на форк: завести отдельный концепт Brain-readiness (n8n-level) + прогнать агентами",
+      "Получить путь к GitHub-библиотеке паттернов",
+      "doc-discipline: узаконить схему навигатора vs doc-map"
+    ]
+  }
+}

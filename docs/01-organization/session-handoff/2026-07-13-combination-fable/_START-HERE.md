@@ -2,6 +2,11 @@
 
 - **Type:** concept (навигация) · **id:** START · Date: 2026-07-13
 
+## ⭐ ГЛАВНЫЙ ВХОД (читать первым)
+**`handoff/HANDOFF.md`** — стартовый handoff: состояние + проблемы + задачи следующей сессии (разного веса).
+Полный путь (копируй):
+`/Users/mac16/Documents/IT/Apps/FF-Personal-Managment/docs/01-organization/session-handoff/2026-07-13-combination-fable/handoff/HANDOFF.md`
+
 ## ГДЕ ВСЁ ЛЕЖИТ (полный путь корня)
 ```
 /Users/mac16/Documents/IT/Apps/FF-Personal-Managment/docs/01-organization/session-handoff/2026-07-13-combination-fable/

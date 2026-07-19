@@ -1,7 +1,7 @@
 ---
 Status: active
 Owner: jenya.stasik@gmail.com
-Date: 2026-07-11
+Date: 2026-07-14
 Scope: project
 ---
 
@@ -9,6 +9,56 @@ Scope: project
 
 > Это единственная «точка входа при старте новой сессии»: сначала сюда, потом — свежий HANDOFF.
 > Обновляется в конце каждой сессии. Полная карта канона — `docs/INDEX.md`.
+
+## ⭐⭐⭐ RESUME (2026-07-19) — Ратификация + чистое дерево + дизайн оркестрации (есть незакрытый долг)
+**Вход:** `session-handoff/2026-07-18-ratification-backlog/` → **`OPEN-ITEMS.md` (что НЕ сделано, читать!)** · `HANDOFF.md` · `LEDGER.md`.
+**Дизайн STATE·PLAN·TASK·LOOP** (сохранён, ждёт ADR): `…/01-model/_shared/mechanisms/orchestration/DESIGN.md`.
+**🔴 Долг:** 35 битых `Related:`-ссылок + уборка `01-node/` (блокировал Bash-глюк, ТЗ `process/bugs/gateway-tool-permission-stream/`). 5 развилок ADR ждут владельца.
+**Точка входа модели:** `…/decomposition/01-model/NAV.concept.json` → `README.md` → `state/README.md`.
+- **Ратифицировано DL-20…29** (`brain/DECISIONS-LOG.md`): Акт=2-я единица+ADR · **БД=PostgreSQL** (DL-15 закрыт) ·
+  namespace@version · паспорт/policy/рёбра/движок/root-авторитет/снапшот/reply-binding · закон дерева.
+- **Дерево модели консолидировано:** `unit/→01-node/` · `deepening/` растворён в `03-method/` · карты→дома ·
+  `layers/categories`→`_shared/_to-dissolve/`. Верх `01-model/`: node·edge·act·lens·_shared·plan·questions·state. Бэкап `/tmp/ff-mig-backup`.
+- **Дизайн-очередь** (не штамп): D-7 разводящее правило (`_shared/routing-rule/`) · hard-erase (`_shared/mechanisms/hard-erase/`).
+- **В работе:** обновление скиллов concept-first+doc-discipline (agent-builder, фон). **Готовность к build ≈35%.**
+- **Дальше:** тонкая уборка (process-файлы 01-node→handoff, слить карты, FQ→дома) → passport-контракт → углубить Акт.
+
+## ⭐⭐⭐ RESUME (2026-07-15) — Аудит агентов → видение → набор скиллов (concept-first установлен)
+**Вход:** `session-handoff/2026-07-14-agents-audit-and-vision/HANDOFF.md` (полный ход сессии) → `INDEX.md`.
+**Фаза — проектируем, не строим.** Сделано за сессию:
+- **Аудит** обоих проектов (путаница выписана) → `DIRECTION.md`; **видение слоя агентов** (Fable+критик):
+  реплика = АКТ, таблица грантов + Guard → `VISION-agents.md`; **ценности 3 механизмов** (13 агентов, без
+  техники) + общий словарь (личность/агент/сессия/акт/грант/куратор) → `mechanisms/`.
+- **Мета-разворот владельца:** проблема не в промпте, а в МЕХАНИЗМЕ → набор скиллов. **`concept-first`
+  собран Fable, откритикован, 3 правки вшиты, УСТАНОВЛЕН в `~/.claude/skills/concept-first/`.** Бриф —
+  `SKILL-BRIEF-thinking-vector.md`. Разведка скиллов → `skills-scan/CANDIDATES.md`.
+- **Очередь:** (1) `doc-discipline` — следующий скилл (Fable, бриф-раздел «СКИЛЛ 2»); (2) НОВЫЙ пойнт —
+  классификация скиллов на **личности vs навыки личности** (инициаторы-диспетчеры/оркестраторы) +
+  интеграция через `find-skills`; (3) `state-management` позже; (4) alt-skill web-search когда веб оживёт.
+- **Открыто по самому слою агентов:** OQ-1 с какого механизма стартовать (автопилот+Guard vs молчит-до-вызова);
+  предусловие — убить fail-open в approval-gate до первого окна автопилота.
+
+## ⭐⭐ RESUME (2026-07-13/14, ночь) — Combination (объединение Brain + agents-manager)
+**Спроектирован концепт «Combination»** — модульная платформа-объединение памяти (Brain) и шлюза
+(agents-manager) в marketplace-модель (kernel≠module · манифест-гражданин субстрата · апгрейд-линзы ·
+форк-lineage · Combination = контракт+conformance, не 3-й движок). Разрез Fable × критика × 6 ценностей ×
+9 инфра-модулей × 7 ADR-драфтов. **Фаза: только запись, не стройка.**
+- **Вход:** `session-handoff/2026-07-13-combination-fable/INDEX.md` → `handoff/HANDOFF.md`.
+- **Скелет проекта (стейдж внутри FF):** `2026-07-13-combination-fable/combination-scaffold/` (перенести в
+  свой репо — `MOVE-PLAN.md`; ждёт от владельца имя+путь).
+- **Открытые проблемы/next-session:** `handoff/PROBLEMS.md` (визуализация концептов, эволюция агентов) +
+  задачи NEXT-01…03; правило `PROTOCOL-concept-first.md` (concept-first · id/links · ссылка-на-папку).
+- **Связь:** пересекается с `2026-07-13-loop-mechanisms-brain` (федерация плагинов) — сверить/свести.
+
+## ⭐ RESUME для НОВОЙ сессии (2026-07-13, ночь) — две ветки
+1. **Loop Engineering → механизмы взаимодействия brain + федерация плагинов** (автономная ночная сессия).
+   Точка входа: `session-handoff/2026-07-13-loop-mechanisms-brain/HANDOFF.md`. Итог: 14 механизмов + 11 инфра-концептов
+   Fable (C1–C11: событийный позвоночник/CQRS на md, проектор, write-pipeline, линзы, лестница доверия, федерация
+   типов/тождества, root-self quarantine). **Открыто:** OQ-03 (тождество = мост данных между плагинами или нет?).
+2. **Процесс + IA-исправление.** Заведён docs-first/реестр-вопросов процесс (`process/docs-first-and-question-capture.md`).
+   Реестр вопросов ПЕРЕНЕСён в проект: `docs/02-project/open-questions/INDEX.md` (org-версия удалена как ошибочная).
+   **🔴 Первая задача новой сессии = OQ-2026-07-13-05: реструктуризация канона** — нумерация топ-папок brain +
+   элевация `doc-discipline/section-types-registry.md` в enforced «реестр папок». Кросс-ссылки → делать в активной сессии, не ночью.
 
 ## Фаза
 **BUILD-планирование** (по архитектуре памяти). DESIGN-фаза ЗАКРЫТА 2026-07-13: модель ратифицирована,

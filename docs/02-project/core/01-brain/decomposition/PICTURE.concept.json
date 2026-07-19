@@ -1,0 +1,108 @@
+{
+  "type": "attention-list",
+  "id": "decomposition-picture-2026-07-14",
+  "title": "Картина: декомпозиция сброса владельца (2026-07-14)",
+  "summary": "Как я понимаю большой голосовой сброс: 11 тем в 3 группах — модель (ядро) · стек · метод. Ключевой сдвиг: сначала форма модели, потом БД. Режим 'сломать концепт' — на группу модели. Из этой картины запускаются потоки агентов, наполняющие карточки.",
+  "relatesTo": "docs/02-project/core/01-brain/decomposition/README.md",
+  "pool": "decomposition",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/decomposition/README.md",
+    "docs/01-organization/session-handoff/2026-07-14-vector-and-defektovka/00-RAW-owner-input.md"
+  ],
+  "paths": [
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/README.md",
+      "role": "start",
+      "pool": "картина",
+      "note": "Карта декомпозиции: 3 группы, как читать, ключевой сдвиг порядка, следующий шаг."
+    },
+    {
+      "path": "docs/01-organization/session-handoff/2026-07-14-vector-and-defektovka/00-RAW-owner-input.md",
+      "role": "key",
+      "pool": "источник",
+      "note": "Дословные слова владельца по частям P0–P13 — откуда взята каждая тема."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/01-model/01-node/00-card.md",
+      "role": "key",
+      "pool": "модель",
+      "note": "Узел: что хранит, паспорт/payload, три аудитории (агент/пользователь(и)/понимание)."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/01-model/02-edge/README.md",
+      "role": "key",
+      "pool": "модель",
+      "note": "Ребро/связь: классы, семантика, стресс-тест (комментарий-к-тексту/якоря)."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/01-model/_shared/_to-dissolve/layers.md",
+      "role": "key",
+      "pool": "модель",
+      "note": "Слои: пользоват./систем./агентский/локальный; системный делится на уровни."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/01-model/_shared/policy-as-data/CARD.md",
+      "role": "key",
+      "pool": "модель",
+      "note": "policy-as-data: правила как данные; hard-erase = свойство типа."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/01-model/_shared/_to-dissolve/categories-tags-facets.md",
+      "role": "key",
+      "pool": "модель",
+      "note": "Категории/теги/грани — 'умные и продолжительные'; уровни детализации. Главная творческая тема."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/02-stack/01-database.md",
+      "role": "doc",
+      "pool": "стек",
+      "note": "БД: Docker + переносимость (Mongo/Postgres/граф). Решается ПОСЛЕ формы модели."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/02-stack/02-api-graphql.md",
+      "role": "doc",
+      "pool": "стек",
+      "note": "GraphQL vs REST — под цикличные многоуровневые запросы."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/02-stack/03-infra-taxonomy.md",
+      "role": "doc",
+      "pool": "стек",
+      "note": "Таксономия инфры: программная/системная/интеграции(LLM); продукт vs создание продукта."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/03-method/01-entity-schema.md",
+      "role": "doc",
+      "pool": "метод",
+      "note": "Схема-на-сущность: folder-per-thing + SCHEMA.md. Разблокирует потоки (W1)."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/03-method/02-adr-discipline.md",
+      "role": "doc",
+      "pool": "метод",
+      "note": "ADR-как-папка: DL внутри, опровергаемость, уровни, связи ADR↔ADR↔БД."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/decomposition/03-method/03-concept-navigation.md",
+      "role": "doc",
+      "pool": "метод",
+      "note": "Концепт-навигация/визор (всё из Telegram) + оркестраторы (упомянуто)."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/OVERVIEW.md",
+      "role": "doc",
+      "pool": "→канон",
+      "note": "Обзор системы — куда проецируется суть тем модели."
+    },
+    {
+      "path": "docs/02-project/core/01-brain/DECISIONS-LOG.md",
+      "role": "doc",
+      "pool": "→канон",
+      "note": "DL-01…DL-19 — контракт, который темы уточняют (erase-per-type, порядок модель→БД)."
+    }
+  ],
+  "children": [],
+  "childrenNote": "Каждая карточка группы 01-model при запуске потока агентов вырастет в папку со своим concept.json (дочерним к этому)."
+}

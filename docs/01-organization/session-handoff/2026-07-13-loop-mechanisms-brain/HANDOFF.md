@@ -80,7 +80,7 @@ C4 Шлюз чтения/Линза · C5 Ядро политик · C6 Лест
 - `01-ANALYSIS-loop-engineering-deep.md` · `02-MECHANISMS-brain-interaction.md` — аналитик (разбор + 14 механизмов)
 - `03-DECISIONS-and-federation.md` · `04-ANALYSIS-plugin-federation.md` — решения владельца + грунт федерации
 - `fable/FABLE-01…03` — Fable (7 концептов, вердикты форков, вердикт федерации)
-- `../../open-questions/INDEX.md` — реестр вопросов (процесс)
+- `../../../02-project/open-questions/INDEX.md` — реестр вопросов (ПРОЕКТ; org-версия удалена как ошибочная — правка владельца)
 - `../../process/docs-first-and-question-capture.md` — концепт процесса docs-first
 **Изменено:** `HANDOFF.md` (раунд 2 федерации + эта карта).
 **Прочитано-ключевое:**

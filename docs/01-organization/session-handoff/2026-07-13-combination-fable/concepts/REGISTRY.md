@@ -19,6 +19,13 @@
 | id | Type | Путь (от корня сессии) | Связи (edge → id) |
 |----|------|------------------------|-------------------|
 | **START** | concept | `_START-HERE.md` | grounds → REGISTRY; grounds → HANDOFF |
+| **HANDOFF** | concept | `handoff/HANDOFF.md` | synthesizes → SURV, PROTO; grounds → PROBLEMS, NEXT-VIEWER, NEXT-CARDEX, NEXT-EVOLUTION, EXAMPLE |
+| **PROBLEMS** | concept | `handoff/PROBLEMS.md` | raises → NEXT-VIEWER, NEXT-EVOLUTION, PLAN-GAPS |
+| **NEXT-VIEWER** | concept (large) | `handoff/NEXT-01-concept-viewer.md` | answers → PRB-01,02,03; grounds → EXAMPLE |
+| **NEXT-CARDEX** | concept | `handoff/NEXT-02-cardex-buttons.md` | grounds → NEXT-VIEWER |
+| **NEXT-EVOLUTION** | concept | `handoff/NEXT-03-agent-evolution.md` | answers → PRB-04; refines → M4 |
+| **EXAMPLE** | concept | `handoff/EXAMPLE-multilevel-concept.md` | refines → NEXT-VIEWER; synthesizes → REGISTRY |
+| **PLAN-GAPS** | problem | `combination-scaffold/docs/plan/GAPS.md` | refines → PLAN; grounds → PROBLEMS |
 | **MANDATE** | report | `MANDATE.md` | grounds → CTX; grounds → FBRIEF |
 | **CTX** | concept | `CONTEXT-DIGEST.md` | synthesizes → (explorer-maps); grounds → FBRIEF |
 | **FBRIEF** | report | `FABLE-BRIEF.md` | raises → FABLE; grounds → FABLE |
