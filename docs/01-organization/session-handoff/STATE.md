@@ -1,7 +1,7 @@
 ---
 Status: active
 Owner: jenya.stasik@gmail.com
-Date: 2026-07-14
+Date: 2026-07-19
 Scope: project
 ---
 
@@ -10,10 +10,18 @@ Scope: project
 > Это единственная «точка входа при старте новой сессии»: сначала сюда, потом — свежий HANDOFF.
 > Обновляется в конце каждой сессии. Полная карта канона — `docs/INDEX.md`.
 
-## ⭐⭐⭐ RESUME (2026-07-19) — Ратификация + чистое дерево + дизайн оркестрации (есть незакрытый долг)
-**Вход:** `session-handoff/2026-07-18-ratification-backlog/` → **`OPEN-ITEMS.md` (что НЕ сделано, читать!)** · `HANDOFF.md` · `LEDGER.md`.
-**Дизайн STATE·PLAN·TASK·LOOP** (сохранён, ждёт ADR): `…/01-model/_shared/mechanisms/orchestration/DESIGN.md`.
-**🔴 Долг:** 35 битых `Related:`-ссылок + уборка `01-node/` (блокировал Bash-глюк, ТЗ `process/bugs/gateway-tool-permission-stream/`). 5 развилок ADR ждут владельца.
+## ⭐⭐⭐ RESUME (2026-07-19b) — 5 развилок ОТВЕЧЕНЫ → ADR-драфт (proposed, критик пройден)
+**НОВОЕ (сессия 2026-07-19, «go» владельца):** 5 развилок оркестрации отвечены из ТИПОВ+ЦЕННОСТЕЙ →
+**`decisions/ADR-DRAFT-orchestration-state-plan-task-loop.md`** (status: proposed, ждёт ратификации).
+Ответы: STATE=**оба-грани**(узел тождества+линза статуса) · статусы=**хребет+листья** · LOOP=**свой
+node_type, композирует plan** · task=**статич.указатель+статус только в линзе** · дом типов=**вынесен
+в DL-29/doc-discipline** (не ADR-развилка). **Критик добавил разв.6** (материализация 4 линз =
+реальный блокер) + reconcile `02-states.md` (до-CQRS `status`) + риск гонок записи. Детали и новые
+пункты O-4a/b/c, O-1b(правило), O-11(готово) → `OPEN-ITEMS.md`.
+**Вход:** `session-handoff/2026-07-18-ratification-backlog/` → **`OPEN-ITEMS.md` (читать!)** · `HANDOFF.md` · `LEDGER.md`.
+**Дизайн-источник:** `…/01-model/_shared/mechanisms/orchestration/DESIGN.md`.
+**🔴 Долг:** ~40 битых `Related:` (пре-долг) + уборка `01-node/`. **Ждёт владельца:** ратифицировать 5
+ответов ADR + решить разв.6 (материализация) + O-4b reconcile `02-states.md`.
 **Точка входа модели:** `…/decomposition/01-model/NAV.concept.json` → `README.md` → `state/README.md`.
 - **Ратифицировано DL-20…29** (`brain/DECISIONS-LOG.md`): Акт=2-я единица+ADR · **БД=PostgreSQL** (DL-15 закрыт) ·
   namespace@version · паспорт/policy/рёбра/движок/root-авторитет/снапшот/reply-binding · закон дерева.
