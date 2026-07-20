@@ -18,7 +18,7 @@
     { "path": "docs/02-project/core/01-brain/decisions/D4-rebuild-reconcile-owner/EXPLAIN.md", "role": "key", "pool": "D4", "note": "🎯 rebuild/reconcile: баланс vs журнал. Рекомендация — rebuild=долг M-G1, reconcile=policy, человек=эскалация. Принять сейчас." },
     { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "свод", "note": "🧩 матрица домен×модуль + коллизии типов + поправка правила «проекция-первой». Откуда взялись все 4 форка." },
     { "path": "docs/02-project/core/01-brain/decisions/ADR-DRAFT-single-substrate-modular.md", "role": "doc", "pool": "ADR", "note": "📜 черновик ADR — эти 4 пункта = его блокеры. Снять → ADR к написанию." },
-    { "path": "docs/02-project/core/01-brain/decisions/ADR-DRAFT-orchestration-state-plan-task-loop.md", "role": "key", "pool": "ADR", "note": "⚙️ ADR оркестрации STATE·PLAN·TASK·LOOP (2026-07-19, proposed). 5 развилок отвечены из типов+ценностей, критик пройден. Ждёт ратификации + разв.6 материализации + reconcile 02-states.md." }
+    { "path": "docs/02-project/core/02-agents/01-orchestration/decisions/ADR-DRAFT-orchestration-state-plan-task-loop.md", "role": "key", "pool": "ADR", "note": "⚙️ ADR оркестрации STATE·PLAN·TASK·LOOP (переехал 2026-07-19 в 02-agents/01-orchestration/decisions/). (2026-07-19, proposed). 5 развилок отвечены из типов+ценностей, критик пройден. Ждёт ратификации + разв.6 материализации + reconcile 02-states.md." }
   ],
   "children": [],
   "childrenNote": "Каждый D-пункт имеет свой concept.json в своей папке (своя инфраструктура). Ратифицированное решение → DECISIONS-LOG.md."

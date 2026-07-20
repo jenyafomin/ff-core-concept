@@ -6,7 +6,7 @@ Scope: project
 node_type: plan
 title: GLOBAL — ключевые планы на проект + горизонты
 Related:
-  - README.md
+  - ../05-plan-family/README.md
   - design-queue.md
 ---
 
