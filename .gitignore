@@ -8,4 +8,7 @@ dist/
 packages/*/.data/
 .data/
 
+# local dialogue/session logs (underscore = cross-cutting, per R1) — not committed
+**/_logs/
+
 **/transcripts/*
