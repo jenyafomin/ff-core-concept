@@ -33,7 +33,7 @@ Related:
 | **state** | node+lens | паспорт + `theme·status{active\|paused\|done}·opened_at·updated_at`; «живое»=линза `state.current` | эта папка (def) · рантайм `docs/00-states/NN-slug/` |
 | **plan** | node | `goal·phase{L1\|L2}·status{draft\|active\|blocked\|done\|archived}·target_state`; шаги=под-узлы | эта папка (+ рантайм `plans/`) |
 | **task** | node | `status·topic·parent_plan?·assignees[]`; дефолт=строка плана, промоция в узел при `>1 артефакта`; контекст-сбор=акты `observe/gather` | эта папка |
-| **loop** | node (подтип plan?) | `pattern·trigger·budget·guards·members[]`; циклический план-оркестратор (≠ task); аккаунтинг=линза над актами+policy | эта папка |
+| **loop** | node (СВОЙ `node_type`, КОМПОЗИРУЕТ plan — has-a, не is-a; ADR разв.3) | идентичность/топология: `pattern·trigger·members[]`. **budget/guards — НЕ поля узла**, а `AgentPolicy`-строки (policy.md), читаемые линзой `loop.ledger` вместе с журналом `loop.*`-актов. Циклический план-оркестратор (≠ task) | эта папка |
 | **session** | node (линкер) | `opened·closed?·state_ref·agents[]`; «ключевая связь» (DEC-10), привязывает акты к state без обяз. закрытия | эта папка |
 | agent/personality | node | конструктор (tools/scope/data, DEC-8); носит скиллы (DEC-1); несёт свой loop (DEC-7) | `02-agents/` |
 | **рёбра** | edge | `targets`(plan→state) · `has-subplan/has-task`(дерево) · `attached-to`(гибкий якорь task→{plan\|node\|loop\|state}) · `assigned-to/carries`(task↔agent, 1 агент N задач) · `member-of/carries-loop`(группа+рекурсия) · `depends-on/blocks` | edges.md |
@@ -44,6 +44,8 @@ Related:
 Агент открывает `session` (привязана к `state`, `state_id` жёстко на отрезок) → **читает первым линзу `state.current`**
 (дешёвая проекция «на чём работаем»). `plan` ребром `targets` ведёт state к цели; его шаги = `task`'и (`has-task`/`attached-to`),
 назначены агентам (`assigned-to`, агент несёт N). Каждое действие = **акт** в журнал; статусы = **линзы** над актами (CQRS).
+🔒 **Обязательное правило (ADR разв.3):** т.к. `loop` переиспользует рёбра плана (`has-subplan`/`has-task`),
+**каждая линза, обходящая эти рёбра, ОБЯЗАНА фильтровать по `node_type` источника** — субстрат концы рёбер не валидирует.
 `loop` = план-оркестратор особого рода: `orchestrates` группу (`member-of`), крутит витки (`loop.iterate`), бюджет/guard = policy,
 проверяется линзой `loop.ledger`; рекурсия — агент `carries-loop` под-луп. Итог: state=«где мы», plan=«куда/как», task=«атом», loop=«как крутится».
 

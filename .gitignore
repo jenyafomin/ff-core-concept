@@ -8,7 +8,9 @@ dist/
 packages/*/.data/
 .data/
 
-# local dialogue/session logs (underscore = cross-cutting, per R1) — not committed
+# local dialogue/session logs (underscore = cross-cutting, per R1) — not committed.
+# Unified conversation log: _log/<conversation>/ = trace (pointers); truth flows OUT to tracked homes.
+**/_log/
 **/_logs/
 
 **/transcripts/*
