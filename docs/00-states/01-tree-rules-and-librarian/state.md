@@ -7,6 +7,8 @@ owner: jenya.stasik@gmail.com
 opened: 2026-07-19
 updated: 2026-07-19
 agents: [orchestrator-fable]
+handoff: ../../_log/2026-07-19-restructure-orchestration/HANDOFF.concept.json
+last_session: 2026-07-19-restructure-orchestration
 plans:
   - ../../01-organization/doc-discipline/restructure-2026-07/MAP-target.md
   - ../../01-organization/doc-discipline/restructure-2026-07/SKILL-UPGRADE-PROPOSAL.md
