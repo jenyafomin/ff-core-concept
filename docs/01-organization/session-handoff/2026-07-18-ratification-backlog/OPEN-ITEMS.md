@@ -74,7 +74,7 @@ O-13 (граница) логически ПЕРЕД O-14 (куда класть)
 ## 🏁 ХЭНДОФФ 2026-07-19 — «да» на U-1..5 + реестр + GLOBAL→states
 | # | Что | Статус | Дом |
 |---|-----|--------|-----|
-| O-16 | **U-1..5** — владелец «да» → **agent-builder применяет** (U-1 R1 в live SKILL · U-3 `type→homeRule` в `.doc-types.json` · U-4 supersede реестра · U-5 указатель=вид · U-2 хук=предложение) | в работе (фон) | сверить вывод agent-builder |
+| O-16 | **U-1..5 — ПРИМЕНЕНО** ✅ (agent-builder, `~/.claude` НЕ заблокировал): U-1 **R1 вшит в живой `~/.claude/skills/doc-discipline/SKILL.md`** (бэкап `.bak-2026-07-20`) · U-5 «указатель=вид» там же · U-3 `docs/.doc-types.json` (type→homeRule) · U-4 supersede `decisions`-кучи. **U-2 хук = предложение** (`HOOK-PROPOSAL.md`, R2 — твой ревью settings). Корень повторных ошибок закрыт | applied |
 | O-21 | 🔴 **Унификация реестра ТИПОВ** (путаница: `section-types-registry.md` ↔ `docs/.doc-types.json` ↔ `registry.seed.json` ↔ секция «Реестр» в SKILL). Владелец: типы должны чётко фиксироваться в ОДНОМ глобальном реестре. + правило: все `.md` желательно с тип-суффиксом. **Тщательно, следующий заход** | agent-builder мапит → `REGISTRY-UNIFICATION.md` |
 | O-22 | **GLOBAL → per-plan states** — GLOBAL как истина-файл упразднён (переходный → `00-states/00-global-build/`); разложить 7 шагов в отдельные состояния «план=состояние» | отложено | `00-states/` |
 | O-23 | **session-logging SKILL → под `_log`** (дата+чистый запрос, вместо `logs/NN`) | ждёт agent-builder | `rules-and-skills/session-logging/` |

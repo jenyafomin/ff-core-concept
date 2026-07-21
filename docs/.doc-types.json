@@ -1,0 +1,126 @@
+{
+  "_comment": "ПРОЕКТНЫЙ ОВЕРЛЕЙ реестра типов (U-3, O-16). Кодирует принцип «ТИП решает ДОМ»: концепт объявляет тип → тип объявляет дом через homeRule → файл сам себя маршрутизирует. Читается скиллом doc-discipline ПОВЕРХ глобального ~/.claude/registry/doc-types.json. При коллизии id ОВЕРЛЕЙ выигрывает. Продвижение проект→глобал по доказательствам (конституция). Расширяет docs/01-organization/registry.seed.json (тот = минимальный сид словаря; здесь — рабочий оверлей с homeRule/R1). НЕ дублировать глобальные типы без нужды — только проектные/экспериментальные + переопределения homeRule под O-14/R1/R2/R4.",
+  "version": 1,
+  "updated": "2026-07-20",
+  "status": "draft",
+  "owner": "jenya.stasik@gmail.com",
+  "scope": "project",
+  "basedOn": [
+    "~/.claude/registry/doc-types.json (global base — читается первым, оверлей бьёт при коллизии id)",
+    "docs/01-organization/registry.seed.json (минимальный сид словаря типов)",
+    "docs/01-organization/doc-discipline/PATCH-2026-07-17-conventions.md (R1/R2/R4)",
+    "docs/01-organization/doc-discipline/restructure-2026-07/MAP-target.md (§A/B/C/D — дома)"
+  ],
+  "conventions": {
+    "typeDecidesHome": "Размещение = СЛЕДСТВИЕ типа, не решение. concept объявляет node_type → берём homeRule этого типа → путь детерминирован.",
+    "r1Numbering": "Именованная папка-узел (концепт/тема) получает порядковый префикс 01- 02-… . Плюральные КОНТЕЙНЕРЫ (analyses/ questions/ decisions/ plans/ states/) и _-папки (_shared/ _inbox/ _logs/) — БЕЗ номера; файлы внутри нумеруются. См. live doc-discipline/SKILL.md §R1.",
+    "overlayWins": "id этого файла бьёт одноимённый id глобального реестра. Плюральные container-типы (analyses/questions/decisions/plans/states) намеренно даны отдельными folder-id, чтобы НЕ конфликтовать с глобальными file-типами analysis/question/decision/plan."
+  },
+  "fileTypes": {
+    "overview": {
+      "id": "overview", "appliesTo": "file", "suffix": ".overview.md",
+      "homeRule": "README.md / INDEX.md в корне любой папки: цель, статус, задетые ценности, указатели на детей. ВИД, не хранилище (U-5). Имя на диске обычно README.md или INDEX.md.",
+      "dateRequired": "no", "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Указатель/обзор папки — карта содержимого, а не контент. Переопределяет глобальный overview проектным акцентом на INDEX.md."
+    },
+    "plan": {
+      "id": "plan", "appliesTo": "both", "suffix": ".plan.md",
+      "homeRule": "Развилка по MAP-target: (а) БАЗОВЫЙ generic-план и его семья → 01-brain/decomposition/01-model/05-plan-family/; (б) КОНКРЕТНЫЙ plan-kind над базой → 02-agents/01-orchestration/02-plan/. Файл плана PLAN-<id>-<slug>.md. Обязателен target_state; ребро plan --targets--> state.",
+      "dateRequired": "inherit", "requiredFrontmatter": ["node_type", "status", "topic", "target_state", "parent_plan", "owner", "date"],
+      "description": "План работ (R4). Переопределяет глобальный plan под base⟂module разводку и обязательные поля."
+    },
+    "design": {
+      "id": "design", "appliesTo": "file", "suffix": ".design.md",
+      "homeRule": "Рядом с механизмом/темой, которую проектирует: в analyses/ темы или в её корне. Дизайн-нота = проработка «как устроить», ещё не решение (решение → decisions/).",
+      "dateRequired": "inherit", "requiredFrontmatter": ["node_type", "status", "owner", "date"],
+      "description": "Проектная нота (node_type: design-note). Проектный тип, в глобале нет."
+    },
+    "ADR-draft": {
+      "id": "ADR-draft", "appliesTo": "file", "suffix": ".md", "namePattern": "ADR-DRAFT-<slug>.md",
+      "homeRule": "Живёт в decisions/ своей темы, пока черновик (напр. 02-agents/01-orchestration/decisions/). При ратификации архитектурного класса (storage/auth/движок/оркестрация) промотируется в docs/architecture/ADR/ADR-NNNN-<slug>.md со статусом proposed→approved.",
+      "dateRequired": "inherit", "requiredFrontmatter": ["node_type", "status", "owner", "date"],
+      "description": "Черновик архитектурного решения до ратификации. Проектный тип."
+    },
+    "conversation-log": {
+      "id": "conversation-log", "appliesTo": "file", "suffix": ".md",
+      "homeRule": "docs/_logs/<YYYY-MM-DD-тема>/NN-<ход>/ — сессия-как-тема: папка с ДАТОЙ создания, внутри свой НОМЕР диалога. На ход: запрос(чистый копипаст) · разбор · возможный результат(лучше *.concept.json). GITIGNORE (**/_logs/), локальный скретч, не истина. Наружу в дом — только canon_links по id.",
+      "dateRequired": "yes", "requiredFrontmatter": [],
+      "description": "Лог диалога (session-as-theme, MAP-target §C). TRACE-родня, но underscore-дом + дата + NN. ⚠️ конвенция расходится с скиллом session-logging (logs/conversations/NN, без сырого запроса) — открытый форк U-6, ждёт решения владельца."
+    }
+  },
+  "folderTypes": {
+    "node": {
+      "id": "node", "appliesTo": "folder", "r1Numbering": "01-node (нумеруется, концепт-папка)",
+      "homeRule": "01-brain/decomposition/01-model/01-node/ — примитив субстрата графа. Концепт-папка → префикс 01-.",
+      "dateRequired": "no", "childTypes": ["overview", "analyses", "questions", "decisions"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Узел — базовый примитив базы знаний (частица/волна). Brain-model примитив."
+    },
+    "edge": {
+      "id": "edge", "appliesTo": "folder", "r1Numbering": "02-edge",
+      "homeRule": "01-brain/decomposition/01-model/02-edge/ — примитив связи между узлами. Концепт-папка → префикс.",
+      "dateRequired": "no", "childTypes": ["overview", "analyses", "questions", "decisions"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Ребро — примитив связи графа (id-based). Brain-model примитив."
+    },
+    "act": {
+      "id": "act", "appliesTo": "folder", "r1Numbering": "03-act",
+      "homeRule": "01-brain/decomposition/01-model/03-act/ — примитив действия/события над графом.",
+      "dateRequired": "no", "childTypes": ["overview", "analyses", "questions", "decisions"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Акт — примитив действия/события. Brain-model примитив."
+    },
+    "lens": {
+      "id": "lens", "appliesTo": "folder", "r1Numbering": "04-lens",
+      "homeRule": "01-brain/decomposition/01-model/04-lens/ — примитив проекции/вида над узлами (напр. status_cache — derived-линза).",
+      "dateRequired": "no", "childTypes": ["overview", "analyses", "questions", "decisions"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Линза — примитив проекции/вида. Brain-model примитив. Указатель/status = линза, не хранилище (U-5)."
+    },
+    "plan-family": {
+      "id": "plan-family", "appliesTo": "folder", "r1Numbering": "05-plan-family",
+      "homeRule": "01-brain/decomposition/01-model/05-plan-family/ — generic plan КАК СЕМЬЯ: базовый тип + механизм вариаций/подтипов/апгрейд-линз. loop, спец-план-под-state — вариации этой семьи.",
+      "dateRequired": "no", "childTypes": ["overview", "analyses", "decisions", "plans"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Семья планов (база). Конкретные plan-kinds наследуют её в 02-agents/01-orchestration/02-plan/."
+    },
+    "state": {
+      "id": "state", "appliesTo": "both", "suffix": ".md",
+      "homeRule": "ЕДИНСТВЕННЫЙ дом: docs/00-states/NN-<slug>/ на КОРНЕ дерева (R2). Плоская схема; тема = ПОЛЕ theme: во frontmatter, не вложенность. Внутри: state.md (id·theme·status·opened/updated·agents[]·plans[]) + append-only log.md. НИКОГДА не удаляется — при закрытии status: archived. Определение механизма state (узел+линза) может жить в 02-agents/01-orchestration/01-state/.",
+      "dateRequired": "yes", "childTypes": ["overview"], "requiredFrontmatter": ["id", "theme", "status", "opened", "updated"],
+      "description": "Состояние, в которое входят агенты (R2). Дом = docs/00-states/ (владелец оркестратора этого хода — не трогать содержимое здесь)."
+    },
+    "loop": {
+      "id": "loop", "appliesTo": "folder", "r1Numbering": "04-loop (внутри 01-orchestration)",
+      "homeRule": "02-agents/01-orchestration/04-loop/ — свой node_type; вариация семьи 05-plan-family, переиспользует рёбра plan. Фолдит бывший loop-system/.",
+      "dateRequired": "no", "childTypes": ["overview", "analyses", "decisions"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Луп — большой цикл (state держит несколько планов). Конкретная грань оркестрации над базой."
+    },
+    "task": {
+      "id": "task", "appliesTo": "both",
+      "homeRule": "ПО УМОЛЧАНИЮ — строка/пункт ВНУТРИ плана (не файл). Промотируется в 02-agents/01-orchestration/03-task/<id>/ ТОЛЬКО когда нужен собственный подграф; тогда обязателен parent_plan, указывающий назад на план (R4).",
+      "dateRequired": "inherit", "childTypes": ["overview", "analyses"], "requiredFrontmatter": ["node_type", "status", "parent_plan", "owner", "date"],
+      "description": "Задача. По умолчанию строка плана; папка — только при промоции в подграф (R4)."
+    },
+    "decisions": {
+      "id": "decisions", "appliesTo": "folder", "r1Numbering": "decisions (плюрал-КОНТЕЙНЕР — БЕЗ номера)",
+      "homeRule": "Плюральный контейнер decisions/ живёт ВНУТРИ своей темы (…/NN-values/decisions/, 01-orchestration/decisions/, 05-plan-family/decisions/) — НЕ одной общей кучей (O-14). Файлы внутри нумеруются (D-001…). Сводный DECISIONS-LOG.md = журнал-УКАЗАТЕЛЬ (trace), ссылается по id, контент не хранит.",
+      "dateRequired": "inherit", "childTypes": ["decision", "ADR-draft"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Контейнер распределённых решений темы (O-14). SUPERSEDES единую кучу decisions/DECISIONS-LOG.md из section-types-registry.md."
+    },
+    "analyses": {
+      "id": "analyses", "appliesTo": "folder", "r1Numbering": "analyses (плюрал-КОНТЕЙНЕР — БЕЗ номера)",
+      "homeRule": "Плюральный контейнер analyses/ ВНУТРИ папки механизма/темы, которой служат разборы. Файлы .analysis.md нумеруются внутри. РОВНО ОДИН дом на разбор (не в сессии/хендоффе).",
+      "dateRequired": "inherit", "childTypes": ["analysis", "gaps", "question", "design"], "requiredFrontmatter": ["status", "owner", "date"],
+      "contentTemplate": "Структура ребёнка: (1) Вход/вопрос · (2) Варианты/призмы · (3) Разбор по критериям · (4) Вердикт/что принято · (5) Открытые форки.",
+      "description": "Контейнер разборов темы. Плюрал-имя, чтобы не конфликтовать с глобальным file-типом analysis."
+    },
+    "questions": {
+      "id": "questions", "appliesTo": "folder", "r1Numbering": "questions (плюрал-КОНТЕЙНЕР — БЕЗ номера)",
+      "homeRule": "Плюральный контейнер questions/ рядом с механизмом/темой. Открытые вопросы, кристаллизованные из concept.json. Префикс источника в имени (FQ/VQ/OQ). Закрытый → уезжает в decisions/ той же темы.",
+      "dateRequired": "inherit", "childTypes": ["question"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Контейнер открытых вопросов темы. Тип ВОПРОСА внутри concept.json — не сюда (это concept-first)."
+    },
+    "plans": {
+      "id": "plans", "appliesTo": "folder", "r1Numbering": "plans (плюрал-КОНТЕЙНЕР — БЕЗ номера)",
+      "homeRule": "Плюральный контейнер plans/ внутри темы/механизма или 01-orchestration/02-plan/. Файлы PLAN-<id>-<slug>.md нумеруются внутри.",
+      "dateRequired": "inherit", "childTypes": ["plan"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Контейнер планов темы. Плюрал-имя (R1), без номера на уровне папки."
+    }
+  }
+}
