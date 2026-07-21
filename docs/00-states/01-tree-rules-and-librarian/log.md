@@ -16,3 +16,7 @@ Related:
 - **2026-07-19** — миграция исполнена (283c586): orchestration → `02-agents/01-orchestration/`.
 - **2026-07-19** — апгрейд doc-discipline (критик×абстракт) → `SKILL-UPGRADE-PROPOSAL.md` (не применён).
 - **2026-07-19** — создан этот state + единый `_log`-модель.
+- **2026-07-19 · ХЭНДОФФ** — сессия привязана к этому state. guard/loop-дефекты исправлены; GLOBAL→state-00;
+  владелец «да» на U-1..5 → agent-builder применяет (фон). **Следующий заход:** сверить agent-builder →
+  унификация реестра типов (O-21) → ратификация ADR → GLOBAL→per-plan states (O-22). Полный хэндофф —
+  `session-handoff/STATE.md` (RESUME 2026-07-19c).

@@ -10,6 +10,20 @@ Scope: project
 > Это единственная «точка входа при старте новой сессии»: сначала сюда, потом — свежий HANDOFF.
 > Обновляется в конце каждой сессии. Полная карта канона — `docs/INDEX.md`.
 
+## ⭐⭐⭐ RESUME (2026-07-19c) — ХЭНДОФФ: реструктуризация + states + единый _log (сессия «go»)
+**Сессия привязана к `state`:** ведущий — **`00-states/01-tree-rules-and-librarian/`** (как работаем);
+затронут **`00-states/02-agent-system-mechanics/`** (оркестрация) + создан **`00-states/00-global-build/`**.
+Хэндофф = последний лог в state-01 (`.../01-tree-rules-and-librarian/log.md`) + этот блок.
+
+**Что сделано за сессию (7 коммитов, без пуша, GPG off):**
+- **ADR оркестрации** (`02-agents/01-orchestration/decisions/ADR-DRAFT-…`) — 5 развилок из типов+ценностей, критик+аналитик пройдены; **разв.6 материализации** ждёт; loop/guard-дефекты (мои) исправлены.
+- **Реструктуризация исполнена:** оркестрация → `02-agents/01-orchestration/` (нумеровано R1); база `05-plan-family/`; 10 файлов `git mv` + стабы + бэкап. Две карты `restructure-2026-07/`.
+- **Состояние-механизм дог-фуднут:** `00-states/` (00-global-build · 01-tree-rules · 02-agent-mechanics), design-queue → state-02, GLOBAL → переходный в state-00.
+- **Единый `_log`** (gitignored трейс, истина→дома); `_inbox` растворён; модель `restructure-2026-07/LOG-MODEL.md`.
+- **Апгрейд doc-discipline** (`SKILL-UPGRADE-PROPOSAL.md`, U-1..6) — владелец сказал «да» → **agent-builder применяет** (фон: U-1 R1 в SKILL, U-3 type→homeRule, U-4 supersede, U-5; U-2 хук=предложение; реестр=карта).
+
+**🔴 Следующий заход (первым):** (1) сверить вывод agent-builder (что применилось/заблокировано `~/.claude`); (2) **унификация реестра типов** (O-21, путаница section-types-registry ↔ doc-types ↔ seed); (3) ратифицировать ADR (5 ответов + разв.6); (4) GLOBAL→per-plan states (O-22); (5) session-logging SKILL под `_log`. Детали — `2026-07-18-ratification-backlog/OPEN-ITEMS.md`.
+
 ## ⭐⭐⭐ RESUME (2026-07-19b) — 5 развилок ОТВЕЧЕНЫ → ADR-драфт (proposed, критик пройден)
 **НОВОЕ (сессия 2026-07-19, «go» владельца):** 5 развилок оркестрации отвечены из ТИПОВ+ЦЕННОСТЕЙ →
 **`decisions/ADR-DRAFT-orchestration-state-plan-task-loop.md`** (status: proposed, ждёт ратификации).
