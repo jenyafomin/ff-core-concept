@@ -1,7 +1,0 @@
-{
-  "type": "moved-stub",
-  "id": "agents-orchestration-moved-2026-07-19",
-  "status": "moved",
-  "movedTo": "../../../02-agents/01-orchestration/agents-orchestration.concept.json",
-  "note": "➡️ Переехало 2026-07-19 в 02-agents/01-orchestration/ (модуль agent-manager). Валидный JSON-стаб, чтобы concept-граф-тул не спотыкался."
-}

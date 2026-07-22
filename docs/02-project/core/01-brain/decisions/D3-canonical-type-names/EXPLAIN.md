@@ -6,12 +6,12 @@ Scope: project
 node_type: decision-explainer
 decision: D3
 Related:
-  - ../../architecture/2026-07-12-SYNTHESIS-matrix.md
-  - ../../domains/01-knowledge-graph/edge-types.md
-  - ../../domains/02-agents-orchestration/node-types.md
-  - ../../domains/02-agents-orchestration/edge-types.md
-  - ../../architecture/modules/M-G3-type-registry-policy/README.md
-  - ../../architecture/modules/M-G5-identity-self/README.md
+  - ../../analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md
+  - ../../01-overview/02-domains/01-knowledge-graph/03-relations/edge-types.md
+  - ../../../02-agents/01-orchestration/node-types.md
+  - ../../../02-agents/01-orchestration/edge-types.md
+  - ../../02-infrastructure/04-modules/M-G3-type-registry-policy/README.md
+  - ../../02-infrastructure/04-modules/M-G5-identity-self/README.md
 ---
 
 # D3 — «5 канонических имён типов» (объяснение для владельца)

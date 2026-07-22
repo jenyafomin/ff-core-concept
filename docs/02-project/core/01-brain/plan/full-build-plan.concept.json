@@ -9,16 +9,16 @@
   "viewModes": ["preset", "all-files"],
   "keyFiles": [
     "docs/02-project/core/01-brain/plan/2026-07-13-FABLE-full-build-plan.md",
-    "docs/02-project/core/01-brain/DECISIONS-LOG.md"
+    "docs/02-project/core/01-brain/decisions.INDEX.md"
   ],
   "paths": [
     { "path": "docs/02-project/core/01-brain/plan/2026-07-13-FABLE-full-build-plan.md", "role": "start", "pool": "план", "note": "🗺️ Roadmap M0→M8 + риски порядка + точки перепроверки тестов. Читать первым." },
     { "path": "docs/02-project/core/01-brain/plan/2026-07-12-BUILD-milestone-0.md", "role": "key", "pool": "план", "note": "🚶 M0 walking-skeleton — принят как есть, батчи B0–B5." },
-    { "path": "docs/02-project/core/01-brain/DECISIONS-LOG.md", "role": "key", "pool": "контракт", "note": "🔒 16 решений DL-01…DL-16 — контракт плана, не переспаривать." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-FABLE-readiness-verdict.md", "role": "doc", "pool": "обоснование", "note": "⚖️ Вердикт готовности: блокеры до кода, 🟢-отложенное." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "обоснование", "note": "🧩 Матрица домен×модуль, канон-имена, поправка проекция-первой." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-COMPLETENESS-and-model.md", "role": "doc", "pool": "обоснование", "note": "🧩 10 полей паспорта, единая модель тип/категория/тег, дыра забвения." },
-    { "path": "docs/02-project/core/01-brain/architecture/MODULES.md", "role": "doc", "pool": "модули", "note": "🧩 Реестр M-G*/M-P* — что в каком майлстоуне включается." }
+    { "path": "docs/02-project/core/01-brain/decisions.INDEX.md", "role": "key", "pool": "контракт", "note": "🔒 16 решений DL-01…DL-16 — контракт плана, не переспаривать." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-FABLE-readiness-verdict.md", "role": "doc", "pool": "обоснование", "note": "⚖️ Вердикт готовности: блокеры до кода, 🟢-отложенное." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "обоснование", "note": "🧩 Матрица домен×модуль, канон-имена, поправка проекция-первой." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-COMPLETENESS-and-model.md", "role": "doc", "pool": "обоснование", "note": "🧩 10 полей паспорта, единая модель тип/категория/тег, дыра забвения." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/01-overview/MODULES.md", "role": "doc", "pool": "модули", "note": "🧩 Реестр M-G*/M-P* — что в каком майлстоуне включается." }
   ],
   "children": [],
   "childrenNote": "Каждый майлстоун M1–M8 при старте разворачивается в свой BUILD-док с батчами (по образцу milestone-0)."

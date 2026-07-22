@@ -6,11 +6,11 @@ Scope: project
 node_type: decision-explainer
 decision: D4
 Related:
-  - ../../architecture/modules/M-G4-locality-residency/README.md
-  - ../../architecture/modules/M-G1-memory-engine/README.md
-  - ../../synthesis/2026-07-12-fable-db-module/00-SYNTHESIS.md
-  - ../../architecture/2026-07-12-SYNTHESIS-matrix.md
-  - ../DECISIONS-LOG.md
+  - ../../02-infrastructure/04-modules/M-G4-locality-residency/README.md
+  - ../../02-infrastructure/04-modules/M-G1-memory-engine/README.md
+  - ../../analyses/2026-07-12-fable-series/2026-07-12-fable-db-module/00-SYNTHESIS.md
+  - ../../analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md
+  - ../../decisions.INDEX.md
 ---
 
 # D4 — Кто «владеет» операцией rebuild/reconcile?

@@ -1,0 +1,92 @@
+{
+  "type": "attention-list",
+  "id": "brain-infra-recording-2026-07-21",
+  "title": "🧱 Как brain ЗАПИСЫВАЕТ инфраструктуру · механики · проекты-примеры",
+  "summary": "Концепт-first виток над картой from→to. НЕ строим — задаём правильные вопросы: как поэтапно собирается инфраструктура, каким узлом записывается механика (которую внедряем), каким узлом записывается проект-пример (который учитываем). Открывай thinking.directions.",
+  "relatesTo": "docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level/AUDIT-MAP-2026-07-21.md",
+  "pool": "infra-recording",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level/AUDIT-MAP-2026-07-21.md",
+    "docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level/README.md"
+  ],
+  "paths": [
+    { "path": "docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level/AUDIT-MAP-2026-07-21.md", "role": "start", "pool": "карта", "note": "🗺️ from→to карта — ветки, из которых растёт вопрос «как записывать»." },
+    { "path": "docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level/04-target-skeleton.md", "role": "key", "pool": "скелет", "note": "🎯 целевой скелет 02-infrastructure." },
+    { "path": "docs/02-project/core/01-brain/architecture/MODULES.md", "role": "key", "pool": "механики", "note": "🧩 реестр модулей — сырьё для «как записываем механику»." }
+  ],
+  "children": [],
+  "childrenNote": "Каждое направление (D-1..D-3) кристаллизуется в дом (02-infrastructure/01-overview) при path-found; тип файла-узла (mechanism/project) закрепляет doc-discipline.",
+  "thinking": {
+    "goal": "Определить, КАК brain записывает три вещи: (1) поэтапную сборку инфраструктуры, (2) внедряемые механики, (3) учитываемые проекты-примеры — прежде чем строить.",
+    "status": "restructured-phase1",
+    "iteration": 3,
+    "directions": [
+      {
+        "id": "D-1",
+        "name": "Как поэтапно СТРОИТСЯ инфраструктура — ЦЕПОЧКА деривации (папки-группы объясняют суть движка)",
+        "status": "restructuring",
+        "path": "01-overview (ценности+домены) → 02-infrastructure (модули) → платформы (новый узел)",
+        "questions": [
+          { "id": "D1-Q1", "text": "Ось «этапа сборки»: milestone vs слой vs модуль vs цепочка деривации?", "type": "open-question", "priority": 1, "status": "answered", "answer_ref": "DEC-1" },
+          { "id": "D1-Q5", "text": "ЗВЕНО ценности→домены: какие именно 4 домена-модели рождаются из 7 ценностей+идей? Это те же домены-данных (knowledge-graph, agents-orchestration…) или ДРУГОЕ деление? Какая ценность питает какой домен?", "type": "open-question", "priority": 1, "status": "open" },
+          { "id": "D1-Q6", "text": "ПЕРЕХОД ценности→домены: что за шаг/артефакт превращает «ценности+идеи» в «домен-модель», чтобы это был честный вывод, а не прыжок? Что для этого нужно?", "type": "analysis", "priority": 1, "status": "open" },
+          { "id": "D1-Q7", "text": "ЗВЕНО домены→модули: как домен-модель ФОРМИРУЕТ инфра-модуль — модуль реализует один домен или несколько? Что нужно ИЗ домена (контракт/граница), чтобы модуль можно было начать?", "type": "analysis", "priority": 1, "status": "open" },
+          { "id": "D1-Q8", "text": "ЗВЕНО модули→платформы: «платформа» = композиция инфра-модулей? Что делает набор модулей платформой (граница; то, что подключает пользователь = plug-in из VISION)? Пример: какие модули → какая платформа?", "type": "open-question", "priority": 1, "status": "open" },
+          { "id": "D1-Q9", "text": "ПОЛНОТА стадии: каждая папка-группа обязана объяснять «суть движка» на своём уровне. Что она обязана содержать, чтобы быть полной: цель · что получили · во что конвертируется · что для этого нужно · что дальше?", "type": "verification", "priority": 2, "status": "open" },
+          { "id": "D1-Q10", "text": "КОНВЕРТАЦИЯ ИДЕЙ: идеи вокруг ценностей — куда именно они конвертируются ВНУТРЬ проекта, в какой ПОСЛЕДОВАТЕЛЬНОСТИ и ЧАСТЬЮ ЧЕГО становятся (домен-модель? инфра-модуль? платформа?)? Пример-структура подсказывает: идея кристаллизуется в СЛОТ фасет-шаблона домена (mechanics/entities/relations) ИЛИ в shared-механику. Ратифицировать?", "type": "open-question", "priority": 1, "status": "open", "answer_ref": "INS-1,INS-2" },
+          { "id": "D1-Q11", "text": "ФАСЕТ-ШАБЛОН (из примера): принять ли, что КАЖДЫЙ домен описывается фиксированным набором слотов? У них: explain·pages·mechanics·relations·nuances·entities·decisions. Наши слоты (субстрат, БЕЗ экранов): explain · entities · relations · mechanics · policy · nuances · decisions — верно?", "type": "open-question", "priority": 1, "status": "open", "answer_ref": "INS-1" },
+          { "id": "D1-Q12", "text": "ПЛАТФОРМА (уточнение по примеру): у них platform = platform-specific реализация, ЗЕРКАЛЯЩАЯ домены + реализующая shared-механики. У нас нет backend/web/mobile как продукта — «платформа» = подключаемая plug-in-поверхность (VISION/маркетплейс)? Или уровень «platform-independent core → specific» нам тоже нужен?", "type": "open-question", "priority": 1, "status": "open", "answer_ref": "INS-3" }
+        ]
+      },
+      {
+        "id": "D-2",
+        "name": "Как записываем МЕХАНИКИ (которые внедряем)",
+        "status": "open",
+        "path": "02-infrastructure/01-overview/ + 04-modules/ (будущий)",
+        "questions": [
+          { "id": "D2-Q1", "text": "Механика — ОТДЕЛЬНЫЙ тип узла `mechanism` со своим домом, или всегда живёт внутри модуля/ценности, которой служит? Паспорт-механизм служит и Читаемости, и Тождеству сразу — где его один дом?", "type": "open-question", "priority": 1, "status": "open" },
+          { "id": "D2-Q2", "text": "Жизненный цикл механики: идея → механизм → spec → код. Каждая стадия = новый файл или ОДИН файл с меняющимся статусом? (сейчас hard-erase размазан: SPEC-DRAFT + --decomp + модуль).", "type": "analysis", "priority": 1, "status": "open" },
+          { "id": "D2-Q3", "text": "Минимальный «паспорт механики» — обязательные поля: id · что решает · какой ценности/модулю служит · статус · зависимости · как проверить. Что ещё несёт-обязательно?", "type": "verification", "priority": 2, "status": "open" },
+          { "id": "D2-Q4", "text": "Как механика линкуется к тому, что её ПОРОДИЛО (ценность/сценарий/вопрос) и что её РЕАЛИЗУЕТ (модуль/код)? Типизированное ребро `serves`/`implements`?", "type": "analysis", "priority": 2, "status": "open" },
+          { "id": "D2-Q5", "text": "ДВА ДОМА МЕХАНИК (из примера, отвечает D2-Q1): механика-специфичная для домена живёт ВНУТРИ домена (слот `mechanics`), а сквозная — в общем `shared/mechanics` (auth·db·queue·realtime·search·storage·observability·jobs…). Плюс `integrations/` = внешние адаптеры механики. Принять двухуровневую модель?", "type": "open-question", "priority": 1, "status": "open", "answer_ref": "INS-2" }
+        ]
+      },
+      {
+        "id": "D-3",
+        "name": "Как записываем ПРОЕКТЫ-примеры (которые учитываем)",
+        "status": "open",
+        "path": "projects/ ? vs 02-domains ? vs ссылки на global registry (открыто)",
+        "questions": [
+          { "id": "D3-Q1", "text": "«Проект» в брейне — это (а) внешний ПРИМЕР/prior-art, из которого извлекаем механики; (б) будущий PLUG-IN-модуль экосистемы; (в) и то и другое как разные состояния одного узла? Одно слово покрывает 2 роли — развести или объединить?", "type": "open-question", "priority": 1, "status": "open" },
+          { "id": "D3-Q2", "text": "Что именно ИЗВЛЕКАЕМ из проекта-примера — механики? паттерны? решения? И как это возвращается в дерево: ссылкой на дом механики или копией внутрь карточки проекта?", "type": "analysis", "priority": 1, "status": "open" },
+          { "id": "D3-Q3", "text": "Минимальная карточка проекта — поля: id · путь/реестр · роль (пример/plug-in) · что даёт брейну · статус. Связать с уже существующим global `project-registry.md` (реестр путей) или дублировать?", "type": "verification", "priority": 2, "status": "open" },
+          { "id": "D3-Q4", "text": "Дом проектов-примеров: контейнер `projects/` в brain, узлы в домене-данных, или только ссылки из инфры на глобальный registry?", "type": "open-question", "priority": 2, "status": "open" }
+        ]
+      }
+    ],
+    "decisions": [
+      { "id": "DEC-1", "text": "Ось сборки инфраструктуры = ЦЕПОЧКА деривации (ценности+идеи → 4 домена-модели → инфра-модули → платформы), выраженная папками-группами. НЕ milestones. Каждая группа-папка обязана объяснять «суть движка» на своём уровне. Цепочка = хребет-нумерация скелета brain (аспект 10 build-by-stages).", "date": "2026-07-21" },
+      { "id": "DEC-2", "text": "ФАСЕТ-ШАБЛОН единицы: 01-explain ВСЕГДА с номером; все фасет-слоты (entities·relations·mechanics·policy⚠·nuances·pages⚠) ВСЕГДА с номером и разделены; `decisions/` — исключение, может быть общим бакетом без номера. См. аспект 11.", "date": "2026-07-21" },
+      { "id": "DEC-3", "text": "UNDERSCORE: сквозные механики ВСЕГДА с `_` (видно, что сквозное). `_unverified/` (⚠ имя) = выявленные-но-нерешённые механики с аналитикой, вокруг крутим вопросы. `_shared/` в backend несёт нумерованные utils/middlewares/guards (кандидаты). См. аспект 11 C/D.", "date": "2026-07-21" },
+      { "id": "DEC-4", "text": "PER-ДОМЕН: у каждой единицы (4, м.б. 5) в её папке — отдельный узел-вопрос + узел общего представления (все грани + связи + как единица выглядит целиком). Каждая единица описывает уникальные моменты.", "date": "2026-07-21" },
+      { "id": "DEC-5", "text": "ЗЕРКАЛО+РЕКУРСИЯ: на каждом уровне рекурсивно отвечаем «из чего состоит инфраструктура» (front·back·db·связи=модули·сервисы); то что строим — раскладываем в доках теми же паттернами. Backend: domains/=зеркало концепт-доменов + _shared. См. аспект 11 E.", "date": "2026-07-21" },
+      { "id": "DEC-6", "text": "ПАРАЛЛЕЛЬНЫЙ ТРЕК: модуль безопасности/доступа (что получает агент vs пользователь) развивать отдельно от хребта деривации — сквозной трек. См. аспект 11 F.", "date": "2026-07-21" },
+      { "id": "DEC-7", "text": "ПЕРЕЕЗД PHASE-1 ИСПОЛНЕН 2026-07-21 (4 параллельных builder-агента, плоский mv, LOSE-NOTHING). 347→356 файлов (0 потерь). Верхний уровень: 01-overview{01-values,02-domains} · 02-infrastructure{01-overview,02-backend,04-modules,_shared} · questions · analyses · decisions+decisions.INDEX.md · plan/todo/topics · _archived-state-moved. Плоский безномерной корень устранён. Эталон фасет-шаблона применён к 01-knowledge-graph.", "date": "2026-07-21" }
+    ],
+    "insights": [
+      { "id": "INS-1", "source": "external-example (другой проект, advisory)", "text": "ФАСЕТ-ШАБЛОН: каждый домен описан ФИКСИРОВАННЫМ набором слотов (у них: explain·pages·mechanics·relations·nuances·entities·decisions). Это делает аспект-10 «вопрос полноты» конкретным шаблоном. Наш вариант без экранов: explain·entities·relations·mechanics·policy·nuances·decisions." },
+      { "id": "INS-2", "source": "external-example (advisory)", "text": "ДВА ДОМА МЕХАНИК: domain-local (`02-mechanics` внутри домена) vs сквозные (`02-shared/01-mechanics`). Отвечает на D-2-Q1 (где дом сквозной механики → shared). `integrations/` = внешние адаптеры механики." },
+      { "id": "INS-3", "source": "external-example (advisory)", "text": "ТРИ СЛОЯ + ЗЕРКАЛО: concept-домены → platform-independent core (shared: mechanics/integrations/contracts/data-model) → platform-specific (backend/web/mobile). Один и тот же NN-набор групп ЗЕРКАЛИТСЯ across слои = хребет. У нас 'платформа' скорее = plug-in-поверхность (VISION), но принцип 'независимое ядро → специфика' может пригодиться." },
+      { "id": "INS-4", "source": "external-example (advisory)", "text": "OVERVIEW = «зеркало полноты» (агрегатор-ссылки), читается первым; порядок чтения shared-ПЕРЕД-platform. decisions/ co-located в каждом домене и механике (совпадает с нашим аспектом 07)." }
+    ],
+    "next_moves": [
+      "ДОЛГ ССЫЛОК: brain/INDEX.md + brain.concept.json + внутренние относительные ссылки указывают на старые пути — прогнать link-audit (известный долг, не рвали содержимое при переезде).",
+      "Ответить D1-Q5/Q6 (какие 4 домена-модели; переход ценности→домены) и D1-Q8 (определение «платформы»).",
+      "Получить ответы по D-2 (механики) и D-3 (проекты-примеры).",
+      "Углубление PHASE-2: довести фасет-слоты в 01-values (NN-*→слоты), распределить D1-D5 по домам, влить infra-OQ в questions/, завести _unverified/ и трек безопасности.",
+      "При path-found — кристаллизовать типы-узлов `mechanism` и `project` + `платформа` через doc-discipline."
+    ]
+  }
+}

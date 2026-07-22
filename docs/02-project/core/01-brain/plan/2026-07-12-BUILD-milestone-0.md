@@ -6,9 +6,9 @@ Scope: project
 node_type: work-plan
 title: BUILD Milestone-0 — Walking Skeleton (единый граф-субстрат)
 Related:
-  - ../architecture/2026-07-12-FABLE-readiness-verdict.md
-  - ../architecture/2026-07-12-SYNTHESIS-matrix.md
-  - ../DECISIONS-LOG.md
+  - ../analyses/2026-07-12-architecture-synthesis/2026-07-12-FABLE-readiness-verdict.md
+  - ../analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md
+  - ../decisions.INDEX.md
 ---
 
 # 🚶 BUILD Milestone-0 — Walking Skeleton (единый граф-субстрат)

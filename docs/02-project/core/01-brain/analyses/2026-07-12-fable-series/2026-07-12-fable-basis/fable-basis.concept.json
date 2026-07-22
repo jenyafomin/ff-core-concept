@@ -1,0 +1,25 @@
+{
+  "type": "attention-list",
+  "id": "fable-basis-node-edge-2026-07-12",
+  "title": "🧩 Fable — базис памяти: ключевые вопросы по-отдельности",
+  "summary": "Выводы Fable (заход 1), разложенные по карточкам. Открывай сверху вниз. Глубина пока небольшая — каждую карточку можно углубить в файл/папку.",
+  "relatesTo": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis-node-edge.md",
+  "pool": "fable-basis",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis-node-edge.md",
+    "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis/06-questions-for-owner.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis/06-questions-for-owner.md", "role": "start", "pool": "решения", "note": "💬 что решает владелец + что докинуть Fable + что НЕ трогать. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis/01-basis-primitives.md", "role": "key", "pool": "базис", "note": "К-1: сколько примитивов? → 2 + интерпретатор, 3-го нет." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis/02-node-vs-edge.md", "role": "key", "pool": "узел-связь", "note": "К-2: связь = сущность или поле? → критерий адресуемости, 2 класса." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis/03-now-vs-later.md", "role": "key", "pool": "сейчас-позже", "note": "К-3: 3 must-now инварианта + грани ребра + папка-оркестрация + память-diff." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis/04-bridge-invariants.md", "role": "key", "pool": "мост", "note": "К-4: 2 инварианта brain+агенты (canonicalId · поведение-данными)." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis/05-goal-and-directions.md", "role": "key", "pool": "цель-план", "note": "К-5: цель сессии + 6 направлений Н-1…Н-6." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis-node-edge.md", "role": "doc", "pool": "полный", "note": "полный совет Fable одним файлом (источник карточек)." }
+  ],
+  "children": [],
+  "childrenNote": "Каждая карточка (01…06) — точка роста: при углублении становится своей папкой со своим concept.json. Собирать концепты дальше должен сам Fable (agentId a0ff65a47101ab7bd)."
+}

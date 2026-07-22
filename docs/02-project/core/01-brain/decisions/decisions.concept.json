@@ -3,12 +3,12 @@
   "id": "brain-decisions-hub-2026-07-12",
   "title": "🧭 РЕШЕНИЯ 2026-07-12 — 4 пункта к ратификации (объяснения для владельца)",
   "summary": "Хаб: каждый из 4 форков разобран отдельным объяснением на пальцах (варианты, плюс-минус, рекомендация). Общий вывод: 3 из 4 можно принять сейчас; лично перепроверить — раздвоение reports-to (D3). Открытые под-форки: integrity (D5), момент консолидации (D2).",
-  "relatesTo": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md",
+  "relatesTo": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md",
   "pool": "decisions",
   "createdBy": "agent",
   "viewModes": ["preset", "all-files"],
   "keyFiles": [
-    "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md",
+    "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md",
     "docs/02-project/core/01-brain/decisions/ADR-DRAFT-single-substrate-modular.md"
   ],
   "paths": [
@@ -16,10 +16,10 @@
     { "path": "docs/02-project/core/01-brain/decisions/D2-agent-memory-location/EXPLAIN.md", "role": "key", "pool": "D2", "note": "🗂️ Память агента: стол vs библиотека. Рекомендация — гибрид (thin-ref + буфер-черновик, консолидация отдельным шагом)." },
     { "path": "docs/02-project/core/01-brain/decisions/D3-canonical-type-names/EXPLAIN.md", "role": "key", "pool": "D3", "note": "🏷️ 5 канон-имён = договориться об одном слове на вещь. 4/5 механические → «ок»; лично перепроверить reports-to→supervised-by." },
     { "path": "docs/02-project/core/01-brain/decisions/D4-rebuild-reconcile-owner/EXPLAIN.md", "role": "key", "pool": "D4", "note": "🎯 rebuild/reconcile: баланс vs журнал. Рекомендация — rebuild=долг M-G1, reconcile=policy, человек=эскалация. Принять сейчас." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "свод", "note": "🧩 матрица домен×модуль + коллизии типов + поправка правила «проекция-первой». Откуда взялись все 4 форка." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "свод", "note": "🧩 матрица домен×модуль + коллизии типов + поправка правила «проекция-первой». Откуда взялись все 4 форка." },
     { "path": "docs/02-project/core/01-brain/decisions/ADR-DRAFT-single-substrate-modular.md", "role": "doc", "pool": "ADR", "note": "📜 черновик ADR — эти 4 пункта = его блокеры. Снять → ADR к написанию." },
     { "path": "docs/02-project/core/02-agents/01-orchestration/decisions/ADR-DRAFT-orchestration-state-plan-task-loop.md", "role": "key", "pool": "ADR", "note": "⚙️ ADR оркестрации STATE·PLAN·TASK·LOOP (переехал 2026-07-19 в 02-agents/01-orchestration/decisions/). (2026-07-19, proposed). 5 развилок отвечены из типов+ценностей, критик пройден. Ждёт ратификации + разв.6 материализации + reconcile 02-states.md." }
   ],
   "children": [],
-  "childrenNote": "Каждый D-пункт имеет свой concept.json в своей папке (своя инфраструктура). Ратифицированное решение → DECISIONS-LOG.md."
+  "childrenNote": "Каждый D-пункт имеет свой concept.json в своей папке (своя инфраструктура). Ратифицированное решение → ../decisions.INDEX.md."
 }

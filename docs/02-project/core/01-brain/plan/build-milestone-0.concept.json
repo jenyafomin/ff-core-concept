@@ -9,14 +9,14 @@
   "viewModes": ["preset", "all-files"],
   "keyFiles": [
     "docs/02-project/core/01-brain/plan/2026-07-12-BUILD-milestone-0.md",
-    "docs/02-project/core/01-brain/DECISIONS-LOG.md"
+    "docs/02-project/core/01-brain/decisions.INDEX.md"
   ],
   "paths": [
     { "path": "docs/02-project/core/01-brain/plan/2026-07-12-BUILD-milestone-0.md", "role": "start", "pool": "план", "note": "🚶 План milestone-0: scope, батчи B0–B5, 4 критерия приёмки. Читать первым." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-FABLE-readiness-verdict.md", "role": "key", "pool": "готовность", "note": "🔮 Вердикт Fable: готов после ратификации; первый срез сборки и RAG по областям." },
-    { "path": "docs/02-project/core/01-brain/DECISIONS-LOG.md", "role": "key", "pool": "решения", "note": "🔒 14 ратифицированных решений (DL-01…DL-14) — контракт, на котором строим." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "модель", "note": "🧩 матрица домен×модуль + канон-имена + правило проекции-первой." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-COMPLETENESS-and-model.md", "role": "doc", "pool": "модель", "note": "🧩 единая модель тип/категория/тег + поля паспорта + вектор расширения." }
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-FABLE-readiness-verdict.md", "role": "key", "pool": "готовность", "note": "🔮 Вердикт Fable: готов после ратификации; первый срез сборки и RAG по областям." },
+    { "path": "docs/02-project/core/01-brain/decisions.INDEX.md", "role": "key", "pool": "решения", "note": "🔒 14 ратифицированных решений (DL-01…DL-14) — контракт, на котором строим." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "модель", "note": "🧩 матрица домен×модуль + канон-имена + правило проекции-первой." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-COMPLETENESS-and-model.md", "role": "doc", "pool": "модель", "note": "🧩 единая модель тип/категория/тег + поля паспорта + вектор расширения." }
   ],
   "children": [],
   "childrenNote": "B0 открывает setup-решения (репо-локация, стек). Milestone-1+ = M-G2/агенты, добавляются данными поверх скелета."

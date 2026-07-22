@@ -1,0 +1,23 @@
+{
+  "type": "attention-list",
+  "id": "brain-spec-draft-forgetting-hard-erase-2026-07-12",
+  "title": "SPEC-DRAFT — Механизм забвения (soft-sleep + hard-erase)",
+  "summary": "Инженерный слой права на забвение (COMPLETENESS §6, 🔴). soft-sleep = обратимая salience-policy; hard-erase = долг движка, распространяет стирание по DataResidency на все материализации/реплики/эмбеддинги. append-only ⨯ «стереть везде» примиряются через tombstone-надгробие + физический purge payload. Триггер — consent Ц-7. Главный тест: hard-erase → узла нет ни в одной материализации, надгробие остаётся. ⚠ каскад на потомков — открыто (FQ7).",
+  "relatesTo": "docs/02-project/core/01-brain/decisions/SPEC-DRAFT-forgetting-hard-erase.md",
+  "pool": "decisions",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/decisions/SPEC-DRAFT-forgetting-hard-erase.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/decisions/SPEC-DRAFT-forgetting-hard-erase.md", "role": "start", "pool": "спека", "note": "🎯 Черновик спеки: soft-sleep (salience-policy) vs hard-erase (долг движка), tombstone+purge, распространение по DataResidency, критерии приёмки + план верификации. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-COMPLETENESS-and-model.md", "role": "key", "pool": "проблема", "note": "🔴 §6 «Право на забвение» — признанная архитектурная дыра, из которой родилась спека («стереть везде текущей схемой нереализуемо»)." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G4-locality-residency/README.md", "role": "key", "pool": "модуль", "note": "🗄️ DataResidency + материализация live/cache/copy + replica-of/cached-from DAG — адресный план, по которому hard-erase обходит все копии." },
+    { "path": "docs/02-project/core/01-brain/01-overview/01-values/07-soglasie/05-revocation-erasure/README.md", "role": "key", "pool": "ценность", "note": "⚖️ Ц-7·05: два примитива забывания, tombstone, каскад отзыва, забвение в эмбеддингах. Ценностный источник + ⚠ FQ7 (главный конфликт)." },
+    { "path": "docs/02-project/core/01-brain/decisions/D4-rebuild-reconcile-owner/EXPLAIN.md", "role": "doc", "pool": "решение", "note": "🔧 D4: поток снизу-вверх, rebuild-from-scratch как долг движка — стык с критерием A5 (rebuild не воскрешает стёртое)." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G1-memory-engine/README.md", "role": "doc", "pool": "модуль", "note": "🧩 M-G1 integrity-as-engine-duty — сюда садится hard-erase как встроенная обязанность движка (R2)." }
+  ],
+  "children": [],
+  "childrenNote": "Спека — draft. Развилка каскада (только исходник vs обратный consent-taint на потомков) и судьба canonical_id упираются в FQ7 → решение владельца перед переводом в review."
+}

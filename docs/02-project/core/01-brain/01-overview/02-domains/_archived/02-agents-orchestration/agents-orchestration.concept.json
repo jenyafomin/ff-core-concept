@@ -1,0 +1,10 @@
+{
+  "type": "moved-stub",
+  "id": "agents-orchestration-moved-2026-07-19",
+  "status": "moved",
+  "movedTo": "../../../02-agents/01-orchestration/agents-orchestration.concept.json",
+  "note": "➡️ Переехало 2026-07-19 в 02-agents/01-orchestration/. Redirect-стаб с paths[] на новый дом — проходит detectConcept (закон суффикса D-1).",
+  "paths": [
+    { "path": "docs/02-project/core/02-agents/01-orchestration/agents-orchestration.concept.json", "role": "redirect", "note": "новый дом концепта оркестрации агентов" }
+  ]
+}

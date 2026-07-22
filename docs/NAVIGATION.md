@@ -1,12 +1,19 @@
 ---
-Status: draft
+Status: superseded
 Owner: jenya.stasik@gmail.com
 Date: 2026-07-06
-Title: Полная карта навигации docs/
+Title: (SUPERSEDED) Полная карта навигации docs/
 Scope: project
+superseded_by: ./INDEX.md
 ---
 
-# NAVIGATION — Полная карта папок и файлов
+> 🔴 **УСТАРЕЛО (2026-07-21).** Эта карта от 2026-07-06 описывает старую структуру (`topics/memory-unit`,
+> `substrate/`, `04-knowladge`), которой уже нет. Единственная живая карта понимания — **`docs/INDEX.md`**.
+> Содержимое ниже сохранено как история (LOSE-NOTHING), НЕ навигируй по нему.
+
+---
+
+# NAVIGATION — Полная карта папок и файлов (исторический снимок 2026-07-06)
 
 **Цель:** быстро найти, где физически лежит каждый материал в дереве docs/.
 Читать вместе с `docs/INDEX.md` (точка входа).

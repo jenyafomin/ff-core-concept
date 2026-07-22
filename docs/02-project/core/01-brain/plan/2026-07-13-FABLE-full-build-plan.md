@@ -6,13 +6,13 @@ Scope: project
 node_type: work-plan
 title: FABLE — полный план сборки M0→M8 (walking-skeleton → первый полезный продукт)
 Related:
-  - ../DECISIONS-LOG.md
+  - ../decisions.INDEX.md
   - 2026-07-12-BUILD-milestone-0.md
-  - ../architecture/2026-07-12-SYNTHESIS-matrix.md
-  - ../architecture/2026-07-12-COMPLETENESS-and-model.md
-  - ../architecture/MODULES.md
-  - ../architecture/2026-07-12-FABLE-readiness-verdict.md
-  - ../synthesis/2026-07-12-fable-db-module/00-SYNTHESIS.md
+  - ../analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md
+  - ../analyses/2026-07-12-architecture-synthesis/2026-07-12-COMPLETENESS-and-model.md
+  - ../02-infrastructure/01-overview/MODULES.md
+  - ../analyses/2026-07-12-architecture-synthesis/2026-07-12-FABLE-readiness-verdict.md
+  - ../analyses/2026-07-12-fable-series/2026-07-12-fable-db-module/00-SYNTHESIS.md
 ---
 
 # 🗺️ FABLE — полный roadmap сборки (M0 → M8)

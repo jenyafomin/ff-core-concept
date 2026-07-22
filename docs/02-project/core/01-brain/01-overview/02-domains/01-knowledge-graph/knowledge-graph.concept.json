@@ -1,0 +1,21 @@
+{
+  "type": "attention-list",
+  "id": "brain-domain-01-knowledge-graph-2026-07-12",
+  "title": "🧠 Домен 01 — Граф знаний (память/ячейка), раскрыт в папку",
+  "summary": "Node-type/edge-type реестры + policy-as-data из 7 ценностей + модель роста INSERT-ом. Раскрытие прежнего stub 01-knowledge-graph-domain.md. Открывай README.",
+  "relatesTo": "docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/01-explain/README.md",
+  "pool": "domains",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/01-explain/README.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/02-entities/node-types.md", "role": "key", "pool": "node-type", "note": "Реестр типов узлов: cell, document, container, concept, event, profile-ref, policy-node, view-def, VariantGroup, journal-entry." },
+    { "path": "docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/03-relations/edge-types.md", "role": "key", "pool": "edge-type", "note": "2 класса связи (thin-ref/assertion-edge) + seed-реестр типов рёбер, 3 инварианта 🔴 сейчас." },
+    { "path": "docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/05-policy/policy.md", "role": "key", "pool": "policy", "note": "7 ценностей как policy-узлы + каскад Конституция>policy-as-data>integrity-as-engine-duty." },
+    { "path": "docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/01-explain/growth.md", "role": "doc", "pool": "рост", "note": "Рост домена = INSERT типа/вида в реестры, не миграция схемы; сценарий день1→год1." }
+  ],
+  "children": [],
+  "childrenNote": "Плоский набор файлов домена; следующий шаг — матрица домен×модуль с M-G1 «Движок памяти»."
+}

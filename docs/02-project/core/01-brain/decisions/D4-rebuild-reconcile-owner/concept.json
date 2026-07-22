@@ -12,11 +12,11 @@
   ],
   "paths": [
     { "path": "docs/02-project/core/01-brain/decisions/D4-rebuild-reconcile-owner/EXPLAIN.md", "role": "start", "pool": "объяснение", "note": "🎯 D4 на пальцах: аналогия бухгалтерии, что такое reconcile/rebuild, 4 варианта владельца, рекомендация. Читать первым." },
-    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G4-locality-residency/README.md", "role": "key", "pool": "модуль", "note": "🗄️ M-G4: control-plane над data-plane, риск «второго источника истины», rebuild-day-1 как инвариант." },
-    { "path": "docs/02-project/core/01-brain/synthesis/2026-07-12-fable-db-module/00-SYNTHESIS.md", "role": "doc", "pool": "синтез", "note": "⚠️ раздел «Общий риск» — 2 из 3 Fable независимо назвали дрейф control-plane критичным." },
-    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G1-memory-engine/README.md", "role": "doc", "pool": "модуль", "note": "🧩 M-G1: открытый вопрос 4 — «кто триггерит rebuild-day-1?» — D4 закрывает этот вопрос." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "матрица", "note": "📋 пункт «Владелец операционного долга rebuild/reconcile — не назначен» — D4 отвечает на этот пункт." }
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G4-locality-residency/README.md", "role": "key", "pool": "модуль", "note": "🗄️ M-G4: control-plane над data-plane, риск «второго источника истины», rebuild-day-1 как инвариант." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-db-module/00-SYNTHESIS.md", "role": "doc", "pool": "синтез", "note": "⚠️ раздел «Общий риск» — 2 из 3 Fable независимо назвали дрейф control-plane критичным." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G1-memory-engine/README.md", "role": "doc", "pool": "модуль", "note": "🧩 M-G1: открытый вопрос 4 — «кто триггерит rebuild-day-1?» — D4 закрывает этот вопрос." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "матрица", "note": "📋 пункт «Владелец операционного долга rebuild/reconcile — не назначен» — D4 отвечает на этот пункт." }
   ],
   "children": [],
-  "childrenNote": "Если владелец утвердит рекомендацию — замок переезжает в ../DECISIONS-LOG.md, а policy-узел частоты reconcile оформляется в M-G3."
+  "childrenNote": "Если владелец утвердит рекомендацию — замок переезжает в ../../decisions.INDEX.md, а policy-узел частоты reconcile оформляется в M-G3."
 }

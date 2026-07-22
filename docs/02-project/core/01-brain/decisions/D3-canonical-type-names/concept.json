@@ -12,12 +12,12 @@
   ],
   "paths": [
     { "path": "docs/02-project/core/01-brain/decisions/D3-canonical-type-names/EXPLAIN.md", "role": "start", "pool": "решение", "note": "🎯 Объяснение на пальцах: что такое канон+type-gate, 5 коллизий, что одобряешь, рекомендация. Читать первым." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "key", "pool": "источник", "note": "🧩 §«Коллизии типов» — таблица из 5 строк, ядро темы (блокер перед ADR)." },
-    { "path": "docs/02-project/core/01-brain/domains/01-knowledge-graph/edge-types.md", "role": "doc", "pool": "домен01", "note": "Реестр рёбер графа знаний: thin-ref vs assertion; сироты refines/same-as." },
-    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration/node-types.md", "role": "doc", "pool": "домен02", "note": "Узлы агентов: журнал Observation/WorkLog, profile, Slot/Session." },
-    { "path": "docs/02-project/core/01-brain/domains/02-agents-orchestration/edge-types.md", "role": "doc", "pool": "домен02", "note": "Рёбра агентов: reports-to, verified-by — источник коллизий 3 и 4." },
-    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G3-type-registry-policy/README.md", "role": "doc", "pool": "реестр", "note": "🚪 Реестр типов + type-gate: как ворота ловят синонимы; сюда заносим осиротевшие рёбра." },
-    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G5-identity-self/README.md", "role": "doc", "pool": "идентичность", "note": "Коллизия 1: profile (узел) vs profile-ref (ребро thin-ref)." }
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md", "role": "key", "pool": "источник", "note": "🧩 §«Коллизии типов» — таблица из 5 строк, ядро темы (блокер перед ADR)." },
+    { "path": "docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/03-relations/edge-types.md", "role": "doc", "pool": "домен01", "note": "Реестр рёбер графа знаний: thin-ref vs assertion; сироты refines/same-as." },
+    { "path": "docs/02-project/core/02-agents/01-orchestration/node-types.md", "role": "doc", "pool": "домен02", "note": "Узлы агентов: журнал Observation/WorkLog, profile, Slot/Session." },
+    { "path": "docs/02-project/core/02-agents/01-orchestration/edge-types.md", "role": "doc", "pool": "домен02", "note": "Рёбра агентов: reports-to, verified-by — источник коллизий 3 и 4." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/README.md", "role": "doc", "pool": "реестр", "note": "🚪 Реестр типов + type-gate: как ворота ловят синонимы; сюда заносим осиротевшие рёбра." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G5-identity-self/README.md", "role": "doc", "pool": "идентичность", "note": "Коллизия 1: profile (узел) vs profile-ref (ребро thin-ref)." }
   ],
   "children": [],
   "childrenNote": "После «ок» → канон уходит в ADR-DRAFT-single-substrate-modular.md."

@@ -1,92 +1,84 @@
 ---
 Status: active
 Owner: jenya.stasik@gmail.com
-Date: 2026-07-06
+Date: 2026-07-21
 Scope: project
 Related:
-  - docs/01-organization/doc-discipline/section-types-registry.md
-  - docs/01-organization/doc-discipline/2026-07-06-reorg-and-section-types.md
-  - docs/02-project/core/01-brain/MIGRATION-BLUEPRINT.md
+  - docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level/AUDIT-MAP-2026-07-21.md
+  - docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level/11-facet-template-and-numbering.md
+  - docs/02-project/core/01-brain/brain.concept.json
 ---
 
 # 01-brain — единица памяти · МАСТЕР-ИНДЕКС (канон)
 
-> Ядро смысла FF. **Перенесено 2026-07-06 из `topics/10-synthesis/memory-unit/` в дерево** (реорг: канон
-> живёт здесь, сырьё остаётся в `topics/` как источник). Топик 56 (brain/память) · Оркестратор: Opus.
-> Одна навигируемая карта трека. Новые ветки видны и не мешаются со старыми.
+> Ядро смысла FF. **Реструктуризация 2026-07-21:** плоский безномерной корень устранён; дерево собрано в
+> нумерованный хребет `01-overview → 02-infrastructure` + контейнеры. Старые пути (`values/`, `domains/`,
+> `architecture/`, `infrastructure/`, `synthesis/`, `open-questions/`) больше не существуют.
+> Карта переезда: `docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level/AUDIT-MAP-2026-07-21.md`.
+
+## Скелет (верхний уровень)
+
+```
+01-brain/
+  01-overview/         концепт «как понимаем»
+    OVERVIEW.md · L0-memory-unit.md · portrait/ · scenarios/
+    01-values/         7 ценностей (карточки V* + декомпозиция 0N-* + _cross-cutting + _archived/gen1)
+    02-domains/        домены-ДАННЫХ (01-knowledge-graph = эталон фасет-шаблона)
+  02-infrastructure/   «как строим»
+    01-overview/       архитектура-index + db-понимание + stack + scenarios
+    02-backend/        движок исполнения + доступ
+    04-modules/        M-G1..G5 · M-P3 · ideas/
+    _shared/           сквозное (reification…)
+  questions/           FQ01-24 + VQ1-4
+  analyses/            снапшоты Fable по дате (07-05, 07-12)
+  decisions/ + decisions.INDEX.md
+  plan/ · todo/ · topics/
+  _archived/           устаревшее (state-moved…)
+  INDEX.md · brain.concept.json   навигаторы
+```
 
 ## Слои воронки
 
 | Слой | Что | Где |
 |------|-----|-----|
-| **L0 — ЦЕЛЬ** | природа единицы + 39 целей (Г1-Г39) | [`L0-memory-unit.md`](L0-memory-unit.md) |
-| **L1 — ЦЕННОСТИ** | 7 ценностей (сид Opus → ревизия Fable) | [seed](values/2026-07-05-L1-values-seed.md) · [Opus+L2](values/2026-07-05-L1-values-and-L2-task.md) · [ревизия Fable](values/2026-07-05-L1-values-fable.md) |
-| **— портрет** | ячейка «как есть» | [`portrait/cell-portrait-now.md`](portrait/cell-portrait-now.md) |
-| **— сценарии** | нелинейные сценарии → концепты | [индекс](scenarios/INDEX.md) |
-| **L2 — ИДЕИ/РЕШЕНИЯ** | под каждую ценность — куда копать | [values/](values/) |
-| **— синтезы Fable** | сырые диги (промежуточное) | [synthesis/](synthesis/) |
-| **— решения** | принятые замки | [decisions/DECISIONS-LOG.md](decisions/DECISIONS-LOG.md) |
-| **— задачи / план** | плоский список / последовательность | [todo/](todo/TODO.md) · [plan/](plan/PLAN.md) |
+| **L0 — ЦЕЛЬ** | природа единицы + цели Г1-Г39 | [`01-overview/L0-memory-unit.md`](01-overview/L0-memory-unit.md) |
+| **L1 — ЦЕННОСТИ** | 7 ценностей (сид→ревизия) | [`01-overview/01-values/`](01-overview/01-values/GROWTH-MAP.md) · сид в [`analyses/2026-07-05-L1-values/`](analyses/2026-07-05-L1-values/) |
+| **— портрет** | ячейка «как есть» | [`01-overview/portrait/cell-portrait-now.md`](01-overview/portrait/cell-portrait-now.md) |
+| **— сценарии** | нелинейные сценарии → концепты | [`01-overview/scenarios/INDEX.md`](01-overview/scenarios/INDEX.md) |
+| **L2 — ИДЕИ/РЕШЕНИЯ** | под каждую ценность — куда копать | [`01-overview/01-values/`](01-overview/01-values/) |
+| **— синтезы Fable** | сырые диги (снапшоты) | [`analyses/`](analyses/README.md) |
+| **— решения** | принятые замки | [`decisions.INDEX.md`](decisions.INDEX.md) |
+| **— задачи / план** | список / последовательность | [`todo/TODO.md`](todo/TODO.md) · [`plan/PLAN.md`](plan/PLAN.md) |
 
-## Источник-сырьё (остаётся в `topics/`, канон ссылается)
+## 7 ценностей (карточка-источник + папка-декомпозиция)
 
-- ресёрч prior art → [`topics/60-raw/2026-07-05-memory-research/`](../../../topics/60-raw/2026-07-05-memory-research/)
-- забытое → [критик](../../../topics/20-analysis/2026-07-05-forgotten-check.md) · [класс Fable](../../../topics/20-analysis/2026-07-05-forgotten-fable-classified.md)
-- deep-сценарии → [Opus](../../../topics/20-analysis/2026-07-05-deep-scenarios-opus.md) · [Sonnet](../../../topics/20-analysis/2026-07-05-deep-scenarios-sonnet.md)
+| # | Ценность | Карточка-источник | Декомпозиция (6 направлений) |
+|---|----------|-------------------|------------------------------|
+| Ц-1 | **Читаемость** | [V1](01-overview/01-values/V1-chitaemost.md) | [01-chitaemost/](01-overview/01-values/01-chitaemost/) |
+| Ц-2 | **Тождество** | [V2](01-overview/01-values/V2-tozhdestvo.md) | [02-tozhdestvo/](01-overview/01-values/02-tozhdestvo/) |
+| Ц-3 | **Доверие** | [V3](01-overview/01-values/V3-doverie.md) | [03-doverie/](01-overview/01-values/03-doverie/) |
+| Ц-4 | **Витальность** | [V4](01-overview/01-values/V4-vitalnost.md) | [04-vitalnost/](01-overview/01-values/04-vitalnost/) |
+| Ц-5 | **Суверенность** | [V5](01-overview/01-values/V5-suverennost.md) | [05-suverennost/](01-overview/01-values/05-suverennost/) |
+| Ц-6 | **Реляционность** | [V6](01-overview/01-values/V6-relyacionnost.md) | [06-relyacionnost/](01-overview/01-values/06-relyacionnost/) |
+| Ц-7 | **Согласие** | [V7](01-overview/01-values/V7-soglasie.md) | [07-soglasie/](01-overview/01-values/07-soglasie/) (+ SPEC hard-erase в `decisions/`) |
 
-## 7 ценностей (папка на каждую)
+Открытые вопросы (FQ1-24 · VQ1-4) → [`questions/INDEX.md`](questions/INDEX.md).
 
-| # | Ценность | Файл | Несёт цели |
-|---|----------|------|-----------|
-| Ц-1 | **Читаемость** | [values/V1-chitaemost.md](values/V1-chitaemost.md) | Г1·Г3·Г4·Г6·Г13·Г21·Г23·Г35·Г37 |
-| Ц-2 | **Тождество** | [values/V2-tozhdestvo.md](values/V2-tozhdestvo.md) | canonical_id·Г12·В2·конфликт |
-| Ц-3 | **Доверие** | [values/V3-doverie.md](values/V3-doverie.md) | Г7·Г8·Г9·Г10·Г11 |
-| Ц-4 | **Витальность** | [values/V4-vitalnost.md](values/V4-vitalnost.md) | Г12·Г15·salience·забывание |
-| Ц-5 | **Суверенность** | [values/V5-suverennost.md](values/V5-suverennost.md) | Г14·Г19·Г22·Г26·Г27·Г29·Г30·Г33·Г34 |
-| Ц-6 | **Реляционность** | [values/V6-relyacionnost.md](values/V6-relyacionnost.md) | Г16·Г17·Г25·Г28·Г32·ребро-инсайт |
-| Ц-7 | **Согласие** | [values/V7-soglasie.md](values/V7-soglasie.md) | Г18·Г20·Г24·Г31·Г38·referent |
+## Инфраструктура (модули + движок)
 
-Открытые вопросы (FQ1-24 · VQ1-4) → [open-questions/INDEX.md](open-questions/INDEX.md).
-
-## Декомпозиция ценностей → направления → идеи (цикл 1, 2026-07-09)
-
-По методу `value-decomposition` (образец — agents-manager): каждая ценность вскрыта на **направления**
-(грани), под каждым — веер развилок и пул идей. Сквозные идеи (задевают ≥2 ценностей) подняты в
-`infrastructure/`. Папки-направления живут рядом со старыми `V*`-файлами (те — источник, не удалены).
-
-| Ценность | Папка (README + направления) | Напр. |
-|---|---|:--:|
-| Ц-1 Читаемость | [values/01-chitaemost/](values/01-chitaemost/README.md) | 6 |
-| Ц-2 Тождество | [values/02-tozhdestvo/](values/02-tozhdestvo/README.md) | 6 |
-| Ц-3 Доверие | [values/03-doverie/](values/03-doverie/README.md) | 6 |
-| Ц-4 Витальность | [values/04-vitalnost/](values/04-vitalnost/README.md) | 6 |
-| Ц-5 Суверенность | [values/05-suverennost/](values/05-suverennost/README.md) | 6 |
-| Ц-6 Реляционность | [values/06-relyacionnost/](values/06-relyacionnost/README.md) | 6 |
-| Ц-7 Согласие | [values/07-soglasie/](values/07-soglasie/README.md) | 6 |
-
-**Инфраструктура (сквозные модули, сосед `values/`):** [infrastructure/](infrastructure/README.md) —
-16 модулей · [INDEX.md](infrastructure/INDEX.md) (костяк + горизонты) ·
-[ideas/candidates.md](infrastructure/ideas/candidates.md) · [open-questions.md](infrastructure/open-questions.md).
-Несущий костяк: Паспорт(policy-as-data) · canonical_id · Bitemporal(В2) · Единый-PEP · Конституция.
-
-**Снимок-синтез (по запросу → результат → на момент):**
-[infrastructure/SYNTHESIS-01-2026-07-09.md](infrastructure/SYNTHESIS-01-2026-07-09.md) — 3 цикла
-(дивергенция · креатив · сценарии→инфра), 16 модулей + ~20 новых кандидатов, 8 конституционных развилок.
-Сценарные разборы: [infrastructure/scenarios/](infrastructure/scenarios/) (01…07).
+- Модули M-G1..G5 · M-P3 → [`02-infrastructure/04-modules/`](02-infrastructure/04-modules/)
+- Костяк + горизонты → [`02-infrastructure/01-overview/infrastructure-INDEX.md`](02-infrastructure/01-overview/infrastructure-INDEX.md)
+- Понимание БД → [`02-infrastructure/01-overview/db-readiness/`](02-infrastructure/01-overview/db-readiness/)
+- Архитектура-концепт → [`02-infrastructure/01-overview/architecture.concept.json`](02-infrastructure/01-overview/architecture.concept.json)
 
 ## Хребет (три уровня)
 
 1. **КОНСТИТУЦИЯ** — инварианты над ячейкой (согласие референта, единый порог доступа, право на забвение).
 2. **policy-as-data** — ячейка носит своё поведение («что я есть»).
 3. **integrity-as-engine-duty** — категории/связи/дедуп/конфликты/циклы гарантирует только база («что мы вместе»).
-> DATA = «что я есть» · DB = «что мы вместе» · CONSTITUTION = «что нельзя нарушить».
-
-## Заложить СЕЙЧАС (ретрофит невозможен)
-
-referent+hard-erase · source=origin+effective · рёбра «проводят поток» · статус-nascent · снапшот-в-момент.
 
 ## Статус · Следующий шаг
 
-- Ждём ответы владельца по FQ/VQ → ратификация 7 ценностей → engine-spec / ADR «Конституция памяти».
-- `plan/PLAN.md` пуст — ждёт форвард оркестрации по brain.
-- ⚠️ **Долг:** аудит внутренних ссылок в перенесённых файлах (относительные пути сместились) — см. session-handoff.
+- Переезд PHASE-1 исполнен 2026-07-21 (347→356 файлов, 0 потерь). Навигаторы + внутренние ссылки восстановлены.
+- ⚠️ **Долг:** ~200 ссылок на СОСЕДНИЕ деревья (`01-organization/`, `topics/`, `02-agents/`) и переструктурированный владельцем контент ценностей — остаются на аудит (вне карты переезда brain).
+- Дальше (concept-first): ответить на несущие — какие **4 домена-модели**, что такое **платформа** (см. `restructure-2026-07/brain-top-level/infra-recording.concept.json`).

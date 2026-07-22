@@ -6,11 +6,11 @@ Scope: project
 node_type: decision-explainer
 decision: D2
 Related:
-  - ../../architecture/2026-07-12-SYNTHESIS-matrix.md
-  - ../../domains/02-agents-orchestration/node-types.md
-  - ../../domains/01-knowledge-graph/README.md
-  - ../../domains/01-knowledge-graph/edge-types.md
-  - ../../architecture/modules/M-G2-orchestrator/README.md
+  - ../../analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md
+  - ../../../02-agents/01-orchestration/node-types.md
+  - ../../01-overview/02-domains/01-knowledge-graph/01-explain/README.md
+  - ../../01-overview/02-domains/01-knowledge-graph/03-relations/edge-types.md
+  - ../../02-infrastructure/04-modules/M-G2-orchestrator/README.md
 ---
 
 # D2 — «Где живёт память агента: на столе или в библиотеке» (объяснение для владельца)

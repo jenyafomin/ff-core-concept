@@ -1,27 +1,30 @@
 {
   "type": "attention-list",
-  "id": "brain-MASTER-hub-2026-07-13",
-  "title": "🧠 BRAIN — ГЛАВНЫЙ концепт-хаб (ведёт на все ключевые концепты)",
-  "summary": "Единая точка входа в brain. Обзор системы + карта концептов: обзор→архитектура→домены→решения→план. Начни с OVERVIEW.md, дальше вглубь по под-концептам.",
-  "relatesTo": "docs/02-project/core/01-brain/OVERVIEW.md",
+  "id": "brain-MASTER-hub-2026-07-21",
+  "title": "🧠 BRAIN — ГЛАВНЫЙ концепт-хаб (обновлён после реструктуризации 2026-07-21)",
+  "summary": "Единая точка входа в brain. Новый скелет: 01-overview (концепт: ценности+домены) → 02-infrastructure (модули/движок) → questions · analyses · decisions. Начни с 01-overview/OVERVIEW.md.",
+  "relatesTo": "docs/02-project/core/01-brain/01-overview/OVERVIEW.md",
   "pool": "brain-master",
   "createdBy": "agent",
   "viewModes": ["preset", "all-files"],
   "keyFiles": [
-    "docs/02-project/core/01-brain/OVERVIEW.md",
-    "docs/02-project/core/01-brain/DECISIONS-LOG.md"
+    "docs/02-project/core/01-brain/01-overview/OVERVIEW.md",
+    "docs/02-project/core/01-brain/decisions.INDEX.md"
   ],
   "paths": [
-    { "path": "docs/02-project/core/01-brain/OVERVIEW.md", "role": "start", "pool": "обзор", "note": "🌍 Полная картина: что это, анатомия, 4 примитива, как растёт. Читать первым." },
-    { "path": "docs/02-project/core/01-brain/DECISIONS-LOG.md", "role": "key", "pool": "решения", "note": "🔒 19 ратифицированных решений (DL-01…DL-19) — контракт системы." },
-    { "path": "docs/02-project/core/01-brain/architecture/architecture.concept.json", "role": "key", "pool": "→архитектура", "note": "🏛️ концепт: цель + модуль + реестр модулей M-G*/M-P* + бриф." },
-    { "path": "docs/02-project/core/01-brain/domains/domains.concept.json", "role": "key", "pool": "→домены", "note": "🗺️ концепт: домены данных 01 граф знаний · 02 агенты (03 = грань 01)." },
-    { "path": "docs/02-project/core/01-brain/decisions/decisions.concept.json", "role": "key", "pool": "→решения", "note": "🧭 концепт: 4 разобранных развилки (D1–D4) + единая модель." },
+    { "path": "docs/02-project/core/01-brain/01-overview/OVERVIEW.md", "role": "start", "pool": "обзор", "note": "🌍 Полная картина: что это, анатомия, 4 примитива, как растёт. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/01-overview/README.md", "role": "key", "pool": "→концепт", "note": "🧭 Вход области 01-overview: ценности + домены (как понимаем контекст)." },
+    { "path": "docs/02-project/core/01-brain/01-overview/01-values/GROWTH-MAP.md", "role": "key", "pool": "→ценности", "note": "💎 7 ценностей (карточки-источники V* + декомпозиция 0N-*) + карта роста." },
+    { "path": "docs/02-project/core/01-brain/01-overview/02-domains/README.md", "role": "key", "pool": "→домены", "note": "🗺️ домены-ДАННЫХ; эталон фасет-шаблона в 01-knowledge-graph (01-explain·02-entities·03-relations·04-mechanics·05-policy)." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/README.md", "role": "key", "pool": "→инфра", "note": "🧱 как строим: 04-modules (M-G1..G5,M-P3) · 02-backend · 01-overview (db-понимание) · _shared." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/01-overview/architecture.concept.json", "role": "key", "pool": "→архитектура", "note": "🏛️ концепт: цель + абстракция МОДУЛЬ + реестр M-G*/M-P*." },
+    { "path": "docs/02-project/core/01-brain/decisions.INDEX.md", "role": "key", "pool": "решения", "note": "🔒 Индекс решений DL-01…DL-29 + дома решений (ссылки). Контракт системы." },
+    { "path": "docs/02-project/core/01-brain/decisions/decisions.concept.json", "role": "key", "pool": "→решения", "note": "🧭 концепт: разобранные развилки D1–D5 + единая модель." },
+    { "path": "docs/02-project/core/01-brain/questions/INDEX.md", "role": "key", "pool": "→вопросы", "note": "❓ FQ01-24 + VQ1-4 — открытые вопросы к модели." },
     { "path": "docs/02-project/core/01-brain/plan/build-milestone-0.concept.json", "role": "key", "pool": "→план", "note": "🚶 концепт: walking-skeleton M0 (первый срез сборки)." },
-    { "path": "docs/02-project/core/01-brain/plan/full-build-plan.concept.json", "role": "key", "pool": "→план", "note": "🗺️ концепт: полный roadmap M0→M8 (Fable + перепроверка критика)." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-COMPLETENESS-and-model.md", "role": "doc", "pool": "модель", "note": "🧩 единая модель тип/категория/тег + что упущено + вектор расширения." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "модель", "note": "🧩 матрица домен×модуль + канон-имена + правило проекции-первой." }
+    { "path": "docs/02-project/core/01-brain/plan/full-build-plan.concept.json", "role": "key", "pool": "→план", "note": "🗺️ концепт: полный roadmap M0→M8." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-COMPLETENESS-and-model.md", "role": "doc", "pool": "модель", "note": "🧩 единая модель тип/категория/тег + что упущено (снапшот 07-12, в analyses)." }
   ],
   "children": [],
-  "childrenNote": "Под-концепты (architecture/domains/decisions/plan) ведут глубже в свои папки; ссылки могут не открываться сразу — это карта, наполняется по мере входа."
+  "childrenNote": "Реструктуризация 2026-07-21: старые пути (architecture/, domains/, infrastructure/, synthesis/, values/, open-questions/) больше не существуют — карта ведёт на новый скелет. Долг: аудит соседних деревьев ссылок продолжается."
 }

@@ -12,9 +12,9 @@
   ],
   "paths": [
     { "path": "docs/02-project/core/01-brain/decisions/D1-engine-vs-registry/EXPLAIN.md", "role": "start", "pool": "развилка", "note": "🔀 Объяснение для владельца: что такое M-G3 и M-G1 на пальцах, 3 варианта, таблица, рекомендация. Читать первым." },
-    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G1-memory-engine/README.md", "role": "key", "pool": "первоисточник", "note": "🧩 M-G1 «Движок памяти» — исполнитель: 2 таблицы, propagation, дедуп, canonicalId. Первоисточник по варианту." },
-    { "path": "docs/02-project/core/01-brain/architecture/modules/M-G3-type-registry-policy/README.md", "role": "key", "pool": "первоисточник", "note": "🧩 M-G3 «Реестр типов + policy» — декларатор: типы/правила как данные, гейт типов, каскад. Первоисточник по варианту." },
-    { "path": "docs/02-project/core/01-brain/architecture/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "контекст", "note": "🧩 Синтез 8 агентов: D1 назван несущим форком; M-G4/M-G5/M-P3 уже строят на нератифицированном разрешении." }
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G1-memory-engine/README.md", "role": "key", "pool": "первоисточник", "note": "🧩 M-G1 «Движок памяти» — исполнитель: 2 таблицы, propagation, дедуп, canonicalId. Первоисточник по варианту." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/README.md", "role": "key", "pool": "первоисточник", "note": "🧩 M-G3 «Реестр типов + policy» — декларатор: типы/правила как данные, гейт типов, каскад. Первоисточник по варианту." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md", "role": "doc", "pool": "контекст", "note": "🧩 Синтез 8 агентов: D1 назван несущим форком; M-G4/M-G5/M-P3 уже строят на нератифицированном разрешении." }
   ],
   "children": [],
   "childrenNote": "Под-развилка: integrity — пол движка или узел-policy (кандидат в D2), сидит ровно на шве M-G1↔M-G3."

@@ -6,9 +6,9 @@ Scope: project
 node_type: decision-explainer
 decision: D1
 Related:
-  - ../../architecture/modules/M-G1-memory-engine/README.md
-  - ../../architecture/modules/M-G3-type-registry-policy/README.md
-  - ../../architecture/2026-07-12-SYNTHESIS-matrix.md
+  - ../../02-infrastructure/04-modules/M-G1-memory-engine/README.md
+  - ../../02-infrastructure/04-modules/M-G3-type-registry-policy/README.md
+  - ../../analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md
 ---
 
 # D1 — «Движок памяти» (M-G1) и «Реестр типов + правила» (M-G3): один модуль или два?

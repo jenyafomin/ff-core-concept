@@ -14,7 +14,10 @@
   "conventions": {
     "typeDecidesHome": "Размещение = СЛЕДСТВИЕ типа, не решение. concept объявляет node_type → берём homeRule этого типа → путь детерминирован.",
     "r1Numbering": "Именованная папка-узел (концепт/тема) получает порядковый префикс 01- 02-… . Плюральные КОНТЕЙНЕРЫ (analyses/ questions/ decisions/ plans/ states/) и _-папки (_shared/ _inbox/ _logs/) — БЕЗ номера; файлы внутри нумеруются. См. live doc-discipline/SKILL.md §R1.",
-    "overlayWins": "id этого файла бьёт одноимённый id глобального реестра. Плюральные container-типы (analyses/questions/decisions/plans/states) намеренно даны отдельными folder-id, чтобы НЕ конфликтовать с глобальными file-типами analysis/question/decision/plan."
+    "overlayWins": "id этого файла бьёт одноимённый id глобального реестра. Плюральные container-типы (analyses/questions/decisions/plans/states) намеренно даны отдельными folder-id, чтобы НЕ конфликтовать с глобальными file-типами analysis/question/decision/plan.",
+    "conceptSuffixLaw": "D-1 (2026-07-20): суффикс *.concept.json ЗАРЕЗЕРВИРОВАН за файлами, проходящими detectConcept вьютера (agents-manager/.../concept-graph.util.ts): (есть type ИЛИ id) И (есть массив steps[] ИЛИ paths[]). Это ВИД/визард-навигатор, не хранилище. TRACE (handoff, conversation-log-шаги, записи-применения) суффикс .concept.json НЕ носит — берёт .md (или .json без concept). Concept-first-навигатор со схемой {goal,directions} оборачивается: сверху type|id + paths[], поля мышления ниже/в thinking. Enforcement: tools/lint/concept-lint.mjs (pre-commit) отклоняет любой tracked *.concept.json, не прошедший detectConcept. Разница steps↔paths: оба = маршрут по файлам; paths[]=легаси-линейный, steps[]=v2 с ветвлением; trace маршрутом не является.",
+    "mergeLoseNothing": "F-D1 (2026-07-20): при слиянии дублей/схожих анализов НОВЕЕ/глубже побеждает как НАПРАВЛЕНИЕ, но НИЧЕГО не удаляется — даже схожие анализы и вопросы. Обе версии со-размещаются в ОДНОЙ папке как отдельные ДАТИРОВАННЫЕ документы (<slug>-YYYY-MM-DD.md), затем пересобираются в один. Деструктивная перезапись запрещена: сначала сохранить оба, потом синтез (агент-синтезатор+критик, не механический git mv).",
+    "stagingAndLogs": "F-D2/F-D3 (2026-07-20): тему, которой ещё не известен тип/дом, кладём в контейнер topics/ (staging, на ЛЮБОМ уровне) номерными подпапками; позже РЕАССЕМБЛ в реальные дома ИЛИ сохранение в _log. Всё, что связано с session-handoff / стилем одной волны (deepening-method, units-map), — храним в _log (trace), НЕ поднимаем в универсальные правила."
   },
   "fileTypes": {
     "overview": {
@@ -42,13 +45,37 @@
       "description": "Черновик архитектурного решения до ратификации. Проектный тип."
     },
     "conversation-log": {
-      "id": "conversation-log", "appliesTo": "file", "suffix": ".md",
-      "homeRule": "docs/_logs/<YYYY-MM-DD-тема>/NN-<ход>/ — сессия-как-тема: папка с ДАТОЙ создания, внутри свой НОМЕР диалога. На ход: запрос(чистый копипаст) · разбор · возможный результат(лучше *.concept.json). GITIGNORE (**/_logs/), локальный скретч, не истина. Наружу в дом — только canon_links по id.",
+      "id": "conversation-log", "appliesTo": "both", "suffix": ".md",
+      "homeRule": "docs/_log/<YYYY-MM-DD-slug>/ (gitignored trace). Внутри: нумерованные ШАГИ диалога = .md-файлы (01-request · 02-razbor · 03-…), плюрал-контейнеры (analyses/ decisions/) БЕЗ номера. НАВИГАТОР conversation = concept.json — обязан пройти detectConcept: {type:'conversation-log', id, steps[]} (каждый step {title, paths[], note} → дом результата). Наружу в дом — только по id/paths. GITIGNORE (**/_log/), локальный скретч, не истина.",
       "dateRequired": "yes", "requiredFrontmatter": [],
-      "description": "Лог диалога (session-as-theme, MAP-target §C). TRACE-родня, но underscore-дом + дата + NN. ⚠️ конвенция расходится с скиллом session-logging (logs/conversations/NN, без сырого запроса) — открытый форк U-6, ждёт решения владельца."
+      "description": "Лог диалога (session-as-theme, LOG-MODEL). TRACE. Шаги = .md; навигатор = concept.json со steps[] (закон суффикса D-1). ⚠️ форк U-6 с session-logging SKILL (logs/conversations/NN) — ждёт O-23."
+    },
+    "handoff": {
+      "id": "handoff", "appliesTo": "file", "suffix": ".md", "namePattern": "HANDOFF.md",
+      "homeRule": "TRACE-запись «что произошло + что дальше», только УКАЗАТЕЛИ (не хранит истину). Дом: рядом со своей conversation в docs/_log/<date-slug>/HANDOFF.md (gitignored), tracked-копия/истина — в state.md (last log) + session-handoff/STATE.md. Никогда .concept.json (не визард, D-1).",
+      "dateRequired": "inherit", "requiredFrontmatter": [],
+      "description": "Хэндофф сессии (trace). Проектный тип, введён 2026-07-20 (закрывает пробел: типа не было, файлы маскировались под .concept.json)."
+    },
+    "idea": {
+      "id": "idea", "appliesTo": "file", "suffix": ".idea.md",
+      "homeRule": "Одна идея/кандидат-концепт. Живёт в контейнере ideas/ или в папке ценности/направления. Созревает → кристаллизуется в decision/analysis/механизм (тогда меняет тип по закону кристаллизации). Плюрал-агрегатор = ideas/.",
+      "dateRequired": "inherit", "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Единичная идея (лестница value-decomposition: цель→ценность→направление→идея→модуль). idea=одна, ideas=агрегатор-индекс. Введён 2026-07-20."
     }
   },
   "folderTypes": {
+    "topics": {
+      "id": "topics", "appliesTo": "folder", "r1Numbering": "topics (плюрал-КОНТЕЙНЕР — БЕЗ номера; дети 01- 02-…)",
+      "homeRule": "СТЕЙДЖИНГ эмерджентных тем, которым ещё НЕ известен тип/дом. Создаётся на ЛЮБОМ уровне (модуль/дом/тема), куда пришла тема; внутри — номерные подпапки 01- 02- со всем, что набросали. НЕ постоянный дом — верстак: позже РЕАССЕМБЛ в реальные дома (по типу) ИЛИ сохранение в _log. Помечать needs-home. Формализует «топик-папку=стейджинг» doc-discipline (F-D2/F-D3, 2026-07-20).",
+      "dateRequired": "no", "childTypes": ["overview", "idea", "analyses", "questions", "decisions"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Контейнер-стейджинг для новых тем без типа. Верстак, не дом; реассембл в дома или _log."
+    },
+    "ideas": {
+      "id": "ideas", "appliesTo": "folder", "r1Numbering": "ideas (плюрал-КОНТЕЙНЕР — БЕЗ номера)",
+      "homeRule": "Контейнер-ИНДЕКС идей рядом с ценностью/направлением: агрегирует и ЛИНКует idea-файлы, контент НЕ дублирует (ВИД, U-5). Файлы .idea.md нумеруются внутри.",
+      "dateRequired": "inherit", "childTypes": ["idea"], "requiredFrontmatter": ["status", "owner", "date"],
+      "description": "Плюрал-контейнер-индекс идей (агрегатор-навигатор). Одна идея = idea; агрегация = ideas. Введён 2026-07-20."
+    },
     "node": {
       "id": "node", "appliesTo": "folder", "r1Numbering": "01-node (нумеруется, концепт-папка)",
       "homeRule": "01-brain/decomposition/01-model/01-node/ — примитив субстрата графа. Концепт-папка → префикс 01-.",

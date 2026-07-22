@@ -24,7 +24,7 @@ Related:
 ## ✅ Выполнено (лог тем)
 | Тема | Итог | Ссылка |
 |------|------|--------|
-| T-ratify | Ратификация бэклога (71→DL-20…29, Postgres, Акт, namespace) | `../DECISIONS-LOG.md` · `session-handoff/2026-07-18-ratification-backlog/LEDGER.md` |
+| T-ratify | Ратификация бэклога (71→DL-20…29, Postgres, Акт, namespace) | `../decisions.INDEX.md` · `session-handoff/2026-07-18-ratification-backlog/LEDGER.md` |
 | T-tree | Консолидация дерева модели (unit→01-node, deepening растворён, карты→дома) | `../decomposition/01-model/README.md` |
 | T-skills | Обновление скиллов concept-first+doc-discipline (корень ошибок) | `~/.claude/skills/*/SKILL.md` |
 

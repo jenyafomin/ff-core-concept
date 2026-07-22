@@ -6,9 +6,9 @@ Scope: project
 node_type: ADR-draft
 title: Единый граф-субстрат + модульная архитектура
 Related:
-  - ../architecture/2026-07-12-SYNTHESIS-matrix.md
-  - ../architecture/MODULES.md
-  - ../synthesis/2026-07-12-fable-db-module/00-SYNTHESIS.md
+  - ../analyses/2026-07-12-architecture-synthesis/2026-07-12-SYNTHESIS-matrix.md
+  - ../02-infrastructure/01-overview/MODULES.md
+  - ../analyses/2026-07-12-fable-series/2026-07-12-fable-db-module/00-SYNTHESIS.md
 ---
 
 # ADR-DRAFT — Единый граф-субстрат + модульная архитектура

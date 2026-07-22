@@ -1,0 +1,11 @@
+#!/bin/sh
+# concept suffix law (D-1) — reject staged *.concept.json that fail detectConcept.
+# Enable once: git config core.hooksPath .githooks
+staged=$(git diff --cached --name-only --diff-filter=ACM | grep -E '(^|/|\.)concept\.json$' || true)
+if [ -n "$staged" ]; then
+  node tools/lint/concept-lint.mjs $staged || {
+    echo "pre-commit: концепт-линт не пройден (см. выше). Коммит остановлен."
+    exit 1
+  }
+fi
+exit 0

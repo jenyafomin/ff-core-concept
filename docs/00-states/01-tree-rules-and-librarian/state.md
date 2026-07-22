@@ -5,10 +5,10 @@ theme: Правила дерева · doc-discipline · библиотекарь
 status: active
 owner: jenya.stasik@gmail.com
 opened: 2026-07-19
-updated: 2026-07-19
+updated: 2026-07-21
 agents: [orchestrator-fable]
-handoff: ../../_log/2026-07-19-restructure-orchestration/HANDOFF.concept.json
-last_session: 2026-07-19-restructure-orchestration
+handoff: ../../_log/2026-07-21b-doc-org-map-and-plan/HANDOFF.md
+last_session: 2026-07-21b-doc-org-map-and-plan
 plans:
   - ../../01-organization/doc-discipline/restructure-2026-07/MAP-target.md
   - ../../01-organization/doc-discipline/restructure-2026-07/SKILL-UPGRADE-PROPOSAL.md
@@ -31,6 +31,8 @@ Related:
 2. **Апгрейд doc-discipline** — `SKILL-UPGRADE-PROPOSAL.md` (U-1..6, ждут «да» → agent-builder).
 
 ## Открытые развилки этого state
+- ⭐ **Ратифицировать модель развития** (`DEVELOPMENTAL-MODEL.md`): `02-units/` как санкц. отклонение от
+  фасет-шаблона + router механик «принадлежит vs служит» → стресс-тест `critic` → **ADR** структуры субстрата.
 - U-6: свести `_log`↔`session-logging` (в работе — модель `_log` создана).
 - U-1..5: применить апгрейд скилла (детерминир. хук — главный рычаг).
 - Легаси-нумерация тем (`architecture/ values/`) — перенумеровать по R1.

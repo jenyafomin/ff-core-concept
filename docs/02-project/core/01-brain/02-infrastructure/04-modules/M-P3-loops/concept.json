@@ -1,0 +1,24 @@
+{
+  "type": "attention-list",
+  "id": "module-M-P3-loops-2026-07-12",
+  "title": "🔁 M-P3 Петли / Loops — Pattern/Task, verifier-гейт, breaker, worktree",
+  "summary": "Проектный plug-in: автономные циклы над субстратом. Pattern (рецепт) → Task (шаг), done ставит только verifier. Гейт и circuit-breaker = read-time проекция ОБЩЕГО append-only журнала (I-2, без второго источника истины). Пороги/breaker/verifier = policy-узлы M-G3.",
+  "relatesTo": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-P3-loops/README.md",
+  "pool": "architecture",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-P3-loops/README.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-P3-loops/README.md", "role": "start", "pool": "модуль", "note": "🔁 Deep-dive M-P3: node/edge типы (pattern·task; verified-by·derived-from·instance-of·executed-by), гейт-как-проекция-журнала, breaker/verifier/cost как policy, кросс-связи, 🔴/🟢, вопросы Fable. Читать первым." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/01-overview/MODULES.md", "role": "key", "pool": "реестр", "note": "🧩 Реестр модулей: M-P3 в строке проектных plug-in." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G2-orchestrator/README.md", "role": "key", "pool": "кросс", "note": "🎛️ M-G2 даёт исполнителя/verifier-слоты и диспетчеризует Task (executed-by / verified-by)." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/README.md", "role": "key", "pool": "кросс", "note": "📇 M-G3: пороги гейта/breaker/verifier/cost = policy-узлы; регистрация типов петли; гейт-как-policy." },
+    { "path": "docs/02-project/core/02-agents/01-orchestration/README.md", "role": "doc", "pool": "домен", "note": "🤖 Домен 02: Pattern/Task и append-only журнал-шина как позвоночник." },
+    { "path": "docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-db-module/00-SYNTHESIS.md", "role": "doc", "pool": "субстрат", "note": "🗄️ Единый граф-субстрат: ОДИН журнал (гейты·кокпит·метаболизм читают его же)." },
+    { "path": "/Users/mac16/Documents/IT/Apps/TOOLS/agents-manager/docs/00-organization/session-handoff/2026-07-12-loop-engineering-repo-analysis/03-db-design-tasks.md", "role": "doc", "pool": "первоисточник", "note": "🧪 Loop Engineering: машинная единица Pattern, cost-профиль, гейты, worktree, breaker (вне проекта)." }
+  ],
+  "children": [],
+  "childrenNote": "M-P3 регистрирует свои node/edge-типы в M-G3; конкретные pattern-узлы и пороги — данные проекта."
+}

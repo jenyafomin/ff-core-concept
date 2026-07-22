@@ -8,7 +8,7 @@ opened: 2026-07-19
 updated: 2026-07-19
 agents: [orchestrator-fable]
 plans:
-  - ../../02-project/core/01-brain/decomposition/01-model/plan/GLOBAL.md
+  - ./GLOBAL-plan-2026-07-14.md
 Related:
   - ../README.md
 ---

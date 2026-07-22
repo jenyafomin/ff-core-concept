@@ -1,0 +1,26 @@
+{
+  "type": "attention-list",
+  "id": "db-readiness-2026-07-16",
+  "title": "DB-готовность: где ломается субстрат + витск 2 (реификация · движок · доступ)",
+  "summary": "Виток 1: субстрат держится по всем злым кейсам (без 3-й единицы, без 5-го примитива); БД=Postgres, стек=TS. Виток 2 СИНТЕЗИРОВАН (2026-07-16 утро): все 3 развилки решены. F-1 reify-on-demand ПРИНЯТ (дефолт=ребро) с 3 доводками; F-2 движок ПОДТВЕРЖДЁН (Temporal-lite на своём журнале) + 5 патчей; F-3 доступ = ОДНА грант-таблица + 4 патча, Postgres усиливается. Единый вывод: 3 развилки = 3 работы ОДНОГО движка M-G1 над ОДНИМ журналом по данным ОДНОГО реестра M-G3. План-концепт: нужен ENGINE-SPEC (M2→M4) и КОНТРАКТ АГЕНТА (чтение/запись/расширение схемы). За владельцем 10 решений. Утром читать SYNTHESIS первым.",
+  "relatesTo": "docs/02-project/core/01-brain/02-infrastructure/01-overview/db-readiness/README.md",
+  "pool": "db-readiness",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/02-infrastructure/01-overview/db-readiness/SYNTHESIS-2026-07-16-morning.md",
+    "docs/02-project/core/01-brain/02-infrastructure/01-overview/db-readiness/README.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/01-overview/db-readiness/SYNTHESIS-2026-07-16-morning.md", "role": "start", "pool": "синтез", "note": "УТРОМ ЧИТАТЬ ПЕРВЫМ: сводит 3 концепта, план-концепт стройки, UX/логика/расширяемость-агентами, открытые решения." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/01-overview/db-readiness/README.md", "role": "key", "pool": "картина", "note": "Навигатор витка: цель, главный результат, чек-лист, развилки." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/_shared/reification.md", "role": "key", "pool": "F-1", "note": "Reify-on-demand: на что влияет, когда связь=ребро а когда=узел, рекомендация + UX." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/02-backend/CONCEPT-02-execution-engine.md", "role": "key", "pool": "F-2", "note": "Движок/самоисполнение: указатель в графе + отдельная система-читатель подграфа + триггеры; архитектура v1." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/02-backend/CONCEPT-03-access-permissions.md", "role": "key", "pool": "F-3+доступ", "note": "Доступ/права: локальное vs проектное, read/write лимиты, мульти-юзер/маркетплейс, клапан самоулучшения." },
+    { "path": "docs/02-project/core/01-brain/01-overview/OVERVIEW.md", "role": "doc", "pool": "→канон", "note": "Обзор системы — субстрат и спина." },
+    { "path": "docs/02-project/core/01-brain/decisions.INDEX.md", "role": "doc", "pool": "→канон", "note": "DL-01…DL-19 — контракт, который концепты уточняют." },
+    { "path": "docs/02-project/core/01-brain/plan/2026-07-13-FABLE-full-build-plan.md", "role": "doc", "pool": "→план", "note": "M0–M8 — план стройки, с которым синтез сверяет реализуемость." }
+  ],
+  "children": [],
+  "childrenNote": "CONCEPT-01/02/03 могут вырасти в свои папки с дочерним concept.json при углублении."
+}
