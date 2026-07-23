@@ -2,45 +2,45 @@
 
 > Собран `tools/lint/doc-tree.mjs`. НЕ править руками — перегенерировать: `node tools/lint/doc-tree.mjs`.
 > Архетипы: numbered(ствол) · plural(контейнер) · service(_служебное) · trace(_log) · dated · named.
-> 🔴 = в папке >6 прямых файлов (нарушение «нет loose-файлов»). Итого: 398 папок, 900 файлов.
+> 🔴 = в папке >6 прямых файлов (нарушение «нет loose-файлов»). Итого: 414 папок, 923 файлов.
 
 ## 🔴 Папки с перегрузом (везде, где много файлов — не должно быть)
 - **32f** — `docs/base/product`
-- **23f** — `docs/01-organization/session-handoff/2026-07-18-memory-unit-design`
+- **23f** — `docs/_log/2026-07-18-memory-unit-design`
 - **18f** — `docs/02-project/core/01-brain/_archived/decomposition-pre-dissolve-2026-07-20/01-model/01-node`
 - **16f** — `docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level`
-- **12f** — `docs/01-organization/session-handoff/2026-07-13-combination-fable`
+- **12f** — `docs/_log/2026-07-13-combination-fable`
+- **10f** — `docs/00-states/04-improvement-plans`
 - **10f** — `docs/topics/20-analysis`
-- **9f** — `docs/00-states/04-improvement-plans`
 - **9f** — `docs/01-organization/doc-discipline/restructure-2026-07`
 - **9f** — `docs/02-project/core/01-brain/01-overview/01-values`
 - **9f** — `docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/04-mechanics`
-- **8f** — `docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/council`
-- **8f** — `docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood/research`
 - **8f** — `docs/02-project/core/01-brain/02-infrastructure/01-overview`
 - **8f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-decision`
+- **8f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood/council`
+- **8f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood/research`
 - **8f** — `docs/base/council`
 - **8f** — `docs/topics/30-plan`
 - **7f** — `docs/01-organization/doc-discipline`
-- **7f** — `docs/01-organization/session-handoff/2026-07-10-directions-and-agents-mem-flood`
-- **7f** — `docs/01-organization/session-handoff/2026-07-11-agents-manager-battle-state`
-- **7f** — `docs/01-organization/session-handoff/2026-07-13-combination-fable/combination-scaffold/docs/decisions/ADR`
-- **7f** — `docs/01-organization/session-handoff/2026-07-14-agents-audit-and-vision`
-- **7f** — `docs/01-organization/session-handoff/2026-07-14-vector-and-defektovka`
 - **7f** — `docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy`
 - **7f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis`
 - **7f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-forks-both-variants`
 - **7f** — `docs/02-project/core/02-agents/01-orchestration`
+- **7f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood`
+- **7f** — `docs/_log/2026-07-11-agents-manager-battle-state`
+- **7f** — `docs/_log/2026-07-13-combination-fable/combination-scaffold/docs/decisions/ADR`
+- **7f** — `docs/_log/2026-07-14-agents-audit-and-vision`
+- **7f** — `docs/_log/2026-07-14-vector-and-defektovka`
 
 ## Дерево
 ```
-docs/  [3f, 10d] named 🟢
-  00-states/  [1f, 5d] numbered
+docs/  [3f, 11d] named 🟢
+  00-states/  [2f, 5d] numbered
     00-global-build/  [2f] numbered 🟢
     01-tree-rules-and-librarian/  [2f] numbered 🟢
     02-agent-system-mechanics/  [2f] numbered 🟢
     03-brain-productization/  [2f] numbered 🟢
-    04-improvement-plans/  [9f] numbered  🔴 9 файлов — много (>6)
+    04-improvement-plans/  [10f] numbered  🔴 10 файлов — много (>6)
         · INDEX.md
         · PLAN-01-brain-core.md
         · PLAN-02-agent-orchestration.md
@@ -48,10 +48,21 @@ docs/  [3f, 10d] named 🟢
         · PLAN-04-plugin-modularity.md
         · PLAN-05-gateway-build.md
         · PLAN-06-process-anti-churn.md
+        · READINESS-2026-07-21.analysis.md
         · log.md
         · state.md
   01-organization/  [3f, 6d] numbered
-    data-canon/  [1f] named
+    data-canon/  [5f, 1d] named
+      forks/  [1f, 9d] named 🟢
+        F1-domain/  [1f] named
+        F2-units-law-or-exception/  [1f] named
+        F3-project-axis-and-core/  [1f] named
+        F4-platform-node/  [1f] named
+        F5-family-shared-tier/  [1f] named
+        F6-hard-erase-home/  [1f] named
+        F7-reification-scope/  [1f] named
+        F8-category-taxonomy-close/  [1f] named
+        F9-canon-supersession/  [1f] named
     doc-discipline/  [7f, 2d] named  🔴 7 файлов — много (>6)
         · 2026-07-06-reorg-and-section-types.md
         · INDEX.md
@@ -60,7 +71,7 @@ docs/  [3f, 10d] named 🟢
         · method-02-adr-discipline.md
         · method-03-concept-navigation.md
         · section-types-registry.md
-      growth-and-sequencing/  [2f] named 🟢
+      growth-and-sequencing/  [3f] named 🟢
       restructure-2026-07/  [9f, 1d] named 🟢  🔴 9 файлов — много (>6)
           · DECOMPOSITION-DISSOLVE-MAP.md
           · HOOK-PROPOSAL.md
@@ -98,140 +109,7 @@ docs/  [3f, 10d] named 🟢
       investigation-economics/  [1f] named
       investigation-reporting/  [1f] named
       session-logging/  [2f] named
-    session-handoff/  [2f, 16d] named
-      2026-07-06-navigation/  [1f] dated 🟢
-      2026-07-06-reorg-brain/  [4f] dated 🟢
-      2026-07-07-brain-open-questions/  [1f] dated
-      2026-07-07-globalize-tree/  [4f] dated
-      2026-07-07-reactivity-and-concept-method/  [3f] dated 🟢
-      2026-07-10-directions-and-agents-mem-flood/  [7f, 3d] dated  🔴 7 файлов — много (>6)
-          · CAPTURE-2-theme-management.md
-          · CAPTURE.md
-          · HANDOFF.md
-          · STATUS-LEDGER.md
-          · VERDICT.md
-          · index.json
-          · session.concept.json
-        analysis/  [2f] named
-        council/  [8f] named  🔴 8 файлов — много (>6)
-            · areas-visibility.md
-            · links-as-entity.md
-            · loop-prompting-hitl.md
-            · memory-unit-convergence.md
-            · plans-as-data.md
-            · prior-art-competitors.md
-            · session-theme-turn.md
-            · token-tracing.md
-        research/  [8f] named  🔴 8 файлов — много (>6)
-            · areas-visibility.md
-            · links-as-entity.md
-            · loop-prompting-hitl.md
-            · memory-unit-convergence.md
-            · plans-as-data.md
-            · prior-art-competitors.md
-            · session-theme-turn.md
-            · token-tracing.md
-      2026-07-11-agents-manager-battle-state/  [7f] dated  🔴 7 файлов — много (>6)
-          · 01-vocabulary-and-forks.md
-          · CAPTURE.md
-          · CRITIQUE-and-presentation-architecture.md
-          · HANDOFF.md
-          · INDEX.md
-          · UPGRADE-BACKLOG.md
-          · session.concept.json
-      2026-07-12-brain-concept-edges-flows/  [4f, 1d] dated
-        raw/  [3f] plural
-      2026-07-12-paths-nav-and-brain-scopes/  [2f] dated
-      2026-07-13-arch-memory-design-to-build/  [5f] dated
-      2026-07-13-combination-fable/  [12f, 3d] dated 🟢  🔴 12 файлов — много (>6)
-          · CONTEXT-DIGEST.md
-          · FABLE-BRIEF.md
-          · FABLE-VERDICT.md
-          · HANDOFF-OWNER.md
-          · INDEX.md
-          · MANDATE.md
-          · MOVE-PLAN.md
-          · PROTOCOL-concept-first.md
-          · SURVIVING-CUT.md
-          · VALUES-diverge-BA.md
-          · _START-HERE.md
-          · session-graph.json
-        combination-scaffold/  [1f, 1d] named
-          docs/  [1f, 6d] named
-            decisions/  [1f, 1d] plural
-              ADR/  [7f] named  🔴 7 файлов — много (>6)
-                  · ADR-C0-kernel.md
-                  · ADR-C1-manifest.md
-                  · ADR-C2-lenses.md
-                  · ADR-C3-port-bus.md
-                  · ADR-C4-provenance-cert.md
-                  · ADR-C5-scratch-erase.md
-                  · ADR-C6-cutover.md
-            infrastructure/  [2f] named
-            open-questions/  [1f] named
-            plan/  [2f, 1d] named
-              gaps/  [2f] named
-            product/  [1f] named
-            values/  [1f, 6d] named
-              CV1-modularity/  [1f] named
-              CV2-evolvability/  [1f] named
-              CV3-compatibility-fork/  [1f] named
-              CV4-sovereignty/  [1f] named
-              CV5-trust-security/  [1f] named
-              CV6-marketplace/  [1f] named
-        concepts/  [2f] named
-        handoff/  [6f] named
-      2026-07-13-loop-mechanisms-brain/  [6f, 2d] dated
-        fable/  [3f] named
-        raw/  [0f] plural
-      2026-07-14-agents-audit-and-vision/  [7f, 4d] dated 🟢  🔴 7 файлов — много (>6)
-          · DIRECTION.md
-          · HANDOFF.md
-          · INDEX.md
-          · OWNER-BRIEF-restated.md
-          · QUESTION-fable.md
-          · SKILL-BRIEF-thinking-vector.md
-          · VISION-agents.md
-        mechanisms/  [4f] named
-        raw/  [2f] plural
-        skills-draft/  [0f, 1d] named
-          concept-first/  [3f] named
-        skills-scan/  [1f] named
-      2026-07-14-vector-and-defektovka/  [7f] dated  🔴 7 файлов — много (>6)
-          · 00-RAW-owner-input.md
-          · DECOMPOSITION-README.md
-          · INDEX.md
-          · INTEGRATION.md
-          · PICTURE.concept.json
-          · SYNTHESIS-integration.md
-          · integration.concept.json
-      2026-07-18-memory-unit-design/  [23f, 2d] dated  🔴 23 файлов — много (>6)
-          · 01-model-README.md
-          · APPLIED-2026-07-18.md
-          · DECISIONS-unit.md
-          · FABLE-ANSWER-direction.md
-          · FABLE-ANSWER-hard-erase.md
-          · FABLE-ANSWER-skill-upgrade.md
-          · FABLE-BRIEF-direction.md
-          · FABLE-BRIEF-hard-erase.md
-          · HANDOFF-2026-07-16.md
-          · NAV.concept.json
-          · NEXT-STEPS.md
-          · PROCESS-UPGRADE-2026-07-17.md
-          · README.md
-          · START-HERE.md
-          · SYNTHESIS-unit.md
-          · TREE.md
-          · VISION-SIMPLE.md
-          · _critique-fable-erase.md
-          · _critique.md
-          · _shared-README.md
-          · _shared-mechanisms-README.md
-          · design-queue.md
-          · model-questions-README.md
-        analyses/  [7f] plural
-        method/  [2f] named
-      2026-07-18-ratification-backlog/  [3f] dated
+    session-handoff/  [1f] named 📦
   02-project/  [1f, 3d] numbered
     core/  [1f, 3d] named
       01-brain/  [3f, 9d] numbered 🟢
@@ -571,15 +449,154 @@ docs/  [3f, 10d] named 🟢
     dwizh/  [1f] named
     ga-rentacar/  [1f] named
     video-social-music/  [1f] named
-  04-knowladge/  [1f] numbered
+  04-knowledge/  [1f] numbered
   _generated/  [1f] service
   _inbox/  [1f] service 📦
-  _log/  [0f, 5d] trace
+  _log/  [0f, 25d] trace
+    2026-07-06-navigation/  [1f] dated 🟢
+    2026-07-06-reorg-brain/  [4f] dated 🟢
+    2026-07-07-brain-open-questions/  [1f] dated
+    2026-07-07-globalize-tree/  [4f] dated
+    2026-07-07-reactivity-and-concept-method/  [3f] dated 🟢
+    2026-07-10-directions-and-agents-mem-flood/  [7f, 3d] dated  🔴 7 файлов — много (>6)
+        · CAPTURE-2-theme-management.md
+        · CAPTURE.md
+        · HANDOFF.md
+        · STATUS-LEDGER.md
+        · VERDICT.md
+        · index.json
+        · session.concept.json
+      analysis/  [2f] named
+      council/  [8f] named  🔴 8 файлов — много (>6)
+          · areas-visibility.md
+          · links-as-entity.md
+          · loop-prompting-hitl.md
+          · memory-unit-convergence.md
+          · plans-as-data.md
+          · prior-art-competitors.md
+          · session-theme-turn.md
+          · token-tracing.md
+      research/  [8f] named  🔴 8 файлов — много (>6)
+          · areas-visibility.md
+          · links-as-entity.md
+          · loop-prompting-hitl.md
+          · memory-unit-convergence.md
+          · plans-as-data.md
+          · prior-art-competitors.md
+          · session-theme-turn.md
+          · token-tracing.md
+    2026-07-11-agents-manager-battle-state/  [7f] dated  🔴 7 файлов — много (>6)
+        · 01-vocabulary-and-forks.md
+        · CAPTURE.md
+        · CRITIQUE-and-presentation-architecture.md
+        · HANDOFF.md
+        · INDEX.md
+        · UPGRADE-BACKLOG.md
+        · session.concept.json
+    2026-07-12-brain-concept-edges-flows/  [4f, 1d] dated
+      raw/  [3f] plural
+    2026-07-12-paths-nav-and-brain-scopes/  [2f] dated
+    2026-07-13-arch-memory-design-to-build/  [5f] dated
+    2026-07-13-combination-fable/  [12f, 3d] dated 🟢  🔴 12 файлов — много (>6)
+        · CONTEXT-DIGEST.md
+        · FABLE-BRIEF.md
+        · FABLE-VERDICT.md
+        · HANDOFF-OWNER.md
+        · INDEX.md
+        · MANDATE.md
+        · MOVE-PLAN.md
+        · PROTOCOL-concept-first.md
+        · SURVIVING-CUT.md
+        · VALUES-diverge-BA.md
+        · _START-HERE.md
+        · session-graph.json
+      combination-scaffold/  [1f, 1d] named
+        docs/  [1f, 6d] named
+          decisions/  [1f, 1d] plural
+            ADR/  [7f] named  🔴 7 файлов — много (>6)
+                · ADR-C0-kernel.md
+                · ADR-C1-manifest.md
+                · ADR-C2-lenses.md
+                · ADR-C3-port-bus.md
+                · ADR-C4-provenance-cert.md
+                · ADR-C5-scratch-erase.md
+                · ADR-C6-cutover.md
+          infrastructure/  [2f] named
+          open-questions/  [1f] named
+          plan/  [2f, 1d] named
+            gaps/  [2f] named
+          product/  [1f] named
+          values/  [1f, 6d] named
+            CV1-modularity/  [1f] named
+            CV2-evolvability/  [1f] named
+            CV3-compatibility-fork/  [1f] named
+            CV4-sovereignty/  [1f] named
+            CV5-trust-security/  [1f] named
+            CV6-marketplace/  [1f] named
+      concepts/  [2f] named
+      handoff/  [6f] named
+    2026-07-13-loop-mechanisms-brain/  [6f, 2d] dated
+      fable/  [3f] named
+      raw/  [0f] plural
+    2026-07-14-agents-audit-and-vision/  [7f, 4d] dated 🟢  🔴 7 файлов — много (>6)
+        · DIRECTION.md
+        · HANDOFF.md
+        · INDEX.md
+        · OWNER-BRIEF-restated.md
+        · QUESTION-fable.md
+        · SKILL-BRIEF-thinking-vector.md
+        · VISION-agents.md
+      mechanisms/  [4f] named
+      raw/  [2f] plural
+      skills-draft/  [0f, 1d] named
+        concept-first/  [3f] named
+      skills-scan/  [1f] named
+    2026-07-14-vector-and-defektovka/  [7f] dated  🔴 7 файлов — много (>6)
+        · 00-RAW-owner-input.md
+        · DECOMPOSITION-README.md
+        · INDEX.md
+        · INTEGRATION.md
+        · PICTURE.concept.json
+        · SYNTHESIS-integration.md
+        · integration.concept.json
+    2026-07-18-memory-unit-design/  [23f, 2d] dated  🔴 23 файлов — много (>6)
+        · 01-model-README.md
+        · APPLIED-2026-07-18.md
+        · DECISIONS-unit.md
+        · FABLE-ANSWER-direction.md
+        · FABLE-ANSWER-hard-erase.md
+        · FABLE-ANSWER-skill-upgrade.md
+        · FABLE-BRIEF-direction.md
+        · FABLE-BRIEF-hard-erase.md
+        · HANDOFF-2026-07-16.md
+        · NAV.concept.json
+        · NEXT-STEPS.md
+        · PROCESS-UPGRADE-2026-07-17.md
+        · README.md
+        · START-HERE.md
+        · SYNTHESIS-unit.md
+        · TREE.md
+        · VISION-SIMPLE.md
+        · _critique-fable-erase.md
+        · _critique.md
+        · _shared-README.md
+        · _shared-mechanisms-README.md
+        · design-queue.md
+        · model-questions-README.md
+      analyses/  [7f] plural
+      method/  [2f] named
+    2026-07-18-ratification-backlog/  [3f] dated
     2026-07-19-restructure-orchestration/  [2f] dated
     2026-07-20-concept-suffix-law-and-brain-directions/  [4f] dated
     2026-07-21-brain-restructure-recovery-and-model/  [3f] dated
     2026-07-21-improvement-plan-directions/  [2f] dated
     2026-07-21b-doc-org-map-and-plan/  [1f] dated
+    2026-07-22-abstraction-spine-and-forks/  [1f] dated
+    2026-07-22-blind-comprehension-experiment/  [1f] dated
+    2026-07-22-brain-direction-fable/  [3f] dated
+    2026-07-23-forks-adr-and-log-consolidation/  [1f] dated
+  architecture/  [0f, 1d] named
+    ADR/  [1f] named
   base/  [3f, 10d] named
     architecture/  [4f, 1d] named
       ADR/  [2f] named

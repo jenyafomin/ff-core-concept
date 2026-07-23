@@ -1,0 +1,60 @@
+{
+  "type": "attention-list",
+  "id": "agent-manager-example-2026-07-23",
+  "paths": [
+    { "path": "01-overview/README.md", "role": "start", "note": "обзор + карта переменных и связей" },
+    { "path": "02-defectovka/README.md", "role": "map", "note": "накидочная по единицам" },
+    { "path": "03-schema/README.md", "role": "schema", "note": "единая БД: конверт + обычные поля + рёбра + политики" },
+    { "path": "03-schema/_system/envelope.md", "role": "system", "note": "системные поля узла" },
+    { "path": "_generated-examples/", "role": "target", "note": "детальные примеры-данные (фаза 2)" }
+  ],
+  "thinking": {
+    "goal": "Выложить как данные (граф) весь мир вокруг агента — единицы, переменные, связи, механики — чтобы стало видно, из чего состоит агентская система и на чём её строить.",
+    "status": "exploring",
+    "iteration": 3,
+    "decisions": [
+      { "id": "DEC-1", "text": "Дом примеров агентской системы = docs/02-project/core/02-agents/examples/ (контейнер модуля агентов).", "date": "2026-07-23" },
+      { "id": "DEC-2", "text": "Структура темы: 01-overview (карта) → 02-defectovka (накидка по единицам) → _generated-examples (детальные JSON-конструкторы).", "date": "2026-07-23" },
+      { "id": "DEC-3", "text": "Закон качества: никогда не наивный массив — всегда конструктор (id·тип·состояние·связи·линза·акты).", "date": "2026-07-23" },
+      { "id": "DEC-4", "text": "Все 12 единиц наполнены (4 агента) + критик-проход. Вердикт: материал качественный, но НУЖНА реконсиляция перед фазой 2 (карта устарела на ~20 рёбер, U11 нереципрокен, scope/rule/lens перегружены, нет узла action). Фаза 2 (killer JSON) стартует только после реконсиляции.", "date": "2026-07-23" },
+      { "id": "DEC-5", "text": "Пофикшен эталон 01-agent: delegation.policy теперь конструктор, не строка.", "date": "2026-07-23" },
+      { "id": "DEC-6", "text": "ОТВЕТ ВЛАДЕЛЬЦА на 4 развилки = единый принцип КОНФИГУРИРУЕМОСТЬ/ПОЛИМОРФИЗМ: не выбираем один вариант, а закладываем возможность настройки как ДАННЫЕ (режим хранения знания embed|ref; вложенные space; полиморфная привязка playlist с phase-дефолтом; адаптивная политика snapshot деревом). Гибкость — first-class свойство модели.", "date": "2026-07-23" },
+      { "id": "DEC-7", "text": "НОВОЕ НАПРАВЛЕНИЕ (03-schema): упаковать всё в ОДНУ схему единой БД. Каждая единица = узел с общим СИСТЕМНЫМ конвертом (системные поля, framework-owned) + ОБЫЧНЫЕ поля (доменные). Полиморфные рёбра. От простого к сложному, просто но детально. Системное кладём в _system/ на своём уровне.", "date": "2026-07-23" },
+      { "id": "DEC-8", "text": "Общий конверт поднят в examples/_schema/ — переиспользуется ВСЕМИ примерами (правило: нужно 2+ примерам → в _schema, специфика → вниз). agent-manager/03-schema лишь ПРИМЕНЯЕТ его.", "date": "2026-07-23" },
+      { "id": "DEC-9", "text": "Реконсиляция выполнена: overview §4 сведён (+~30 рёбер, легенда инверсий), U11 реципрокен, заведён узел action (13), разведены scope→visibility/access/applies_to · lens→view · rule≠policy, точечные фиксы. Также построены 04-graph-view (граф-вид+линзы) и 05-processes (9 механик по отдельности).", "date": "2026-07-23" }
+    ],
+    "directions": [
+      { "id": "D-U1", "name": "agent (скиллы/MCP/проект/делегирование/выходы)", "status": "open", "path": "02-defectovka/01-agent/" },
+      { "id": "D-U2", "name": "user (запросы/поведение/накопленное знание)", "status": "open", "path": "02-defectovka/02-user/" },
+      { "id": "D-U3", "name": "project (знания/задачи/цели/состояние/правила)", "status": "open", "path": "02-defectovka/03-project/" },
+      { "id": "D-U4", "name": "space/team/role (TG-топик=область настройки, можно/нельзя)", "status": "open", "path": "02-defectovka/04-space-team-role/" },
+      { "id": "D-U5", "name": "telegram-module (I/O, события, линзы)", "status": "open", "path": "02-defectovka/05-telegram/" },
+      { "id": "D-U6", "name": "planning-module (задачи/ветки/потоки)", "status": "open", "path": "02-defectovka/06-planning/" },
+      { "id": "D-U7", "name": "knowledge-base-module (виды/линзы над графом)", "status": "open", "path": "02-defectovka/07-knowledge-base/" },
+      { "id": "D-U8", "name": "skill/playlist (листы скиллов, дерево)", "status": "open", "path": "02-defectovka/08-skill-playlist/" },
+      { "id": "D-U9", "name": "loop/graph-loop (граф лупа как модуль)", "status": "open", "path": "02-defectovka/09-graph-loop/" },
+      { "id": "D-U10", "name": "event (агентские/системные/входящие)", "status": "open", "path": "02-defectovka/10-event/" },
+      { "id": "D-U11", "name": "cost/snapshot (токены, срезы контекста во времени)", "status": "open", "path": "02-defectovka/11-cost-snapshot/" },
+      { "id": "D-U12", "name": "output/message (scope-контроль выходов)", "status": "open", "path": "02-defectovka/12-output/" },
+      { "id": "D-U13", "name": "action (НЕДОСТАЮЩИЙ центральный узел: loop→action→output, snapshot measures action)", "status": "open", "path": "02-defectovka/13-action/ (TODO)" }
+    ],
+    "questions": [
+      { "id": "Q-1", "text": "FORK-а: где живёт знание user/project/KB? ОТВЕТ ВЛАДЕЛЬЦА: по-разному — модель поддерживает ОБА режима (embed внутри единицы ИЛИ reference на партицию единой БД), выбор = данные, не хардкод. Открытый под-вопрос: не станет ли ограничением «пихать всё в одну БД».", "type": "open-question", "priority": 2, "status": "answered", "answer_ref": "DEC-6" },
+      { "id": "Q-2", "text": "FORK-б: space/team/role? ОТВЕТ: space=поверхность+участники — ок; space может быть ВЛОЖЕННЫМ (nested); role переиспользуемый; team пока не заводим.", "type": "open-question", "priority": 2, "status": "answered", "answer_ref": "DEC-6" },
+      { "id": "Q-3", "text": "FORK-в: playlist к loop или phase? ОТВЕТ: и к тому, и к тому — привязка ПОЛИМОРФНА (плейлисты крепятся к разным вещам, связи непредсказуемы); phase = чистый дефолт для поиска/переносимости.", "type": "analysis", "priority": 2, "status": "answered", "answer_ref": "DEC-6" },
+      { "id": "Q-4", "text": "FORK-г: частота snapshot? ОТВЕТ: настраиваемо (policy), АДАПТИВНО — интенсивнее по мере роста контекста; хранится ДЕРЕВОМ; агрегирует расход дочерних агентов (отчёт сколько потратили другие).", "type": "analysis", "priority": 2, "status": "answered", "answer_ref": "DEC-6" },
+      { "id": "Q-5", "text": "scope/rule/lens перегружены — развести на уровне схемы (системные поля vs обычные) + глоссарий предикатов.", "type": "risk", "priority": 1, "status": "open" },
+      { "id": "Q-6", "text": "Под-агент — отдельный node_type или грань agent с parent? (из фазы 1)", "type": "open-question", "priority": 3, "status": "open" },
+      { "id": "Q-7", "text": "«Всё в одной БД» — где предел/ограничение? (под-вопрос Q-1, проверить killer-примером фазы 2)", "type": "risk", "priority": 2, "status": "open" },
+      { "id": "Q-8", "text": "Дубль представления: ребро в edges[] И удобная ссылка в body.links — норма (проекция для домена) или body читает только edges без дубля? (из 04-graph-view §3)", "type": "open-question", "priority": 2, "status": "awaiting-owner" },
+      { "id": "Q-9", "text": "loop-run: возврат loop-back без встроенного max_iterations → риск бесконечного цикла; побочки уже выполненного action при провале exit не откатываются. Нужен предохранитель. (из 05-processes/loop-run)", "type": "risk", "priority": 1, "status": "awaiting-owner" },
+      { "id": "Q-10", "text": "attribution/учёт затрат — по ПРЯМЫМ детям или по всему ПОДДЕРЕВУ делегирования? Одна развилка, повторяется в snapshot/delegation/composition — решить ОДИН раз. (из 05-processes)", "type": "analysis", "priority": 1, "status": "awaiting-owner" },
+      { "id": "Q-11", "text": "space/team/role (U4): пока смоделировано как ОДНА единица, новые рёбра (space--hosts-->agent, member-of) на этом стоят. Если делим на три — рёбра переезжают, не просто переименовываются. (из реконсиляции)", "type": "open-question", "priority": 2, "status": "awaiting-owner" }
+    ],
+    "next_moves": [
+      "Владельцу на решение: Q-9 (предохранитель лупа), Q-10 (attribution дерево vs прямые дети), Q-8 (дубль edges/body), Q-11 (делить ли space/role).",
+      "Фаза 2: 1-2 killer JSON-примера в _generated-examples — прогнать «всё в одной БД» на пределе (Q-7).",
+      "Опционально: поднять модель узла в brain (реплика владельца «должно жить в брейне») — agent-manager лишь применяет."
+    ]
+  }
+}

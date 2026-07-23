@@ -1,0 +1,147 @@
+{
+  "type": "project-spine",
+  "id": "ff-spine-2026-07-22",
+  "title": "🦴 FF Personal Management — единая линза проекта (читается одна, ориентирует вслепую)",
+  "status": "active",
+  "owner": "jenya.stasik@gmail.com",
+  "date": "2026-07-22",
+  "scope": "project",
+  "node_type": "project-spine",
+  "relatesTo": "docs/01-organization/data-canon/VOCABULARY-SPINE.md",
+  "pool": "project-root",
+  "createdBy": "agent",
+  "temperature": "hot",
+  "viewModes": ["preset", "all-files"],
+
+  "goal": "Дать свежему агенту ОДИН файл, из которого он понимает: (1) что это за проект и в какой фазе, (2) какой у него вокабуляр-хребет (единица · примитивы node/edge/act/lens · домен · doc-type), (3) главный рефрейм «дерево папок = модель единицы памяти», (4) как устроено дерево и по каким законам оно живёт, (5) куда идти за каждым куском (маршрут по реальным файлам). Закрывает петлю «каждую сессию заново разбираемся, что тут за структура».",
+
+  "description": "FF Personal Management — DESIGN-фаза (не строим, разбираемся КАК построить; директива владельца 2026-06-15). Продукт = agent-first платформа-агрегатор жизни человека: фундамент — brain (граф типизированных узлов = субстрат памяти), поверх — слой агентов, которые читают граф, делают работу и пишут обратно; север = модульность/plug-in. ВАЖНО: этот репозиторий — НЕ код продукта, а substrate мышления о нём (диалог-проектирование голосом через Telegram-шлюз + большой пласт мета-работы о том, как организовать сами доки). Рантайм живёт снаружи (TOOLS/agents-manager шлюз; будущий новый репозиторий).\n\nГЛАВНЫЙ РЕФРЕЙМ (рвёт петлю churn): дерево папок docs/ и единица памяти brain — это ОДНА задача с двух сторон. Дерево = модель абстракций единицы; concept.json = линза (само-описание) на узел дерева; brain-база = та же структура нативно (граф). Дерево — генерируемая проекция модели, не рукотворная карта (потому рукокарты и гниют — боль INDEX/NAVIGATION). Структурируя память и дерево, делаем два апгрейда одним ходом.\n\nВОКАБУЛЯР-ХРЕБЕТ (разные ВЫСОТЫ, читать лесенкой ЧТО→ИЗ ЧЕГО→ГДЕ→чем ДУМАЕМ): • Единица памяти = примитив `node` (частица/волна; и задача, и человек, и сообщение — всё единицы; это НЕ отдельная ось, а центральный примитив). • Примитив/грань = семья вокруг узла: `node`(=единица)·`edge`(связь)·`act`(действие)·`lens`(вид). • Домен = где анатомия специализируется: `knowledge-graph`·`agents`·`infrastructure`. • doc-type = чем МЫ про это думаем (`idea·question·plan·task·decision·analysis`) — про нашу писанину, не про саму единицу.\n\nДВА ВЕЩЕСТВА, НЕ МЕШАТЬ: TRACE (что произошло — append-only, только указатели, дом `_log/`, gitignored) vs KNOWLEDGE (как устроено — durable-дерево). Trace ссылается на knowledge, не хранит его. ТИП РЕШАЕТ ДОМ: файл несёт суффикс `.{type}.md`, тип объявляет `homeRule` в `.doc-types.json` → путь детерминирован. ТРИ АРХЕТИПА ПАПОК (весь словарь структуры): `NN-`/дата = нумерованный УЗЕЛ-ствол (рост); плюрал (`ideas/ questions/ analyses/ decisions/ plans/`) = КОНТЕЙНЕР-сборщик; `_` (`_log/ _generated/ _archived/ _shared/`) = СЛУЖЕБНОЕ/навигация.\n\nПРЕДУПРЕЖДЕНИЕ ЧЕСТНОСТИ: дерево сейчас САМО В НАРУШЕНИИ своих законов (≈26 перегруженных папок, идущие реструктуризации, восстановленные снапшоты). Живой идеал и on-disk реальность расходятся — держи оба. Физические переезды — ТОЛЬКО по явному «строй» владельца; иначе описывай перемещение, не исполняй; ничего не удаляем (LOSE-NOTHING, архивируем статусом).",
+
+  "keyFiles": [
+    "docs/01-organization/data-canon/VOCABULARY-SPINE.md",
+    "docs/INDEX.md",
+    "docs/.doc-types.json",
+    ".claude/rules/doc-tree.md"
+  ],
+
+  "steps": [
+    {
+      "title": "1. Хребет-словарь — читать ПЕРВЫМ (вокабуляр + рефрейм + механизмы само-описания)",
+      "paths": [
+        "docs/01-organization/data-canon/VOCABULARY-SPINE.md",
+        "docs/01-organization/data-canon/INDEX.md"
+      ],
+      "note": "🦴 Устоявшийся вокабуляр один раз: единица=node · примитивы node/edge/act/lens · домен · doc-type; рефрейм «дерево=модель единицы памяти»; §4 — механизмы, чтобы контекст сам подсказывал (concept.json как ЛИНЗА, генерируемая проекция, один дом+LOSE-NOTHING, анти-инфляция типов). Цель: любой вопрос ложится на правильную абстракцию, а не переоткрывается. Свежий/hot (2026-07-22)."
+    },
+    {
+      "title": "2. Вход-ритуал + карта дерева (где мы + как лежат доки)",
+      "paths": [
+        "docs/INDEX.md",
+        "docs/01-organization/session-handoff/STATE.md",
+        "docs/_generated/doc-tree.view.md",
+        "docs/_log/"
+      ],
+      "note": "🗺️ INDEX.md = единственная точка входа (дерево area-level + статусы + порядок чтения + план уборки). STATE.md = «где мы сейчас» (стек датированных RESUME-блоков — верь ВЕРХНЕМУ). _generated/doc-tree.view.md = файловое авто-дерево с флагами перегруза (перегенерить `node tools/lint/doc-tree.mjs`). _log/ = СЛЕД (gitignored), свежая `<дата-тема>/HANDOFF.md` = что было в прошлой сессии. NAVIGATION.md — superseded, не читать."
+    },
+    {
+      "title": "3. Примитивы (грани единицы) — анатомия клетки: node/edge/act/lens (+ plan-family)",
+      "paths": [
+        "docs/02-project/core/01-brain/_archived/decomposition-pre-dissolve-2026-07-20/01-model/README.md",
+        "docs/02-project/core/01-brain/_archived/decomposition-pre-dissolve-2026-07-20/01-model/01-node",
+        "docs/02-project/core/01-brain/_archived/decomposition-pre-dissolve-2026-07-20/01-model/02-edge",
+        "docs/02-project/core/01-brain/_archived/decomposition-pre-dissolve-2026-07-20/01-model/03-act",
+        "docs/02-project/core/01-brain/_archived/decomposition-pre-dissolve-2026-07-20/01-model/04-lens",
+        "docs/02-project/core/01-brain/_archived/decomposition-pre-dissolve-2026-07-20/01-model/05-plan-family"
+      ],
+      "note": "🧬 Модель четырёх примитивов (грани вокруг узла). ⚠️ ЖИВОЙ ИСТОЧНИК, не мёртвый архив: сейчас лежит в _archived как восстановленный ОРИГИНАЛ и является ТЕКУЩИМ каноном модели — переезд в `01-brain/decomposition/01-model/` лишь заблокирован 9 форками владельца (см. PLACEMENT-AUDIT), но содержимое актуально, читай как source-of-truth. Каждый примитив = папка-узел с overview/questions/analyses/decisions. `node`=единица тверда; `edge/act/lens` описывают связи/действия/виды. Открытый роестр граней (layers/passport/facets = грани или поля?) — next-3 в спине."
+    },
+    {
+      "title": "4. Домены данных — где анатомия специализируется (knowledge-graph · agents · infrastructure)",
+      "paths": [
+        "docs/02-project/core/01-brain/01-overview/02-domains/README.md",
+        "docs/02-project/core/01-brain/01-overview/02-domains/domains.concept.json",
+        "docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph"
+      ],
+      "note": "🗺️ Домены-ДАННЫХ = орган/система, где единица специализируется под правила. Эталон фасет-шаблона в 01-knowledge-graph (01-explain·02-entities·03-relations·04-mechanics·05-policy). Открывай domains.concept.json как визард."
+    },
+    {
+      "title": "5. Продукт: brain (единица памяти) — 7 ценностей + инфраструктура/модули",
+      "paths": [
+        "docs/02-project/core/01-brain/INDEX.md",
+        "docs/02-project/core/01-brain/brain.concept.json",
+        "docs/02-project/core/01-brain/01-overview/OVERVIEW.md",
+        "docs/02-project/core/01-brain/01-overview/01-values/GROWTH-MAP.md",
+        "docs/02-project/core/01-brain/02-infrastructure/README.md",
+        "docs/02-project/core/01-brain/questions/INDEX.md"
+      ],
+      "note": "🧠 ГЛАВНОЕ содержание продукта. brain.concept.json = мастер-хаб; OVERVIEW.md = полная картина (что это, анатомия, как растёт). 7 замкнутых ценностей (Читаемость·Тождество·Доверие·Витальность·Суверенность·Реляционность·Согласие) в 01-values/GROWTH-MAP.md. 02-infrastructure = как строим (модули M-G*/M-P*, движок). questions/INDEX.md = открытые FQ01-24 + VQ1-4 — не переоткрывай решённое."
+    },
+    {
+      "title": "6. Слой агентов над памятью — оркестрация (state · plan · task · loop)",
+      "paths": [
+        "docs/02-project/core/02-agents/01-orchestration/README.md",
+        "docs/02-project/core/02-agents/01-orchestration/agents-orchestration.concept.json",
+        "docs/02-project/core/02-agents/01-orchestration/01-state",
+        "docs/02-project/core/02-agents/01-orchestration/02-plan",
+        "docs/02-project/core/02-agents/01-orchestration/03-task",
+        "docs/02-project/core/02-agents/01-orchestration/04-loop"
+      ],
+      "note": "🤖 Агенты читают граф, делают работу, пишут обратно. Оркестрация = грани над базой: state (в которое входят агенты) · plan (семья планов наследует базовую 05-plan-family) · task (по умолчанию строка плана, папка — только при промоции в подграф) · loop (большой цикл). Частью реализовано снаружи в TOOLS/agents-manager. 03-contract/ = стык brain↔агенты (стаб)."
+    },
+    {
+      "title": "7. Реестр типов + законы размещения (ТИП решает ДОМ; всегда-в-контексте)",
+      "paths": [
+        "docs/.doc-types.json",
+        ".claude/rules/doc-tree.md",
+        "docs/01-organization/doc-discipline",
+        "docs/01-organization/registry.seed.json"
+      ],
+      "note": "📐 Машина размещения. .doc-types.json = проектный оверлей реестра типов→домов (homeRule, conceptSuffixLaw D-1, mergeLoseNothing, staging). .claude/rules/doc-tree.md = НЕСОКРАШАЕМЫЕ законы (3 архетипа папок + 10 законов размещения) — всегда в контексте. doc-discipline/ = полная механика + restructure-2026-07/. Enforcement: tools/lint/concept-lint.mjs + doc-tree.mjs (pre-commit)."
+    },
+    {
+      "title": "8. Состояния и пульт доработок (00-states) — открытые темы-состояния + план развития",
+      "paths": [
+        "docs/00-states/README.md",
+        "docs/00-states/00-global-build",
+        "docs/00-states/01-tree-rules-and-librarian",
+        "docs/00-states/02-agent-system-mechanics",
+        "docs/00-states/03-brain-productization",
+        "docs/00-states/04-improvement-plans/INDEX.md",
+        "docs/00-states/04-improvement-plans/state.md"
+      ],
+      "note": "🎛️ 00-states/ (R2, единственный дом состояний): NN-<slug>/{state.md, log.md} — темы, в которые входят агенты; тема=ПОЛЕ theme, не вложенность; при закрытии status:archived (не удаляем). 04-improvement-plans/ = пульт из 6 сфер (PLAN-01..06) + READINESS-verdict. Отличать от session-handoff/STATE.md (живой «где мы»)."
+    },
+    {
+      "title": "9. Портфель владельца + архивы (read-only история)",
+      "paths": [
+        "docs/03-projects",
+        "docs/base",
+        "docs/topics",
+        "docs/02-project/core/01-brain/_archived"
+      ],
+      "note": "📦 03-projects/ = 5 проектов-потребителей владельца (7days·cardex·dwizh·ga-rentacar·video-social-music), не ядро. АРХИВЫ read-only: base/ (до 07-06), topics/ (переход 07-06). ⚠️ Имя `topics` перегружено: корневой docs/topics/=АРХИВ, но тип-папка `topics/`=активный СТЕЙДЖИНГ (needs-home) — противоположный смысл, развести. _archived/ внутри модулей = замороженные снапшоты (напр. восстановленный оригинал модели примитивов из шага 3)."
+    }
+  ],
+
+  "children": [
+    { "id": "brain-MASTER-hub-2026-07-21", "path": "docs/02-project/core/01-brain/brain.concept.json", "note": "→ концепт-хаб продукта (brain)" },
+    { "id": "domains", "path": "docs/02-project/core/01-brain/01-overview/02-domains/domains.concept.json", "note": "→ домены данных" },
+    { "id": "agents-orchestration", "path": "docs/02-project/core/02-agents/01-orchestration/agents-orchestration.concept.json", "note": "→ оркестрация агентов" }
+  ],
+  "childrenNote": "Граф концептов = brain-граф в миниатюре (спина §4.2): эта линза = корень, дети = навигаторы модулей. Один навигационный концепт на модуль.",
+
+  "disambiguations": [
+    "STATE ≠ states: `session-handoff/STATE.md` = живой «где мы сейчас» (верь ВЕРХНЕМУ RESUME-блоку); `00-states/` = открытые темы-состояния, в которые входят агенты. Разные вещи, не путать.",
+    "`topics` в двух смыслах: корневой `docs/topics/` = замороженный АРХИВ (переход 07-06); тип-папка `topics/` = активный СТЕЙДЖИНГ для бездомного (needs-home). Противоположный смысл.",
+    "_archived ≠ мёртвое: снапшот может быть ТЕКУЩИМ каноном (напр. модель примитивов, шаг 3). Статус во frontmatter решает, не имя папки.",
+    "NAVIGATION.md — superseded INDEX.md-ом, не читать. Единственная точка входа = docs/INDEX.md.",
+    "on-disk ≠ идеал: спина описывает целевую модель; реальное дерево в нарушении (≈26 перегруженных папок). Для ТЕКУЩЕЙ правды всегда сверяйся с INDEX.md + STATE.md, не со спиной."
+  ],
+
+  "openThreads": [
+    "next-1: сделать VOCABULARY-SPINE всегда-в-контексте (короткий указатель в .claude/rules/, как doc-tree.md)",
+    "next-2: спека concept-as-lens (температура, папка concept/, уровни, граф концептов) → design/ADR",
+    "next-3: роестр примитивов — layers/passport/facets = грани или поля узла?",
+    "on-disk vs идеал: ≈26 перегруженных папок + идущие реструктуризации; переезд единиц brain→02-units заблокирован 9 форками владельца"
+  ]
+}
