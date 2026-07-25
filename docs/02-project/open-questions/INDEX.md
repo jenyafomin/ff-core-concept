@@ -25,6 +25,7 @@ Related:
 | brain (единица памяти) | `../core/01-brain/open-questions/INDEX.md` | канон: папка `FQxx-slug/` + recheck |
 | agents (система агентов) | `../core/02-agents/` (реестр по мере появления) | — |
 | contract (brain↔агенты) | `../core/03-contract/` (реестр по мере появления) | — |
+| kernel (субстрат) | `../core/00-kernel/open-questions.md` | KQ-n · area-grouped |
 
 ## 🔴 Открытые кросс-модульные (из сессии 2026-07-13, ждут владельца)
 | id | Вопрос (кратко) | Живёт (канон) | Родил |
