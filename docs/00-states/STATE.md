@@ -1,7 +1,7 @@
 ---
 Status: active
 Owner: jenya.stasik@gmail.com
-Date: 2026-07-21
+Date: 2026-07-25
 Scope: project
 ---
 
@@ -9,6 +9,20 @@ Scope: project
 
 > Это единственная «точка входа при старте новой сессии»: сначала сюда, потом — свежий HANDOFF.
 > Обновляется в конце каждой сессии. Полная карта канона — `docs/INDEX.md` (переписан 2026-07-21, живой).
+
+## ⭐⭐⭐ RESUME (2026-07-25) — ФАЗА 0 ЗАКРЫТА: ADR-0004/0005 approved, доступ+рост доказаны делом
+**Итог сессии:** зашли в **Фазу 0** плана реализации и закрыли все гейты.
+- **Q-14 доступ** ратифицирован: `узел > space.override > space.default > project > module`, **deny/Конституция = зажим ПОСЛЕ свёртки**, дефолт-deny.
+- **ADR-0004** «LSR-примитив + capability access» → **approved** (две оси reach+authority, ranking contract, 5 open).
+- **ADR-0005** «9 форков субстрата» → **approved** (снят с `review`, закрывает хвост RESUME-2026-07-23 ниже).
+- **Capability-слой ДОКАЗАН** killer-прогоном `run-capability.mjs` (**NAIVE 3/15 · FIXED 15/15**, независимо проверен критиком; дыры S11/S12 закрыты).
+- **Рост/эволюция ДОКАЗАНЫ** growth-прогоном `run-growth.mjs` (**движок 0 правок**, И-2 стал реальным гейтом, S13 регистрация типа/слоя под правом). Находка **F2**: reach-вставка N-уровней = аддитивная правка движка, гейтится с Q-11.
+- Открыт **concept «слоистость = LSR»** (4 комбинатора), тот же примитив разрулил hard-erase (FQ7).
+
+**🔴 Следующий ход:** **Фаза 1 (тонкий движок)** — сперва ДОРАБОТАТЬ `docs/00-states/00-global-build/realization-plan/phase-1-engine/README.md`, потом запускать.
+**Named-additive остатки (НЕ блокеры):** reach-вставка N-уровней (writeStack-цепочка, с Q-11) · авто-сужение делегирования · тай-брейк равного ранга · F1 export-seam движка · FQ-ценности памяти (design-debt, Фаза 2).
+**Хэндофф + разбор:** `docs/_log/2026-07-24-phase-0-gates/HANDOFF.md` + `SYNTHESIS-phase-0-gates.md` (+6 raw).
+**Артефакты:** `docs/architecture/ADR/ADR-0004*`, `ADR-0005*` · `.../01-agent-manager/_generated-examples/run-capability.mjs`+`run-growth.mjs` · план: `docs/00-states/00-global-build/realization-plan/`.
 
 ## ⭐⭐⭐ RESUME (2026-07-23) — 9 ФОРКОВ ЗАКРЫТЫ (review) + ADR-0005 + логи в один дом
 **Итог сессии:** все **9 форков** решены → статус `review` (F4 решал Fable). **ADR-0005**

@@ -33,7 +33,7 @@ related:
 | [`space-scope.process.md`](./space-scope.process.md) | **space-scope** | Как пространство (в т.ч. вложенное) применяет per-user «можно/нельзя». |
 | [`playlist-bind.process.md`](./playlist-bind.process.md) | **playlist-bind** | Как скиллы полиморфно привязываются — дефолт к фазе, но и к лупу/типу задачи. |
 | [`delegation.process.md`](./delegation.process.md) | **delegation** | Как агент раздаёт задачи под-агентам — ребро `delegates-to`, политика fan-out. |
-| [`output-deliver.process.md`](./output-deliver.process.md) | **output-deliver** | Как выход доставляется через telegram с scope/visibility. |
+| [`output-deliver.process.md`](./output-deliver.process.md) | **output-deliver** | Как выход доставляется через telegram с access/visibility. |
 
 ## Как читать один файл
 Каждый — 7 секций: **Суть · Вход · Шаги · Выход · Ограничения · Открытые вопросы · Мини-пример**.

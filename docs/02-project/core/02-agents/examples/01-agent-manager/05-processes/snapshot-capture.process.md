@@ -29,9 +29,9 @@ related:
 3. Собираются сырые метрики субъекта на момент среза (`tokens_in/out/total`, `context_size`).
 4. Ищется предыдущий снапшот того же subject (ребро `snapshot --follows--> snapshot`) → вычисляется
    `delta`.
-5. Считается `attribution` ВНУТРИ текущего `scope` (луп/задача): доля самого агента vs доля дочерних
-   агентов (по рёбрам `delegates-to`).
-6. Создаётся узел `snapshot`: `{subject, subject_kind, metrics, delta, scope, attribution}`; рёбра
+5. Считается `attribution` ВНУТРИ текущего `bound_to` (луп-прогон/задача — к чему привязан срез): доля
+   самого агента vs доля дочерних агентов (по рёбрам `delegates-to`).
+6. Создаётся узел `snapshot`: `{subject, subject_kind, metrics, delta, bound_to, attribution}`; рёбра
    `snapshot --measures--> subject`, `snapshot --follows--> previous`.
 7. Агрегат по дереву (сумма/тренд по серии срезов детей) вычисляется КАК ЛИНЗА поверх истории при чтении
    — не хранится отдельным узлом-истиной.

@@ -20,7 +20,7 @@ related:
 ## Вход
 - `policy:knowledge-ref` — `{target: knowledge, mode: embed|ref, fallback}`.
 - `knowledge-base(U7)` — `partitions[]` (`user-knowledge`, `project-knowledge`, `agent-memory`),
-  `operations[]`, `lenses[]`.
+  `operations[]`, `views[]`.
 - Запрашивающая единица (агент/task/…) и её `policy_ref`.
 
 ## Шаги
@@ -30,8 +30,8 @@ related:
 3. **`mode = embed`**: знание лежит инлайн в `body` самой единицы — самодостаточно, без зависимости от
    графа.
 4. Если запрошен `ref`, а партиция/линза недоступна — включается `policy.fallback` (обычно `embed`).
-5. Чтение через линзу: `agent --views-via--> lens`; `lens.filter` применяется к целевой партиции(ям),
-   возвращая отфильтрованный вид — БЕЗ создания копии.
+5. Чтение через вид (view): `agent --views-via--> view`; `view.filter` применяется к целевой
+   партиции(ям), возвращая отфильтрованный вид — БЕЗ создания копии.
 6. Запись: выполняется `capability` (`op:write`, scope `own-partition`) или `op:link` (межпартиционная
    связь), с проверкой `requires_valve`.
 

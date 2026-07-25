@@ -13,17 +13,17 @@ related:
 # Процесс: output-deliver
 
 ## Суть
-Всё, что агент выдаёт вовне, несёт собственный `scope`/`visibility` как данные — доставка через
+Всё, что агент выдаёт вовне, несёт собственные `access`/`visibility` как данные — доставка через
 `telegram-module` проверяет их, а не полагается на код канала.
 
 ## Вход
-- `output(U12)` — `kind`, `content`, `target`, `scope`, `visibility`, `produced_by`.
-- `space(U4)` — источник дефолтных `policy_default`/`policy_overrides` для наследования scope.
+- `output(U12)` — `kind`, `content`, `target`, `access`, `visibility`, `produced_by`.
+- `space(U4)` — источник дефолтных `policy_default`/`policy_overrides` для наследования `access`.
 - `telegram-module(U5)` — доставляющий модуль.
 
 ## Шаги
 1. Агент эмитит `output` (`agent --emits--> output`), `produced_by` проставлен.
-2. `output.scope` по умолчанию наследуется от `target.space` (см. `space-scope.process.md`); может быть
+2. `output.access` по умолчанию наследуется от `target.space` (см. `space-scope.process.md`); может быть
    локально СУЖЕН (но не расширен) — по идее, не по проверке.
 3. `output.target` резолвится в конкретное место доставки (`space.surface.chat_id/thread_id`).
 4. `telegram-module.delivers` вызывается: создаётся `delivery-attempt {via, status, attempt}`.
@@ -43,13 +43,13 @@ related:
   попыток отсутствует.
 - **«Сузить, не расширить» не проверяется механикой.** Правило описано как намерение (Вариант из
   output.design.md), но нет валидации на записи — агент технически может выставить слишком широкий
-  `scope`, и ничто это не поймает.
+  `access`, и ничто это не поймает.
 - **`kind: "interim"` (live-egress карточки) размыт между output и event** (открытый Q-2
   output.design.md) — конвейер доставки для промежуточных карточек может требовать других правил (без
   уведомления, без повтора), чем финальный output, а сейчас это не разведено.
 
 ## Открытые вопросы
-- Q-1: `output.scope` всегда наследуется от `space` целиком, или агент может локально сузить (не
+- Q-1: `output.access` всегда наследуется от `space` целиком, или агент может локально сузить (не
   расширить) правила ниже уровня пространства?
 - Q-2: `kind: "interim"` — тот же `node_type: output`, или отдельный тип «прогресс-событие», ближе к
   `event(U10)`?

@@ -35,7 +35,7 @@ fan-out (`max_fanout`, `on_conflict`, `model_default`) — данные на а�
 7. `on_conflict` управляет ситуацией, если несколько детей дают несовместимые результаты (напр.
    `"queue"` — сериализация).
 8. Родитель агрегирует выходы детей; стоимость детей учитывается в `attribution.others` родительского
-   scope (см. `snapshot-capture.process.md`).
+   снапшота (см. `snapshot-capture.process.md`).
 9. Акт на родителе: `{kind: "delegated", ref: child_agent_id}`.
 
 ## Выход

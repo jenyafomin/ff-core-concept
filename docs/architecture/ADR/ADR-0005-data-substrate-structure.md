@@ -1,7 +1,7 @@
 # ADR-0005 — Структура субстрата данных (консолидация 9 форков)
 
 - **Title:** Структура субстрата данных — канон размещения единиц, доменов, модулей и порядок supersession
-- **Status:** proposed (ждёт кивка владельца; 9 форк-решений в статусе `review`)
+- **Status:** approved (ратифицирован владельцем 2026-07-25, Telegram-топик ff_future; 9 форк-решений приняты)
 - **Owner:** jenya.stasik@gmail.com
 - **Date:** 2026-07-22
 - **Scope:** Project (FF-Personal-Management)

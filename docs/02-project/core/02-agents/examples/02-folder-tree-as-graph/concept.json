@@ -1,0 +1,46 @@
+{
+  "type": "attention-list",
+  "id": "folder-tree-as-graph-example-2026-07-24",
+  "paths": [
+    { "path": "INDEX.md", "role": "map-human", "note": "читаемая карта: где что + порядок + связь с 01 + next" },
+    { "path": "01-overview/README.md", "role": "start", "note": "обзор + сбор: цель·боль·возможности·требования·единицы·рёбра·задачи" },
+    { "path": "../_schema/README.md", "role": "schema", "note": "общий конверт узла — переиспользуем" },
+    { "path": "../01-agent-manager/INDEX.md", "role": "reference", "note": "референс-метод + уроки (не наступить на B1/B3)" }
+  ],
+  "thinking": {
+    "goal": "Показать, что наша инфраструктура папок/доков УЖЕ прото-граф и ложится в тот же субстрат-базу как узлы (folder/file/container/service/type/view/status/edge/trace) с общим конвертом. Конкретное воплощение D-META из 01-agent-manager.",
+    "status": "seeded",
+    "iteration": 0,
+    "decisions": [
+      { "id": "DEC-1", "text": "Заводим ВТОРОЙ пример examples/02-folder-tree-as-graph — объект не 'мир вокруг агента', а сама наша инфраструктура папок. Метод из 01-agent-manager переиспользуем 1:1.", "date": "2026-07-24" },
+      { "id": "DEC-2", "text": "Переиспользуем общий конверт из examples/_schema (правило: 2+ примерам → в _schema). Новый язык узла НЕ изобретаем.", "date": "2026-07-24" },
+      { "id": "DEC-3", "text": "Урок 01-agent-manager закладываем как требование: НЕ расти вширь до одного killer-кейса на РЕАЛЬНЫХ папках (там B1 — 13 JSON так и не завёрнуты в конверт → 'условно-НЕТ').", "date": "2026-07-24" },
+      { "id": "DEC-4", "text": "Первый набросок 9 единиц: folder-node · container · service · file-node · type · view · status · edge · trace — прообразы прямо из doc-tree.md (3 архетипа папок + суффиксы + статусы + связи-по-id).", "date": "2026-07-24" }
+    ],
+    "directions": [
+      { "id": "D-F1", "name": "folder-node (NN-узел, потенциал роста)", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-F2", "name": "container (плюрал-сборщик однотипного)", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-F3", "name": "service (_-папка: виды/сквозное/архив)", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-F4", "name": "file-node (лист .{type}.md = body)", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-F5", "name": "type (запись .doc-types.json, homeRule) — meta:-узел", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-F6", "name": "view (INDEX/карта = сохранённый запрос, не второй дом)", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-F7", "name": "status (frontmatter → state)", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-F8", "name": "edge/link (связь по id: refines/answers/supersedes/redirect)", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-F9", "name": "trace (_log/, след — отдельное вещество)", "status": "seeded", "path": "01-overview/README.md#5" },
+      { "id": "D-META", "name": "самоописание: type describes type (fixpoint) — стык с D-META из 01-agent-manager", "status": "open", "path": "(после дефектовки + совета Fable)" }
+    ],
+    "questions": [
+      { "id": "P-1", "text": "Дом примера: сиблинг в 02-agents/examples/ (буквальное 'там в examples', рядом с референсом) ИЛИ 01-brain/examples/ (объект = субстрат памяти)? Создано в 02-agents; одно слово владельца → перенос (обратимо).", "type": "open-question", "priority": 1, "status": "awaiting-owner" },
+      { "id": "P-2", "text": "Killer-поддерево для первого заворачивания в конверты: само docs/ FF ИЛИ репозиторий agents-manager?", "type": "open-question", "priority": 1, "status": "awaiting-owner" },
+      { "id": "P-3", "text": "Наследуем ли форму view из DEC-11 (01-agent-manager): 4-стадийный запрос from·traverse·filter·shape+params — как канон и здесь?", "type": "open-question", "priority": 2, "status": "awaiting-owner" },
+      { "id": "P-4", "text": "Дерево доков и брейн-субстрат — ОДНА база (партиции) или связанные, но разные графы? (под-вопрос Q-1/Q-7 из 01-agent-manager 'всё в одной БД — где предел')", "type": "risk", "priority": 2, "status": "open" }
+    ],
+    "next_moves": [
+      "Владельцу — подтвердить P-1 (дом) и P-2 (killer-поддерево); опц. P-3.",
+      "Наполнить 02-defectovka/ по F1…F9 (по подпапке на тип): переменные · форма данных · варианты · быстрый пример.",
+      "Применить конверт _schema к каждой единице (body vs системные поля).",
+      "ОДИН killer-кейс: реальное поддерево → ~20-30 узлов в конвертах → исполнить реальный view (needs-home / дерево статусов / дубли карт).",
+      "Артефакты: INDEX.md · concept.json · 01-overview/README.md"
+    ]
+  }
+}

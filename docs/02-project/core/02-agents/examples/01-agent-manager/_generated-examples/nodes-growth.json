@@ -1,0 +1,89 @@
+{
+  "corpus": "GROWTH OVERLAY — injected on top of nodes.json + nodes-cap.json to test evolvability-by-DATA (evolvability-under-growth.analysis.md §8). New reach scope (team), new types (one И-2-valid, one И-2-invalid), new predicate pair, registration-gate actors.",
+  "date": "2026-07-24",
+  "synthetic": true,
+  "note": "Everything here is SYNTHETIC (body.synthetic=true), same 10-field envelope. run-growth.mjs merges this over the 98-node base and (a) re-runs the UNMODIFIED engine on the grown corpus to prove no regression, (b) computes growth-specific checks. No engine source is touched.",
+
+  "add_edges": [],
+
+  "nodes": [
+
+    { "id": "meta:cap/core:manage-types", "type": "capability",
+      "state": { "status": "active" }, "edges": [], "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:ff-personal"] }, "acts": [], "policy_ref": [],
+      "body": { "synthetic": true, "name": "core:manage-types", "default": "deny", "core": true, "control_plane": true, "note": "S13: dedicated cap to register a new meta:type/*. Subsumed by core:* / core:manage-core for the engine's existing namespace gate." } },
+
+    { "id": "team:squad-alpha", "type": "team",
+      "state": { "status": "open" },
+      "edges": [ { "predicate": "binds-to", "target": "project:ff" } ],
+      "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:ff-personal"] },
+      "acts": [], "policy_ref": [ "policy:access-priority" ],
+      "body": { "synthetic": true, "surface": "internal", "kind": "team", "title": "Squad Alpha",
+        "policy_default": { "write": "deny" },
+        "policy_overrides": { "user:coach": { "write": "allow", "authority": "team", "set_by": "user:jenya", "note": "team grants coach write" } },
+        "rank_contract": { "more_specific_than": "space", "less_specific_than": "node", "reuses_shape": "space", "note": "declared rank relative to fixed anchors — NEW reach scope injected as data" },
+        "note": "NEW reach-axis scope. Same CONTRIBUTION SHAPE as space (policy_overrides/policy_default) so the engine's type-blind writeStack reads it unchanged." } },
+
+    { "id": "user:coach", "type": "user",
+      "state": { "status": "active" }, "edges": [], "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:ff-personal"] }, "acts": [], "policy_ref": [],
+      "body": { "synthetic": true, "role": "member", "handle": "@coach", "note": "member of team:squad-alpha; not listed in any node-level can_write." } },
+
+    { "id": "node:team-doc", "type": "output",
+      "state": { "status": "delivered" }, "edges": [], "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya", "user:coach"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:ff-personal"] }, "acts": [], "policy_ref": [ "policy:access-priority" ],
+      "body": { "synthetic": true, "channel": "internal", "format": "md", "space": "team:squad-alpha",
+        "note": "G1: node-level can_write does NOT include coach. team:squad-alpha (new reach scope) grants coach write. Tests whether the unchanged writeStack picks up the new scope by data alone." } },
+
+    { "id": "grant:coach@team", "type": "grant",
+      "state": { "status": "active" }, "edges": [], "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:ff-personal"] }, "acts": [], "policy_ref": [],
+      "body": { "synthetic": true, "subject": "user:coach", "in_scope": "team:squad-alpha", "role": "role:member", "allow": ["core:write-knowledge"], "deny": [], "minted_by": "system",
+        "note": "G2: grant scoped to the BRAND-NEW team scope. Proves holdsCapability + scopeCovers resolve a new scope with zero engine edits (authority-axis is fully data-extensible)." } },
+
+    { "id": "meta:type/team", "type": "type",
+      "state": { "status": "active" },
+      "edges": [ { "predicate": "example", "target": "team:squad-alpha" } ],
+      "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:ff-personal"] }, "acts": [], "policy_ref": [],
+      "body": { "synthetic": true, "name": "team", "fields": ["policy_default", "policy_overrides", "rank_contract"], "doc": "narrower containment scope than space (reach-axis). И-2-valid: has a live example." } },
+
+    { "id": "meta:type/vendor:workout", "type": "type",
+      "state": { "status": "active" },
+      "edges": [ { "predicate": "example", "target": "workout:leg-day-1" } ],
+      "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:vendor"] }, "acts": [], "policy_ref": [],
+      "body": { "synthetic": true, "name": "vendor:workout", "fields": ["kind", "sets"], "doc": "NEW vendor type WITH a live example → И-2-valid, must be ACCEPTED." } },
+
+    { "id": "workout:leg-day-1", "type": "vendor:workout",
+      "state": { "status": "logged" },
+      "edges": [ { "predicate": "vendor:performed", "target": "user:jenya" } ],
+      "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:vendor"] }, "acts": [], "policy_ref": [],
+      "body": { "synthetic": true, "kind": "strength", "sets": 5, "note": "live example instance of vendor:workout; linked into the existing graph via the NEW predicate vendor:performed → user:jenya (cross-module edge, no schema migration)." } },
+
+    { "id": "meta:type/vendor:broken", "type": "type",
+      "state": { "status": "active" },
+      "edges": [],
+      "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:vendor"] }, "acts": [], "policy_ref": [],
+      "body": { "synthetic": true, "name": "vendor:broken", "fields": ["x"], "doc": "NEW vendor type with NO example edge → И-2-INVALID, must be REJECTED by the lint." } },
+
+    { "id": "meta:pred/vendor:performed", "type": "predicate",
+      "state": { "status": "active" }, "edges": [], "view": [],
+      "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
+      "access": { "can_read": ["agent:*"], "can_write": ["agent:vendor"] }, "acts": [], "policy_ref": [],
+      "body": { "synthetic": true, "name": "vendor:performed", "inverse": "vendor:performed-by", "canonical_direction": "vendor:performed", "stored_on": "vendor:workout", "domain": ["vendor:workout"], "range": ["user", "agent"], "doc": "И-4: NEW predicate declared as a pair (name + inverse + domain + range). Used by workout:leg-day-1." } }
+
+  ]
+}

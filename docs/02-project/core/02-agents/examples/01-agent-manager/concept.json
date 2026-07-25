@@ -2,6 +2,7 @@
   "type": "attention-list",
   "id": "agent-manager-example-2026-07-23",
   "paths": [
+    { "path": "INDEX.md", "role": "map-human", "note": "читаемая карта: где что + порядок + связи + next" },
     { "path": "01-overview/README.md", "role": "start", "note": "обзор + карта переменных и связей" },
     { "path": "02-defectovka/README.md", "role": "map", "note": "накидочная по единицам" },
     { "path": "03-schema/README.md", "role": "schema", "note": "единая БД: конверт + обычные поля + рёбра + политики" },
@@ -10,8 +11,8 @@
   ],
   "thinking": {
     "goal": "Выложить как данные (граф) весь мир вокруг агента — единицы, переменные, связи, механики — чтобы стало видно, из чего состоит агентская система и на чём её строить.",
-    "status": "exploring",
-    "iteration": 3,
+    "status": "proven-on-data (вышли из гипотезы: killer-прогоны depth-1 и depth-2 исполнены, линзы вернули реальные числа)",
+    "iteration": 5,
     "decisions": [
       { "id": "DEC-1", "text": "Дом примеров агентской системы = docs/02-project/core/02-agents/examples/ (контейнер модуля агентов).", "date": "2026-07-23" },
       { "id": "DEC-2", "text": "Структура темы: 01-overview (карта) → 02-defectovka (накидка по единицам) → _generated-examples (детальные JSON-конструкторы).", "date": "2026-07-23" },
@@ -21,7 +22,15 @@
       { "id": "DEC-6", "text": "ОТВЕТ ВЛАДЕЛЬЦА на 4 развилки = единый принцип КОНФИГУРИРУЕМОСТЬ/ПОЛИМОРФИЗМ: не выбираем один вариант, а закладываем возможность настройки как ДАННЫЕ (режим хранения знания embed|ref; вложенные space; полиморфная привязка playlist с phase-дефолтом; адаптивная политика snapshot деревом). Гибкость — first-class свойство модели.", "date": "2026-07-23" },
       { "id": "DEC-7", "text": "НОВОЕ НАПРАВЛЕНИЕ (03-schema): упаковать всё в ОДНУ схему единой БД. Каждая единица = узел с общим СИСТЕМНЫМ конвертом (системные поля, framework-owned) + ОБЫЧНЫЕ поля (доменные). Полиморфные рёбра. От простого к сложному, просто но детально. Системное кладём в _system/ на своём уровне.", "date": "2026-07-23" },
       { "id": "DEC-8", "text": "Общий конверт поднят в examples/_schema/ — переиспользуется ВСЕМИ примерами (правило: нужно 2+ примерам → в _schema, специфика → вниз). agent-manager/03-schema лишь ПРИМЕНЯЕТ его.", "date": "2026-07-23" },
-      { "id": "DEC-9", "text": "Реконсиляция выполнена: overview §4 сведён (+~30 рёбер, легенда инверсий), U11 реципрокен, заведён узел action (13), разведены scope→visibility/access/applies_to · lens→view · rule≠policy, точечные фиксы. Также построены 04-graph-view (граф-вид+линзы) и 05-processes (9 механик по отдельности).", "date": "2026-07-23" }
+      { "id": "DEC-9", "text": "Реконсиляция v1: overview §4 сведён, U11 реципрокен, заведён action(13), разведены scope/lens/rule (ПРОЗА). ВНИМАНИЕ: закрыта ДЕКЛАРАТИВНО — не долетело до JSON-примеров и до 05-processes (см. DEC-10).", "date": "2026-07-23" },
+      { "id": "DEC-10", "text": "Построены 06-how-it-works (единая картина + сквозной пример) и проведена ТЩАТЕЛЬНАЯ верификация. Вердикт: УСЛОВНО-НЕТ для фазы 2. Модель расходится сама с собой: (B1) ни один из 13 JSON не завёрнут в конверт body/edges; (B3) узел view/lens в 6 несовместимых формах; (B4) переименования не долетели в 05-processes; +B5..B9. Разбор: docs/_log/2026-07-23-agent-manager-example/VERIFICATION.md. Нужен ОДИН консолидирующий проход, потом ОДИН killer-кейс. НЕ расти вширь.", "date": "2026-07-23" },
+      { "id": "DEC-11", "text": "[РАТИФИЦИРОВАНО ДЕЛОМ 2026-07-24] Каноническая форма view = сохранённый параметризованный запрос, 4 стадии: from · traverse[{pred,depth}] · filter · shape({fields}|{group_by,rollup}) + params. filter ЧИТАЕТ конверт (visibility/state/type) → права видимости = тот же запрос. ДОКАЗАНО: 3 линзы одной формы исполнены одним движком (run-view.mjs), view:visible-to вернул 'гостю 3 из 64'. Канон 03-schema R-1.", "date": "2026-07-24" },
+      { "id": "DEC-12", "text": "[РАТИФИЦИРОВАНО ДЕЛОМ 2026-07-24] Инверсные рёбра: ХРАНИМ одну сторону, инверсию ВЫЧИСЛЯЕМ (индекс _generated/, gitignored). canonical_direction в meta:pred/*. ДОКАЗАНО: движок строит обратный индекс, cost-tree берёт стоимость агента через инверсию measures. Канон R-2.", "date": "2026-07-24" },
+      { "id": "DEC-13", "text": "[РАТИФИЦИРОВАНО ДЕЛОМ 2026-07-24] Самоописывающийся слой: типы/предикаты/политики = узлы неймспейса meta:. Фикспойнт meta:type/type. Ребро example→живой узел ОБЯЗАТЕЛЬНО (тип без примера = недоказан). ДОКАЗАНО: 35 meta-узлов, валидатор падает без example. Канон R-3.", "date": "2026-07-24" },
+      { "id": "DEC-14", "text": "[РАТИФИЦИРОВАНО ДЕЛОМ 2026-07-24] Учёт затрат = по ПОДДЕРЕВУ делегирования (Q-10 закрыт). ДОКАЗАНО на depth-2: cost-tree-subtree 391481 ≠ cost-tree-direct 238935, дельта 152546 = сумма внуков → развилка материальна. rollup по поддереву; 'прямые дети' = отдельная линза. Канон R-4.", "date": "2026-07-24" },
+      { "id": "DEC-15", "text": "[РАТИФИЦИРОВАНО ДЕЛОМ 2026-07-24] Стопкран лупа обязателен (Q-9 закрыт). loop.policy.max_iterations + on_exceed:halt+flag. ДОКАЗАНО: loop-guard tripped at iteration 6, прогон остановлен, output флагнут. Канон R-5.", "date": "2026-07-24" },
+      { "id": "DEC-16", "text": "[РАТИФИЦИРОВАНО ДЕЛОМ 2026-07-24] Пять осей роста (07-extensibility): значение в body → тип (meta:type) → предикат (meta:pred парой) → политика → линза. Вырасти = дописать узел, не поменять схему. Канон R-6.", "date": "2026-07-24" },
+      { "id": "DEC-17", "text": "[PROPOSED, кандидат ADR-0004, гейт владельца] Граница ЯДРО↔МОДУЛЬ = 'фиксированный движок-читатель ↔ данные'. Модуль = бандл {meta:type/pred/cap, policy, view} в vendor:-неймспейсе. Доступ: visibility · access · capability-грант (субъект×проект/space×роль). Клапан доверия на action+policy:consent-valve. Артефакт 08-core-and-modules/. Канон R-7. ЖДЁТ: critic-проход + ратификацию владельцем.", "date": "2026-07-24" }
     ],
     "directions": [
       { "id": "D-U1", "name": "agent (скиллы/MCP/проект/делегирование/выходы)", "status": "open", "path": "02-defectovka/01-agent/" },
@@ -36,7 +45,8 @@
       { "id": "D-U10", "name": "event (агентские/системные/входящие)", "status": "open", "path": "02-defectovka/10-event/" },
       { "id": "D-U11", "name": "cost/snapshot (токены, срезы контекста во времени)", "status": "open", "path": "02-defectovka/11-cost-snapshot/" },
       { "id": "D-U12", "name": "output/message (scope-контроль выходов)", "status": "open", "path": "02-defectovka/12-output/" },
-      { "id": "D-U13", "name": "action (НЕДОСТАЮЩИЙ центральный узел: loop→action→output, snapshot measures action)", "status": "open", "path": "02-defectovka/13-action/ (TODO)" }
+      { "id": "D-U13", "name": "action (центральный узел: loop→action→output, snapshot measures action)", "status": "path-found", "path": "02-defectovka/13-action/action.design.md" },
+      { "id": "D-META", "name": "Самоописывающийся СИСТЕМНЫЙ слой: узлы-типы/предикаты/политики описывают сами себя в том же графе → агент обходит и понимает устройство. Идея владельца. На совете у Fable.", "status": "open", "path": "(проектируется после совета Fable)" }
     ],
     "questions": [
       { "id": "Q-1", "text": "FORK-а: где живёт знание user/project/KB? ОТВЕТ ВЛАДЕЛЬЦА: по-разному — модель поддерживает ОБА режима (embed внутри единицы ИЛИ reference на партицию единой БД), выбор = данные, не хардкод. Открытый под-вопрос: не станет ли ограничением «пихать всё в одну БД».", "type": "open-question", "priority": 2, "status": "answered", "answer_ref": "DEC-6" },
@@ -47,14 +57,19 @@
       { "id": "Q-6", "text": "Под-агент — отдельный node_type или грань agent с parent? (из фазы 1)", "type": "open-question", "priority": 3, "status": "open" },
       { "id": "Q-7", "text": "«Всё в одной БД» — где предел/ограничение? (под-вопрос Q-1, проверить killer-примером фазы 2)", "type": "risk", "priority": 2, "status": "open" },
       { "id": "Q-8", "text": "Дубль представления: ребро в edges[] И удобная ссылка в body.links — норма (проекция для домена) или body читает только edges без дубля? (из 04-graph-view §3)", "type": "open-question", "priority": 2, "status": "awaiting-owner" },
-      { "id": "Q-9", "text": "loop-run: возврат loop-back без встроенного max_iterations → риск бесконечного цикла; побочки уже выполненного action при провале exit не откатываются. Нужен предохранитель. (из 05-processes/loop-run)", "type": "risk", "priority": 1, "status": "awaiting-owner" },
-      { "id": "Q-10", "text": "attribution/учёт затрат — по ПРЯМЫМ детям или по всему ПОДДЕРЕВУ делегирования? Одна развилка, повторяется в snapshot/delegation/composition — решить ОДИН раз. (из 05-processes)", "type": "analysis", "priority": 1, "status": "awaiting-owner" },
-      { "id": "Q-11", "text": "space/team/role (U4): пока смоделировано как ОДНА единица, новые рёбра (space--hosts-->agent, member-of) на этом стоят. Если делим на три — рёбра переезжают, не просто переименовываются. (из реконсиляции)", "type": "open-question", "priority": 2, "status": "awaiting-owner" }
+      { "id": "Q-9", "text": "loop-run: стопкран. ЗАКРЫТ ДЕЛОМ (DEC-15): loop.policy.max_iterations + on_exceed:halt+flag; доказано на depth-2 (tripped at iteration 6).", "type": "risk", "priority": 1, "status": "answered", "answer_ref": "DEC-15" },
+      { "id": "Q-10", "text": "attribution — прямые дети или поддерево. ЗАКРЫТ ДЕЛОМ (DEC-14): по ПОДДЕРЕВУ; доказано материальным на depth-2 (subtree 391481 ≠ direct 238935). 'Прямые дети' остаётся как отдельная линза.", "type": "analysis", "priority": 1, "status": "answered", "answer_ref": "DEC-14" },
+      { "id": "Q-14", "text": "ПРИОРИТЕТ ПОЛИТИК/ДОСТУПОВ: при конфликте разрешений нужен ОДИН явный порядок (кандидат: узел > space > project > module > deny; дефолт-deny). В модели пока НЕТ — блокер capability-доступа перед пользовательскими модулями. Из 08-core-and-modules.", "type": "risk", "priority": 1, "status": "awaiting-owner" },
+      { "id": "Q-11", "text": "space/team/role (U4): пока ОДНА единица, новые рёбра на этом стоят. Делить на три → рёбра переезжают.", "type": "open-question", "priority": 3, "status": "awaiting-owner" },
+      { "id": "Q-12", "text": "D-view: каноническая форма view. ОТВЕТ Fable (DEC-11): 4-стадийный запрос from·traverse·filter·shape+params, filter читает конверт. Ждёт ратификации владельцем.", "type": "verification", "priority": 1, "status": "answered", "answer_ref": "DEC-11" },
+      { "id": "Q-13", "text": "D-inverse: хранить или вычислять. ОТВЕТ Fable (DEC-12): хранить одну сторону, вычислять индексом. Ждёт ратификации.", "type": "verification", "priority": 1, "status": "answered", "answer_ref": "DEC-12" }
     ],
     "next_moves": [
-      "Владельцу на решение: Q-9 (предохранитель лупа), Q-10 (attribution дерево vs прямые дети), Q-8 (дубль edges/body), Q-11 (делить ли space/role).",
-      "Фаза 2: 1-2 killer JSON-примера в _generated-examples — прогнать «всё в одной БД» на пределе (Q-7).",
-      "Опционально: поднять модель узла в brain (реплика владельца «должно жить в брейне») — agent-manager лишь применяет."
+      "СДЕЛАНО 2026-07-24: killer-прогон depth-1 (реальные 181946 ток., _generated-examples/run-view.mjs) + depth-2 (run-view-depth2.mjs: subtree≠direct, стопкран сработал). Модель ВЫШЛА ИЗ ГИПОТЕЗЫ. DEC-11..16 ратифицированы делом, канон в 03-schema/README R-1..R-7.",
+      "СДЕЛАНО: консолидация B1/B3/B5-B9 (на корпусе), B2 (task→конверт в 06-planning), B4 (переименования в 05-processes). Модель роста 07-extensibility + граница ядро/модуль 08-core-and-modules.",
+      "ГЕЙТ ВЛАДЕЛЬЦА (следующая сессия): (1) critic-проход по 08-core-and-modules перед ADR; (2) ратифицировать ADR-0004 'граница ядро/модуль + capability-доступ' (DEC-17); (3) решить Q-14 приоритет политик (блокер модулей); плюс висят Q-8, Q-11.",
+      "ПОТОМ (для 'уверенности в расширяемости'): прогон масштаба Q-7 на корпусе 10^3-10^4 узлов — единственное непроверенное для прототипа. Остаток чистоты: B5 (attribution массивом) в 05-processes/snapshot-capture.",
+      "Артефакты: INDEX.md · concept.json · 03-schema/README(R-1..R-7) · 07-extensibility/ · 08-core-and-modules/ · _generated-examples/{nodes.json,nodes-depth2.json,run-view*.mjs,README*} · _log/2026-07-23-agent-manager-example/{HANDOFF,VERIFICATION,FABLE-ADVICE}.md"
     ]
   }
 }
