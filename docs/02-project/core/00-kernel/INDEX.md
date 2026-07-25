@@ -8,6 +8,7 @@ scope: project
 related:
   - ./terminology.md
   - ./invariants.md
+  - ./axes-and-time.design.md
   - ../../../00-states/00-global-build/realization-plan/phase-1-engine/README.md
   - ../../../architecture/ADR/ADR-0004-layered-scope-resolution-and-capability-access.md
   - ../../../architecture/ADR/ADR-0005-data-substrate-structure.md
@@ -29,6 +30,7 @@ related:
 |------|-----------|
 | [`terminology.md`](./terminology.md) | Словарь ядра: 12+ терминов; два уровня — PUBLIC (4 кубика) vs KERNEL-STRICT примитивы; scope≠actor; открытые вопросы §7 |
 | [`invariants.md`](./invariants.md) | I-1..I-14 критических инвариантов ядра (identity, acts, projections, policy, storage, plugins, semantic) + карта «инвариант → тест ядра» |
+| [`axes-and-time.design.md`](./axes-and-time.design.md) | Оси адресации `thing × actor × scope × lens × time`; actor≠scope (вердикт: ADR-0004 уже корректен, нужна лишь глосса); битемпоральные поля `recordedAt/validFrom/validTo` на `acts[]` (движок as-of ОТЛОЖЕН, D-5) |
 
 **Планируется** (room to grow): `open-questions.md` · `act-kinds` (домены потоков `ActKind`) ·
 граница `kernel / runtime / plugins` · `PluginManifest`.
