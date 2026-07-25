@@ -14,6 +14,8 @@ related:
   - ../../../../architecture/ADR/ADR-0005-data-substrate-structure.md                                          # структура субстрата
   - ../../../../02-project/core/01-brain/INDEX.md                                                              # M-G1/M-G3, стек (DL-19 TS/Node, DL-21 PostgreSQL)
   - ../../../../_log/2026-07-25-phase-1-design/SYNTHESIS-phase-1-engine.md                                     # совет 3 линз (архитектор·аналитик·критик)
+  - ./vertical-scenario.spec.md                                                                                 # 10-шаговый вертикальный proof-сценарий (антидот преждевременной универсальности)
+  - ../../../../02-project/core/00-kernel/INDEX.md                                                              # канон строгости ядра (terminology·invariants·axes-and-time)
 ---
 
 # Фаза 1 — Тонкий движок
