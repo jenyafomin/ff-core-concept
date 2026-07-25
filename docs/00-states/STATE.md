@@ -10,6 +10,24 @@ Scope: project
 > Это единственная «точка входа при старте новой сессии»: сначала сюда, потом — свежий HANDOFF.
 > Обновляется в конце каждой сессии. Полная карта канона — `docs/INDEX.md` (переписан 2026-07-21, живой).
 
+## ⭐⭐⭐ RESUME (2026-07-25, НОЧЬ) — КАНОН СТРОГОСТИ ЯДРА заложен (6 циклов, впитан GPT-ревью)
+**Итог ночной итерации:** доработали Фазу 1 в сторону **строгости субстрата** — 6 циклов
+(designer→критик→фикс→коммит без GPG), закрыт весь стрим B (концепт-строгость) + A-1 (ADR persistence).
+Новый дом канона: **`docs/02-project/core/00-kernel/`** (staged, reversible) — читать его `INDEX.md`.
+- **C1** `f10caea` — `terminology.md` (24 термина, scope≠actor) + `invariants.md` (**I-1..I-14**).
+- **C2** `cd72f34` — `axes-and-time.design.md`: оси `thing×actor×scope×lens×time`; ADR-0004 уже корректен; битемпоральные поля на `acts[]` (as-of отложен D-5).
+- **C3** `0e74215` — `vertical-scenario.spec.md`: **10-шаговый proof** без спец-таблиц (антидот преждевременной универсальности).
+- **C4** `70b0cdd` — `open-questions.md` (**KQ-1..14**) + `act-kinds.design.md` (6 потоков актов) + `kernel-runtime-plugins.design.md` (2-слойка верна, PluginManifest).
+- **C5** `a4af436` — **ADR-0006 persistence-as-policy** (`proposed`) — формализует D-1; file-first ТОЛЬКО non-access-типы.
+- **C6** `67d5df0` — `kernel-acceptance-tests.md` (7 тестов, матрица T→I) + **`/AGENTS.md`** (Codex repo-prep) + OWASP-факт-правки.
+
+**🔴 Следующий ход — ВЛАДЕЛЕЦ проходит `00-kernel/open-questions.md`.** Топ-блокеры:
+**KQ-9** ратифицировать ADR-0006 (снимет провизор I-5) + список file-first типов · **KQ-10** `sum(cost)` R1-vs-R3 ·
+**KQ-4** редакция trace-ноги (blocks flagship-тест T-5/I-7) · **KQ-14** вширь vs вглубь.
+Дыры покрытия (C6): I-12 без теста · I-7/8/9/10 частичны · I-10 не гонялся на мульти-scope.
+**Хэндофф:** `docs/_log/2026-07-25-phase-1-design/MORNING-HANDOFF.md`. **Долг дисциплины:** RAG/SYNTHESIS лежат в gitignored `_log/` → мигрировать в committed-дом.
+**Стрим A (код) НЕ начат:** A-2 killer-семантики · A-3 метод Q-7 · A-4 модули движка · A-5 консолидация — следующий заход в `TOOLS/ff-engine`.
+
 ## ⭐⭐⭐ RESUME (2026-07-25) — ФАЗА 0 ЗАКРЫТА: ADR-0004/0005 approved, доступ+рост доказаны делом
 **Итог сессии:** зашли в **Фазу 0** плана реализации и закрыли все гейты.
 - **Q-14 доступ** ратифицирован: `узел > space.override > space.default > project > module`, **deny/Конституция = зажим ПОСЛЕ свёртки**, дефолт-deny.
