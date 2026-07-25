@@ -10,6 +10,7 @@ related:
   - ./invariants.md
   - ./axes-and-time.design.md
   - ./open-questions.md
+  - ./kernel-acceptance-tests.md
   - ../../../00-states/00-global-build/realization-plan/phase-1-engine/README.md
   - ../../../architecture/ADR/ADR-0004-layered-scope-resolution-and-capability-access.md
   - ../../../architecture/ADR/ADR-0005-data-substrate-structure.md
@@ -33,6 +34,7 @@ related:
 | [`invariants.md`](./invariants.md) | I-1..I-14 критических инвариантов ядра (identity, acts, projections, policy, storage, plugins, semantic) + карта «инвариант → тест ядра» |
 | [`axes-and-time.design.md`](./axes-and-time.design.md) | Оси адресации `thing × actor × scope × lens × time`; actor≠scope (вердикт: ADR-0004 уже корректен, нужна лишь глосса); битемпоральные поля `recordedAt/validFrom/validTo` на `acts[]` (движок as-of ОТЛОЖЕН, D-5) |
 | [`open-questions.md`](./open-questions.md) | Реестр KQ-1..KQ-14 — все открытые решения субстрата, собранные за ночь (по областям, с провенансом и «кто решает»); топ-3 блокера: persistence-ADR · sum(cost) R1/R3 · trace-leg redaction |
+| [`kernel-acceptance-tests.md`](./kernel-acceptance-tests.md) | 7 практических тестов ядра (add-type·semantic-as-plugin·rebuild-index·as-of·deny-field-everywhere·plugin-upgrade·explain-chain) → матрица T→I; вскрыл дыры покрытия: I-12 без реального теста, I-7/8/9/10 частичны (через partial T-5), I-10 partition не гонялся на мульти-scope |
 
 **Соседние доки движка (в других домах):** `act-kinds.design.md` (потоки `ActKind`, в `02-agents/.../03-schema/`) ·
 `kernel-runtime-plugins.design.md` (граница + PluginManifest, в `02-agents/.../08-core-and-modules/`).
