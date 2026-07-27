@@ -28,7 +28,14 @@ export class MdEnvelopeStore {
     this.inner = new FileNodeStore(root);
   }
 
-  /** Persist an EnvelopeNode as an @ff/core carrier node (delegated fs/frontmatter/validation). */
+  /**
+   * Persist an EnvelopeNode as an @ff/core carrier node (delegated fs/frontmatter/validation).
+   *
+   * NOTE (CQRS): the canonical act→node projection now lives in the StorePort read-model
+   * (store-memory + core/projection) — nodes are DERIVED from the log, not written directly. This
+   * method is the disk-carrier writer for the async @ff/core bridge (exercised by the round-trip
+   * test); durable persistence of the *projected* graph on the md path is the M3 seam (TODO below).
+   */
   async writeNode(node: EnvelopeNode): Promise<void> {
     const existing = await this.inner.get(node.id);
     const carrier = {

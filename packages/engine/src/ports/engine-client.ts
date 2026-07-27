@@ -6,8 +6,12 @@
 import type { Act, Decision, EnvelopeNode, SubjectRef, ViewDef } from '../core/types.js';
 import type { ViewResult } from '../core/view-compiler.js';
 
-/** Write acknowledgement. `ok:false` means the act was REFUSED (e.g. admission-gate) and NOT journaled. */
-export type Ack = { ok: true; act: Act } | { ok: false; reason: string };
+/**
+ * Write acknowledgement. `ok:false` means the act was REFUSED (e.g. admission-gate) and NOT journaled.
+ * `dedup:true` (additive, optional) means the act was a byte-identical re-write (same source_ref +
+ * snapshotHash already in the log) — no new act was appended; `act` is the existing log entry.
+ */
+export type Ack = { ok: true; act: Act; dedup?: boolean } | { ok: false; reason: string };
 
 export interface EngineClient {
   /** Run a compiled view for a viewer (all reads gated by resolve()). */

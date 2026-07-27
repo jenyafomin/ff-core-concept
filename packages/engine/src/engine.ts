@@ -8,6 +8,7 @@
  */
 import { admit, type ActSchema } from './core/admission.js';
 import { load } from './core/loader.js';
+import { isProjectable, snapshotHashOf, sourceRefOf } from './core/projection.js';
 import { PermissionPolicy } from './core/resolve.js';
 import { compile } from './core/view-compiler.js';
 import type { Act, Decision, EnvelopeNode, Graph, SubjectRef, ViewDef } from './core/types.js';
@@ -71,7 +72,25 @@ export class Engine implements EngineClient {
     const finalized: Act = { ...act, recordedAt: new Date().toISOString() };
     const verdict = admit(finalized, this.schemas.find((s) => s.actKind === finalized.actKind));
     if (!verdict.ok) return { ok: false, reason: verdict.reason }; // REFUSE before any journal write
+
+    // Idempotency (T1, ADR-0008 §1 / ingest-spec §4): a byte-identical re-write of a projectable
+    // domain_event (same source_ref + snapshotHash already in the log) is a NO-OP — the log does not
+    // grow, we return the existing entry marked dedup. A CHANGED snapshotHash is NOT caught here, so
+    // it appends as a superseding domain_event and the projection takes the freshest. Non-projectable
+    // acts (no source_ref, or non-domain_event) never dedup — they always append.
+    if (isProjectable(finalized)) {
+      const ref = sourceRefOf(finalized);
+      const hash = snapshotHashOf(finalized);
+      const existing = this.store
+        .acts()
+        .find((a) => isProjectable(a) && sourceRefOf(a) === ref && snapshotHashOf(a) === hash);
+      if (existing) return { ok: true, act: existing, dedup: true };
+    }
+
     const recorded = this.store.writeAct(finalized);
+    // The graph is a projection of the log (ADR-0008): a domain_event write must surface as its node
+    // on the very next read. Refresh from the store (which folded the act into the read-model).
+    this.graph = load(this.store.load());
     return { ok: true, act: recorded };
   }
 

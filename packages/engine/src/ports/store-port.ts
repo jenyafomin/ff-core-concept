@@ -1,8 +1,10 @@
 /**
  * StorePort — engine-INTERNAL port over the persistence substrate (NOT a cross-module seam).
  *
- * FROZEN method set: `load() · readNode(id) · writeAct(act) · rebuild(from)` + return shapes.
- * EXTENSIBLE: which concrete adapter (memory · md · pg …) and the storage layout.
+ * Method set: `load() · readNode(id) · writeAct(act) · acts() · rebuild(from)` + return shapes.
+ * `acts()` (write-model reader) is an ADDITIVE extension for CQRS — engine-internal, so growing the
+ * port is allowed (unlike the frozen cross-module EngineClient seam). EXTENSIBLE: which concrete
+ * adapter (memory · md · pg …) and the storage layout.
  *
  * CQRS (ADR-0008): the acts-log is the write-model (system-of-record); the graph is a read-model
  * projection. At M0 storage is in-memory / md; swapping to PG at M4 is an ADDITIVE new adapter,
@@ -18,6 +20,8 @@ export interface StorePort {
   readNode(id: string): EnvelopeNode | null;
   /** Append an act to the write-model (system-of-record). Returns the recorded act (recordedAt set). */
   writeAct(act: Act): Act;
+  /** Read-only view of the append-only journal (the write-model / system-of-record). */
+  acts(): readonly Act[];
   /** Rebuild the read-model projection from a source ("journal" = replay acts, "files" = re-scan). */
   rebuild(from: 'journal' | 'files'): EnvelopeNode[];
 }

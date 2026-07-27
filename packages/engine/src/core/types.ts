@@ -153,14 +153,30 @@ export const ACT_KINDS = [
 export type ActKind = (typeof ACT_KINDS)[number];
 
 /**
+ * Structured provenance (CQRS projection key, ADR-0008 §3 / ingest-spec §3). ADDITIVE widening of
+ * the frozen `provenance` field: a plain string stays valid (audit label), OR an object carrying the
+ * idempotency key. `source_ref` = the stable natural key a `domain_event` projects into (one graph
+ * node per source_ref); `snapshotHash` = the folded upstream fields — same ref+hash ⇒ dedup no-op,
+ * changed hash ⇒ a superseding domain_event (the log grows, the projection takes the freshest).
+ */
+export interface Provenance {
+  source_ref: string;
+  snapshotHash?: string;
+  [k: string]: unknown;
+}
+
+/**
  * FROZEN act-envelope shape (G1/CQRS + ADR-0007 a): PII travels ONLY via payloadRef+payloadHash;
  * `recordedAt` is engine-assigned and immutable. `payload` (inline) is the thing the admission-gate
  * refuses when it carries PII.
+ *
+ * `provenance` is widened ADDITIVELY to `string | Provenance` (form unchanged: same field, richer
+ * accepted shape) so a `domain_event` can carry its projection key without a new top-level field.
  */
 export interface Act {
   id: string;
   actor: SubjectRef;
-  provenance: string;
+  provenance: string | Provenance;
   /** Engine-assigned, immutable. Callers do not supply this on write(). */
   recordedAt: string;
   actKind: ActKind;
