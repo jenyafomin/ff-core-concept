@@ -18,6 +18,7 @@ import {
   grandchildSum,
   admit,
   Engine,
+  EngineError,
   MemoryStore,
   MdEnvelopeStore,
   FIXED_POLICY,
@@ -38,6 +39,21 @@ function corpus(name: string): EnvelopeNode[] {
 
 const viewGraph: Graph = load(corpus('nodes.json'));
 const depth2Graph: Graph = load(corpus('nodes-depth2.json'));
+
+// Minimal constitution node: the engine refuses to START without a `policy:constitution` ceiling
+// (fail-stop, not fail-open). Seeds otherwise-empty stores so write/admission tests can construct.
+const MIN_CONSTITUTION: EnvelopeNode = {
+  id: 'policy:constitution',
+  type: 'policy',
+  state: { status: 'active' },
+  edges: [],
+  view: [],
+  visibility: { readable_by: ['agent:*'] },
+  access: { can_read: ['agent:*'], can_write: [] },
+  acts: [],
+  policy_ref: [],
+  body: { synthetic: true, no_read: [], protected_namespaces: [], default: 'deny' },
+};
 
 // The view-corpus snapshots are readable_by ["agent:*"], so an authorized agent viewer reproduces the
 // seed aggregation numbers while STILL routing every read through resolve() (no bypass).
@@ -188,11 +204,57 @@ describe('admission-gate — no inline PII (ADR-0007 G3), fail-closed', () => {
     const ref: Act = { ...base, payloadRef: 'blob:order-4100' };
     expect(admit(ref).ok).toBe(false);
   });
+
+  it('REFUSES inline PII in an edge meta (M1 puts confidence/provenance on same-as/rented edges)', () => {
+    const structural: Act = {
+      ...base,
+      edges: [{ predicate: 'same-as', target: 'customer:42', meta: { confidence: 0.9, customerPhone: '+971501234567' } }],
+    };
+    const v1 = admit(structural);
+    expect(v1.ok).toBe(false);
+    if (!v1.ok) expect(v1.reason).toMatch(/edges\[0\]\.meta/);
+
+    // heuristic branch too: a phone-like value under a non-PII key name is still caught.
+    const heuristic: Act = {
+      ...base,
+      edges: [{ predicate: 'rented', target: 'order:4100', meta: { provenance: 'call +971501234567' } }],
+    };
+    expect(admit(heuristic).ok).toBe(false);
+  });
+
+  it('PASSES an act whose edge meta carries only non-PII (confidence/provenance ref)', () => {
+    const clean: Act = {
+      ...base,
+      edges: [{ predicate: 'same-as', target: 'customer:42', meta: { confidence: 0.9, provenance: 'blob:order-4100' } }],
+    };
+    expect(admit(clean).ok).toBe(true);
+  });
+});
+
+describe('engine refuse-to-start — no policy:constitution ⇒ fail-STOP (not fail-open)', () => {
+  it('(a) an Engine over a graph WITHOUT policy:constitution refuses to start', () => {
+    // viewGraph nodes minus the constitution: the ceiling would silently default to [] (fail-open).
+    const withoutConstitution = viewGraph.nodes.filter((n) => n.id !== 'policy:constitution');
+    const store = new MemoryStore(withoutConstitution);
+    expect(() => new Engine(store, FIXED_POLICY)).toThrow(EngineError);
+    expect(() => new Engine(store, FIXED_POLICY)).toThrow(/policy:constitution/);
+  });
+
+  it('(b) WITH a constitution the Engine constructs and resolves as before', () => {
+    const store = new MemoryStore(viewGraph.nodes); // the seed corpus now carries policy:constitution
+    const engine = new Engine(store, FIXED_POLICY);
+    const res = engine.view(
+      { kind: 'cost-tree', body: { from: 'agent:ff-personal', traverse: [{ pred: 'delegates-to', depth: '*' }], cost_via: { field: 'body.tokens' } } },
+      'agent:ff-personal',
+    );
+    if (res.kind !== 'cost-tree') throw new Error('unreachable');
+    expect(res.tree.subtree).toBe(181946); // unchanged from the pre-hardening seed numbers
+  });
 });
 
 describe('Engine.write — fail-closed BY BEHAVIOUR (refuse before any journal write)', () => {
   it('an inline-PII act is refused AND never reaches the append-only journal', () => {
-    const store = new MemoryStore([]);
+    const store = new MemoryStore([MIN_CONSTITUTION]);
     const engine = new Engine(store, FIXED_POLICY);
     const ack = engine.write({ id: 'act:pii', actor: 'agent:crm', provenance: 'ingest', recordedAt: '', actKind: 'domain_event', edges: [], payload: { email: 'a@b.com' } });
     expect(ack.ok).toBe(false);
@@ -200,7 +262,7 @@ describe('Engine.write — fail-closed BY BEHAVIOUR (refuse before any journal w
   });
 
   it('a ref-only act is admitted, journaled, and gets an engine-assigned recordedAt', () => {
-    const store = new MemoryStore([]);
+    const store = new MemoryStore([MIN_CONSTITUTION]);
     const engine = new Engine(store, FIXED_POLICY);
     const ack = engine.write({ id: 'act:ok', actor: 'agent:crm', provenance: 'ingest', recordedAt: 'CALLER-SUPPLIED-IGNORED', actKind: 'domain_event', edges: [], payloadRef: 'blob:x', payloadHash: 'sha256:1' });
     expect(ack.ok).toBe(true);

@@ -15,6 +15,20 @@ import type { Ack, EngineClient } from './ports/engine-client.js';
 import type { StorePort } from './ports/store-port.js';
 import type { ViewResult } from './core/view-compiler.js';
 
+/** The Constitution node id — the non-negotiable policy ceiling every resolve() clamps against. */
+export const CONSTITUTION_ID = 'policy:constitution';
+
+/**
+ * Thrown when the Engine refuses to START (fail-stop, not fail-open). Distinct from RefusalError
+ * (which refuses to COMPUTE a lens over an invalid graph): this is a construction-time refusal.
+ */
+export class EngineError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'EngineError';
+  }
+}
+
 export class Engine implements EngineClient {
   private graph: Graph;
 
@@ -33,6 +47,15 @@ export class Engine implements EngineClient {
       );
     }
     this.graph = load(store.load());
+    // Fail-STOP, not fail-OPEN: resolve()'s clamps (protected_namespaces / no_read) read their
+    // ceiling from `policy:constitution`. If that node is ABSENT the clamps silently default to
+    // `[]` and the ceiling vanishes (fail-open). We refuse to start instead, ONCE at load time —
+    // NOT on the hot path of every resolve() — so the ceiling can never quietly disappear.
+    if (!this.graph.byId.has(CONSTITUTION_ID)) {
+      throw new EngineError(
+        `missing ${CONSTITUTION_ID} — engine refuses to start (fail-stop, not fail-open): the constitution is the policy ceiling every resolve() clamps against`,
+      );
+    }
   }
 
   view(def: ViewDef, viewer: SubjectRef): ViewResult {

@@ -55,25 +55,28 @@ function isPiiKey(key: string, schema?: ActSchema): boolean {
   return DEFAULT_PII_KEYS.includes(k);
 }
 
-/** Walk an inline value; return a reason if it structurally carries PII (a PII key) or looks like PII. */
-function scan(value: unknown, schema: ActSchema | undefined, path: string): string | null {
+/**
+ * Walk an inline value; return a reason if it structurally carries PII (a PII key) or looks like PII.
+ * `root` labels the location in the refusal reason (default 'payload'; edge meta uses 'edges[i].meta').
+ */
+function scan(value: unknown, schema: ActSchema | undefined, path: string, root = 'payload'): string | null {
   if (value == null) return null;
   if (typeof value === 'string') {
-    if (EMAIL_RE.test(value)) return `inline PII (email-like value) at payload.${path || '<root>'}`;
-    if (PHONE_RE.test(value)) return `inline PII (phone-like value) at payload.${path || '<root>'}`;
+    if (EMAIL_RE.test(value)) return `inline PII (email-like value) at ${root}.${path || '<root>'}`;
+    if (PHONE_RE.test(value)) return `inline PII (phone-like value) at ${root}.${path || '<root>'}`;
     return null;
   }
   if (typeof value !== 'object') return null;
   if (Array.isArray(value)) {
     for (let i = 0; i < value.length; i++) {
-      const r = scan(value[i], schema, `${path}[${i}]`);
+      const r = scan(value[i], schema, `${path}[${i}]`, root);
       if (r) return r;
     }
     return null;
   }
   for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-    if (isPiiKey(k, schema)) return `inline PII field '${k}' at payload.${path ? path + '.' : ''}${k} — must use payloadRef+payloadHash`;
-    const r = scan(v, schema, path ? `${path}.${k}` : k);
+    if (isPiiKey(k, schema)) return `inline PII field '${k}' at ${root}.${path ? path + '.' : ''}${k} — must use payloadRef+payloadHash`;
+    const r = scan(v, schema, path ? `${path}.${k}` : k, root);
     if (r) return r;
   }
   return null;
@@ -91,6 +94,14 @@ export function admit(act: Act, schema?: ActSchema): Admission {
   // Structural + heuristic: no inline PII anywhere in the act body.
   if (act.payload !== undefined) {
     const reason = scan(act.payload, schema, '');
+    if (reason) return refuse(reason);
+  }
+  // Edge meta is a payload too. M1 puts confidence/provenance on `same-as`/`rented` edges, where a
+  // phone/name can slip in — the same no-inline-PII rule applies, fail-closed, per-edge.
+  for (let i = 0; i < (act.edges ?? []).length; i++) {
+    const meta = act.edges[i]?.meta;
+    if (meta === undefined) continue;
+    const reason = scan(meta, undefined, '', `edges[${i}].meta`);
     if (reason) return refuse(reason);
   }
   return ok();
