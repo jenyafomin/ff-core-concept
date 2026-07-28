@@ -1,0 +1,29 @@
+{
+  "name": "@ff/ingest-rentacar",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Rentacar ingest adapter (M1): rows → domain_event acts over @ff/engine. RowSource port + fixture adapter, file-first PayloadStore for PII, deterministic idempotency keys.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ff/engine": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1"
+  }
+}

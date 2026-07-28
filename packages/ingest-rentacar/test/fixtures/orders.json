@@ -1,0 +1,12 @@
+{
+  "_note": "SYNTHETIC rows reproducing the SHAPES verified in data-verification.analysis (NOT copied from the external project). Covers: bare #, glued suffix (Long term/Short term/Collection), spaced [AL], broken/empty # (quarantine), negative Remaining, empty Mobile, PII columns (Customer/Mobile/Recent Note).",
+  "rows": [
+    { "#": "45866-2868", "Plate No": "DXB-12345", "Customer": "Kriukovskyi Oleksii", "Mobile": "380674842880", "Order Type": "Daily400.00", "Remaining": 183.33, "Number of Days": 6, "Status": "Active", "Order Open Time": "22 Feb 17:05", "Recent Note": "Called about extension" },
+    { "#": "45832-2865Long term", "Plate No": "DXB-67890", "Customer": "Armen Llchlyan", "Mobile": "", "Order Type": "Monthly5500.00", "Remaining": -5316.67, "Number of Days": 30, "Status": "Active", "Order Open Time": "20 Feb 09:00" },
+    { "#": "45875-2870 [AL]", "Plate No": "AUH-11111", "Customer": "Ahmed Hassan", "Mobile": "+971501234567", "Order Type": "Daily350.00", "Remaining": 0, "Number of Days": 4, "Status": "Completed", "Recent Note": "VIP customer, priority" },
+    { "#": "45821-2864Short term", "Plate No": "DXB-12345", "Customer": "Maria Silva", "Mobile": "971559998877", "Order Type": "Weekly1200.00", "Remaining": -320, "Number of Days": 7, "Status": "Completed" },
+    { "#": "Check Levels:", "Plate No": "", "Customer": "", "Mobile": "" },
+    { "#": "", "Plate No": "DXB-99999", "Customer": "Ghost Row", "Mobile": "000" },
+    { "#": "45570-2852Collection", "Plate No": "SHJ-22222", "Customer": "Ali Reza", "Mobile": "971521112233", "Order Type": "Daily300.00", "Remaining": -1620, "Number of Days": 12, "Status": "Active", "Recent Note": "Repeat renter" }
+  ]
+}

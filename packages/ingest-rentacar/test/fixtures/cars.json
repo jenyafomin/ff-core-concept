@@ -1,0 +1,12 @@
+{
+  "_note": "SYNTHETIC EXP/Cars rows reproducing shapes from data-verification.analysis §3: real plates, SOLD-* placeholder (two DIFFERENT cars sharing 'SOLD-123' → must NOT collapse), '-' dash-placeholder id (unkeyable → quarantine).",
+  "rows": [
+    { "Plate Number": "DXB-12345", "Status": "Available", "NODE ID (#)": "C-1001", "Model": "Infiniti QX80", "Make": "Infiniti" },
+    { "Plate Number": "DXB-67890", "Status": "Rented", "NODE ID (#)": "C-1002", "Model": "Hyundai Elantra", "Make": "Hyundai" },
+    { "Plate Number": "AUH-11111", "Status": "Available", "NODE ID (#)": "C-1003", "Model": "Toyota Camry", "Make": "Toyota" },
+    { "Plate Number": "SHJ-22222", "Status": "Available", "NODE ID (#)": "C-1004", "Model": "Nissan Patrol", "Make": "Nissan" },
+    { "Plate Number": "SOLD-123", "Status": "Sold", "NODE ID (#)": "C-1005", "Model": "Kia Rio", "Make": "Kia" },
+    { "Plate Number": "SOLD-123", "Status": "Sold", "NODE ID (#)": "C-1006", "Model": "Kia Sportage", "Make": "Kia" },
+    { "Plate Number": "-", "Status": "Unknown", "NODE ID (#)": "-" }
+  ]
+}
