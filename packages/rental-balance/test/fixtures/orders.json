@@ -1,0 +1,6 @@
+{
+  "_note": "P1 one-car slice. ONE car (DXB-55555), ONE order (ORD-9001) with a real amount-to-pay. Realistic Transactions live in transactions.json. Shape is a plausible rental export subset (Order/Plate/Customer Code/Total/Status); the real one-car export drops in here unchanged (same RowSource port).",
+  "rows": [
+    { "Order": "ORD-9001", "Plate": "DXB-55555", "Customer Code": "CUST-9001", "Total": 3000, "Status": "Active" }
+  ]
+}

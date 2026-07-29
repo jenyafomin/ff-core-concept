@@ -208,9 +208,21 @@ tables) — this section cross-references the two places where the split isn't c
   operational nice-to-have (§1's "short retention, security audit window"), not a Phase-1 correctness
   requirement. Deferring the stream ≠ deferring the guarantee.
 - **`observation` — deferred, matches the existing stub.** Step 6 (memory-agent) is already marked
-  `STUB` in `vertical-scenario.spec.md` §What is stubbed, and its own open question #1 ("projection or
-  node?") is unresolved. Building a governed `observation` stream ahead of that decision would bake in an
-  answer prematurely.
+  `STUB` in `vertical-scenario.spec.md` §What is stubbed, and its open question ("projection or
+  node?") is tracked in its ONE truth-home (see reconciliation note below). Building a governed `observation`
+  stream ahead of that decision would bake in an answer prematurely.
+
+> **🔧 RECONCILIATION (B3-a, 2026-07-27) — one home for "projection or node?", this file is NOT a third home.**
+> The KQ-11 question "is step-6 memory a projection or a first-class `type:memory` node?" has a **single
+> truth-home**: `docs/02-project/core/01-brain/01-overview/L0-memory-unit.md` (В2/В4) +
+> `.../01-overview/analyses/kq11-L0-reconciliation-2026-07-26.analysis.md` (map + delta). This `act-kinds` doc
+> earlier read as a **third, parallel home** with a STALE "unresolved STUB" phrasing (flagged by
+> `doc-tree` law #2 «один дом на тему»). It is NOT — it only assigns the `ActKind` (`observation`, never
+> `domain_event`) to step 6. **Provisional canon (KQ-11-Q2, pending owner ratification):** memory content =
+> **projection**; the act of remembering is stored as an **`observation`-act**; the addressable unit is an
+> **insight-EDGE with a thin passport** (confidence · provenance · valid-time · epistemic) — **NOT a
+> `type:memory` node**. Reflexivity facet already ratified (B2-a: `recallFeedback: passive` default,
+> `prefer-properties-over-poles.design.md §5`). This file DEFERS to that home; do not re-decide it here.
 - **`command` — deferred, and arguably a gap in the vertical scenario itself.** None of the 10 steps
   models a *rejected* proposal or a pending-not-yet-accepted request as its own persisted artifact — every
   step's write is modeled as directly emitting (or being denied) a `domain_event`. If "propose → validate →

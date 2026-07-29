@@ -20,12 +20,37 @@ export const DENY: Decision = 'deny';
 /** Policy mode. FROZEN as an enum; the *combinator* it selects comes from data (policy:access-priority). */
 export type PolicyMode = 'NAIVE' | 'FIXED';
 
-/** A typed, directed edge. One side stored; the inverse is COMPUTED (DEC-12, see edge-index.ts). */
+/**
+ * A typed, directed edge. One side stored; the inverse is COMPUTED (DEC-12, see edge-index.ts).
+ *
+ * D3 (edge-passport, cheap-now / plastic): the edge carries an OPTIONAL `provenance` slot (which
+ * source/act asserted it) alongside `meta`. `validFrom`/`validTo` are RESERVED for P2 (time-on-edge —
+ * "who held the car on the fine's date") and are NOT consumed by the projection at P1. The no-inline-PII
+ * admission-gate scans `meta` (a payload) but NOT `provenance`/`validFrom`/`validTo` — those carry
+ * source ids / timestamps, the same unscanned class as `predicate`/`target`.
+ */
 export interface Edge {
   predicate: string;
   target: string;
   meta?: Record<string, unknown>;
+  /** D3: which source/act asserted this edge (a source label, e.g. `sync:rentacar-onecar`). Non-PII. */
+  provenance?: string;
+  /** RESERVED (P2 time-on-edge). Present in the shape now; NOT folded/consumed by projection at P1. */
+  validFrom?: string;
+  /** RESERVED (P2 time-on-edge). Present in the shape now; NOT folded/consumed by projection at P1. */
+  validTo?: string;
 }
+
+/**
+ * D1 · Edge cardinality per predicate — DATA, not a hardcoded branch. `one` = at most one edge per
+ * (subject, predicate): a new target for the same subject+predicate REPLACES the prior edge. `many` =
+ * additive: distinct targets accumulate. This is the registry the projection folds edges by (the
+ * correct fix for the `foldInto` hard-replace bug — see core/predicates.ts, core/projection.ts).
+ */
+export type Cardinality = 'one' | 'many';
+
+/** predicate → cardinality. Grows as new predicates are proven by real processes (grow-by-demand). */
+export type PredicateRegistry = Record<string, Cardinality>;
 
 export interface Visibility {
   level?: string;

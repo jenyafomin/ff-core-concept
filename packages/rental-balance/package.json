@@ -1,0 +1,30 @@
+{
+  "name": "@ff/rental-balance",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "P1 payment-by-one-car vertical: payment/order ingest over @ff/engine, balance arithmetic, the first honest agent-cycle (balance-observer: reads the projection → computes remaining + detects discrepancy → writes an observation back), and an owner-facing CLI.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ff/engine": "*",
+    "@ff/ingest-rentacar": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1"
+  }
+}

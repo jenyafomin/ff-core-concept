@@ -1,0 +1,44 @@
+{
+  "type": "analysis-index",
+  "id": "kernel-council-2026-07-25",
+  "status": "active",
+  "title": "Совет 6 агентов по открытым вопросам ядра — навигатор (2026-07-25)",
+  "note": "ВИД по D-1 (type + steps[]). Дом истины по темам — по paths[]; это визард-обзор, не второй дом контента.",
+  "steps": [
+    {
+      "title": "1 · Триаж 14 KQ (A/B/C)",
+      "paths": ["docs/02-project/core/00-kernel/analyses/council-2026-07-25/1-triage-14kq.analysis.md"],
+      "note": "🟢 A: KQ-3, KQ-5/6/7, KQ-12, KQ-13 · 🟡 B: KQ-2, KQ-9, KQ-10, KQ-14 · 🟣 C: KQ-11, KQ-8 (сделаны); pending critic: KQ-4, KQ-1."
+    },
+    {
+      "title": "2 · План консолидации + META-FINDING",
+      "paths": ["docs/02-project/core/00-kernel/analyses/council-2026-07-25/2-consolidation-plan.analysis.md"],
+      "note": "00-kernel переоткрыл 01-brain без ссылок (закон #2). Реконсиляция KQ-11↔L0, KQ-8↔hard-erase. KQ-14 = вглубь."
+    },
+    {
+      "title": "C · Синтез KQ-11 (память: проекция vs узел)",
+      "paths": ["docs/02-project/core/01-brain/01-overview/analyses/kq11-memory-projection-vs-node--council-2026-07-25.analysis.md"],
+      "note": "Контент = проекция; акт запоминания = observation; адресуемость только через insight-EDGE с тонким паспортом."
+    },
+    {
+      "title": "D · Синтез KQ-8 (семантика удаления)",
+      "paths": ["docs/02-project/core/01-brain/01-overview/01-values/07-soglasie/decisions/kq8-deletion--council-2026-07-25.analysis.md"],
+      "note": "«Удаление» = 3 обязательства под одним словом; split immutable acts ⟂ erasable payload; 3 режима; нужен I-15 + ADR-0007."
+    },
+    {
+      "title": "3 · Критик-прогон KQ-4 (редакция trace-ноги) — AMEND",
+      "paths": ["docs/02-project/core/00-kernel/analyses/council-2026-07-25/3-kq4-trace-redaction-critic.analysis.md"],
+      "note": "Лин чинит не ту сторону: утечка на ЗАПИСИ, не на чтении. Правило: хукать trace ПОСЛЕ стадии filter (после resolve()); KQ-8 = жёсткое предусловие."
+    },
+    {
+      "title": "4 · Критик-прогон KQ-1 (assertion = примитив или проекция?) — AMEND",
+      "paths": ["docs/02-project/core/00-kernel/analyses/council-2026-07-25/4-kq1-assertion-critic.analysis.md"],
+      "note": "Расщепить: KQ-1a простые поля = проекция; KQ-1b инсайты = паспортное ребро; третья дыра — field-scoped эпистемо-запросы. Не паковать KQ-1/2/11 в один ADR."
+    },
+    {
+      "title": "Реестр KQ (источник)",
+      "paths": ["docs/02-project/core/00-kernel/open-questions.md"],
+      "note": "KQ-1..14. Триаж не переписывает реестр — проецирует его."
+    }
+  ]
+}

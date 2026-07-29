@@ -18,6 +18,12 @@ related:
 
 # ❓ Kernel / Substrate — реестр открытых вопросов (KQ)
 
+> ✅ **РАТИФИКАЦИЯ 2026-07-26** (владелец: «Стартуй ратификацию»). Закрыты как **RATIFIED**:
+> **KQ-3 · KQ-5 · KQ-6 · KQ-7 · KQ-10 · KQ-12 · KQ-13 · KQ-14**; **KQ-11** — частично (фасет
+> рефлексивности `recallFeedback`, ядро проекция-vs-node OPEN). Акт-истина:
+> `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`. Открытыми остаются
+> **KQ-1, KQ-2, KQ-4🔴, KQ-8, KQ-9🔴, KQ-11(ядро)**.
+
 > **PLACEMENT (2026-07-25, staged, reversible):** папка `00-kernel/` заведена как staging-дом канона
 > субстрата (terminology · invariants · axes-and-time · этот реестр). Размещение **обратимо** — если
 > канон получит постоянный дом, файл переезжает целиком (LOSE-NOTHING, `git mv`, редирект-заглушка).
@@ -43,8 +49,8 @@ related:
 
 1. **KQ-9 · Persistence-as-policy ADR + file-first type list** — гейтит C5-ADR, всю тему хранения и
    опт-ин типов «файл-истина».
-2. **KQ-10 · `sum(cost)` = R1 data-enum или R3 new-fold** — гейтит заявку «step 10 доказан в Phase 1»;
-   при R3 шаг 10 vertical-сценария откладывается.
+2. ~~**KQ-10 · `sum(cost)` = R1 data-enum или R3 new-fold**~~ — ✅ **RATIFIED 2026-07-26** (B1-e): выбор
+   из enum = R1 data; расширение enum = R3 код+ADR; **ship в Phase-1** → 🔴-блокер снят.
 3. **KQ-4 · Trace-leg редакции deny-field (I-7 / kernel-тест 5)** — гейтит закрытие инварианта I-7 и
    kernel-теста 5; пока не решён — trace-нога теста НЕ верифицирована.
 
@@ -80,11 +86,11 @@ related:
   управляет?
 - **Где поднят:** `terminology.md` §7.5 + open-section в `invariants.md` (теперь согласованы — оба
   считают ответ провизорным). Цикл C1–C2.
-- **Статус:** `PROVISIONAL-answer`.
-- **Провизорный ответ:** контрольная точка — **meta-cap-gate** (`core:manage-*`); финальный ответ OPEN
-  до ADR по persistence/policy.
-- **Кто решает:** needs-ADR (persistence/policy).
-- **Что блокирует:** финализацию модели самоуправления политикой.
+- **Статус:** ✅ `RATIFIED` (2026-07-26, B1-a).
+- **Ратифицировано:** политика правится **только** через `core:manage-*` + genesis-нота (meta-cap-gate).
+  Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Кто решал:** owner.
+- **Что разблокировано:** модель самоуправления политикой (gate зафиксирован).
 
 ### KQ-4 · Trace-leg редакции deny-field-everywhere (GPT test 5 / I-7)
 - **Вопрос (crisp):** как denied-поле удерживается вне `agent_trace`, если `agent_trace` — это WRITE-поток,
@@ -105,37 +111,42 @@ related:
 - **Вопрос (crisp):** нужно ли valid-time (`validFrom`/`validTo`) вообще в v1, или достаточно одного
   `recordedAt` — с valid-time как опт-ин на тип (`meta:type` объявляет `temporal: uni|bi`)?
 - **Где поднят:** `axes-and-time.design.md` §5 Q1. Цикл C2.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** склонность к `recordedAt`-only + per-type opt-in bitemporal (не подтверждено).
-- **Кто решает:** owner (возможно needs-ADR при закреплении temporal-модели).
-- **Что блокирует:** темпоральную модель ядра v1; форму `meta:type`.
+- **Статус:** ✅ `RATIFIED` (2026-07-26, B1-b).
+- **Ратифицировано:** `temporal: uni | bi` опт-ин на тип, **дефолт `uni`** (per §P-1 — свойство типа).
+  Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Кто решал:** owner.
+- **Что разблокировано:** темпоральную модель ядра v1; форму `meta:type`.
 
 ### KQ-6 · `recordedAt` только на акте?
 - **Вопрос (crisp):** должен ли `recordedAt` жить ТОЛЬКО на акте (envelope-summary derived, а не второй
   источник времени)?
 - **Где поднят:** `axes-and-time.design.md` §5 Q2. Цикл C2.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** —.
-- **Кто решает:** owner.
-- **Что блокирует:** число источников времени (single source of record-time).
+- **Статус:** ✅ `RATIFIED` (2026-07-26, B1-b).
+- **Ратифицировано:** `recordedAt` живёт **только на акте** (envelope-summary derived, не второй источник).
+  Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Кто решал:** owner.
+- **Что разблокировано:** single source of record-time.
 
 ### KQ-7 · Valid-time: интервал vs точка + close-event
 - **Вопрос (crisp):** valid-time как интервал `[validFrom, validTo)` или как точка + отдельный
   close-event?
 - **Где поднят:** `axes-and-time.design.md` §5 Q3. Цикл C2.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** —.
-- **Кто решает:** owner (зависит от KQ-5).
-- **Что блокирует:** представление valid-time (форму хранения интервалов).
+- **Статус:** ✅ `RATIFIED` (2026-07-26, B1-b).
+- **Ратифицировано:** valid-time = **интервал** `[validFrom, validTo)` (не точка + close-event).
+  Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Кто решал:** owner.
+- **Что разблокировано:** представление valid-time (форма хранения интервалов).
 
 ### KQ-8 · Что считается deletion?
 - **Вопрос (crisp):** что такое «удаление» — tombstone, projection-hide или physical erase?
 - **Где поднят:** `invariants.md` open-section; на этом держатся **I-4 / I-12**, но термин не определён.
   Цикл C1–C2.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** —.
-- **Кто решает:** needs-ADR (пересечение с persistence/consent-erasure).
-- **Что блокирует:** инварианты I-4 / I-12; семантику удаления.
+- **Статус:** `OPEN` (ведётся в **ADR-0007**; день-1-минимум G3 = approved). Блок-4 совет «эрейж ⟂ file-first/git» — pending.
+- **Провизорный ответ:** режим удаления = свойство per type/policy `hide | prune | shred` (ADR-0007 §b);
+  `hide` дефолт; **`shred` ограничен file-first-границей** (crypto-shred недоказуем против git-payload — B3-d,
+  ADR-0007 OQ-7). Payload-separability + erasure-as-act = предлагаемый I-15 (свод carve-out I-4 в `I-15-proposal §2-bis`).
+- **Кто решает:** needs-ADR (ADR-0007 текст) + owner (KQ-8-Q1/Q2) + Блок-4 совет (file-first-эрейж).
+- **Что блокирует:** инварианты I-4 / I-12; семантику удаления; ратификацию текста ADR-0007.
 
 ### KQ-9 · Persistence-as-policy ADR + file-first type list
 - **Вопрос (crisp):** формализовать «хранение как политику» (D-1 ратифицирован как рамка, ADR ожидается)
@@ -155,11 +166,12 @@ related:
   fold (код движка, R3)?
 - **Где поднят:** `vertical-scenario.spec.md` Q#6 + `phase-1-engine/README.md` («Заповеди
   расширяемости», README запрещает новые folds из Phase 1). Цикл C3.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** если R3 — vertical step 10 **откладывается** (README банит новые folds из
-  Phase 1).
-- **Кто решает:** owner / needs-ADR (классификация изменения R1 vs R3).
-- **Что блокирует:** заявку «step 10 доказан в Phase 1». 🔴 (см. топ-блокеры).
+- **Статус:** ✅ `RATIFIED` (2026-07-26, B1-e).
+- **Ратифицировано:** **выбор** агрегатора из enum (`sum/avg/count`) = R1 data (свойство вью);
+  **расширение** enum = R3 код+ADR (жёсткая граница). **Ship в Phase-1** — шаг 10 не откладывается.
+  Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Кто решал:** owner.
+- **Что разблокировано:** заявку «step 10 доказан в Phase 1» (🔴-блокер снят).
 
 ---
 
@@ -169,27 +181,37 @@ related:
 - **Вопрос (crisp):** «память» на шаге 6 — это чистая проекция над узлом-задачей (ноль новых узлов), или
   first-class `type:memory` узел с ребром `recalls → task`? Решает: `domain_event` vs `observation`.
 - **Где поднят:** `vertical-scenario.spec.md` (Q). Цикл C3.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** —.
-- **Кто решает:** owner.
-- **Что блокирует:** классификацию шага 6 (domain_event vs observation); модель памяти в сценарии.
+- **Статус:** 🟡 `PARTIAL` — фасет рефлексивности ✅ RATIFIED (2026-07-26, B2-a); **ядро OPEN**.
+- **Ратифицировано (фасет):** рефлексивность памяти = свойство `recallFeedback: off | passive | active`,
+  дефолт `passive`; `active` — с клапаном затухания. Дом: `../prefer-properties-over-poles.design.md` §5.
+  Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Осталось OPEN (ядро, = B3-a/KQ-11-Q2):** проекция vs first-class node → `domain_event` vs
+  `observation`. 🔧 **Блок-3 фикс B3-a применён (2026-07-27):** 3-й дом `act-kinds.design.md §5` сведён —
+  добавлен RECONCILIATION-указатель на единый дом-истину (L0 + `kq11-L0-reconciliation`); провизорный канон =
+  «проекция · observation-акт · insight-EDGE, НЕ `type:memory` узел». Осталось = **ратификация KQ-11-Q2
+  владельцем** (механика сведена, дубль-домов больше нет). KQ-11-Q4 (carve-out I-5) закрыт как мнимый (B3-c).
+- **Кто решает:** owner (ратифицировать KQ-11-Q2; механика Блока 3 готова).
+- **Что блокирует:** классификацию шага 6; модель памяти в сценарии.
 
 ### KQ-12 · Назвать конкретное hidden-поле + агента (step 8 falsifiability)
 - **Вопрос (crisp):** назвать в seed конкретное скрытое поле + агента, чтобы шаг 8 был фальсифицируемым.
 - **Где поднят:** `vertical-scenario.spec.md` (Q). Цикл C3.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** —.
-- **Кто решает:** owner (или builder при написании seed).
-- **Что блокирует:** фальсифицируемость шага 8 (конкретность deny-теста).
+- **Статус:** ✅ `RATIFIED` (2026-07-26, B1-c).
+- **Ратифицировано:** `salary`/`person` field-level deny = канон-пример фальсифицируемости шага 8;
+  механизм под ним = видимость поля через policy-as-data (PROPERTY).
+  Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Кто решал:** owner (конкретный seed — builder при написании).
+- **Что разблокировано:** фальсифицируемость шага 8 (конкретность deny-теста).
 
 ### KQ-13 · Добавить 11-й шаг plugin-upgrade?
 - **Вопрос (crisp):** добавить 11-й шаг «plugin-upgrade»? GPT test 6 (plugin-upgrade) — единственный
   kernel-тест, который single-lifecycle vertical НЕ покрывает.
 - **Где поднят:** `vertical-scenario.spec.md`, mapping тестов. Цикл C3.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** —.
-- **Кто решает:** owner.
-- **Что блокирует:** полноту покрытия kernel-тестов вертикальным сценарием (test 6).
+- **Статус:** ✅ `RATIFIED` (2026-07-26, B1-d).
+- **Ратифицировано:** добавить 11-й шаг «plugin-upgrade» в vertical-сценарий (покрывает GPT test 6).
+  Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Кто решал:** owner.
+- **Что разблокировано:** полноту покрытия kernel-тестов вертикальным сценарием (test 6).
 
 ---
 
@@ -200,10 +222,11 @@ related:
   «следующий ход = консолидация + глубина (B2/B4 + depth), НЕ рост вширь», а Phase 1 = рост вширь
   (service + PG + scale). Решить сознательно, не по умолчанию.
 - **Где поднят:** `phase-1-engine/README.md` §📌.3 + SYNTHESIS critic #3. Цикл C3.
-- **Статус:** `OPEN`.
-- **Провизорный ответ:** —.
-- **Кто решает:** owner.
-- **Что блокирует:** направление Phase 1 (широта vs глубина); осознанность стратегии.
+- **Статус:** ✅ `RATIFIED` (2026-07-26, B1-f).
+- **Ратифицировано:** **консолидация ВГЛУБЬ, не вширь** (killer-README): следующий ход = глубина/B2/B4,
+  не рост service+PG+scale. Акт: `./decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`.
+- **Кто решал:** owner.
+- **Что разблокировано:** направление Phase 1 (осознанный выбор глубины).
 
 ---
 
@@ -213,18 +236,18 @@ related:
 |---|---|---|---|---|
 | KQ-1 | primitives | assertion = 7-й примитив? | OPEN | owner |
 | KQ-2 | primitives | relation — адресуемая единица? | OPEN | needs-ADR |
-| KQ-3 | policy | policy self-reference через resolve()? | PROVISIONAL | needs-ADR |
+| KQ-3 | policy | policy self-reference через resolve()? | ✅ RATIFIED (B1-a) | owner |
 | KQ-4 🔴 | policy | trace-leg редакции deny-field (I-7) | OPEN | needs-ADR |
-| KQ-5 | temporal | bitemporal в v1? | OPEN | owner |
-| KQ-6 | temporal | recordedAt только на акте? | OPEN | owner |
-| KQ-7 | temporal | valid-time интервал vs точка | OPEN | owner |
-| KQ-8 | temporal | что считается deletion? | OPEN | needs-ADR |
+| KQ-5 | temporal | bitemporal в v1? | ✅ RATIFIED (B1-b) | owner |
+| KQ-6 | temporal | recordedAt только на акте? | ✅ RATIFIED (B1-b) | owner |
+| KQ-7 | temporal | valid-time интервал vs точка | ✅ RATIFIED (B1-b) | owner |
+| KQ-8 | temporal | что считается deletion? | OPEN (Блок 4 совет) | needs-ADR |
 | KQ-9 🔴 | temporal | persistence-as-policy ADR + file-first | PROVISIONAL | needs-ADR |
-| KQ-10 🔴 | engine | sum(cost) R1 vs R3 | OPEN | owner/needs-ADR |
-| KQ-11 | vertical | memory step 6: проекция vs node | OPEN | owner |
-| KQ-12 | vertical | назвать hidden-поле + агента (step 8) | OPEN | owner |
-| KQ-13 | vertical | добавить 11-й plugin-upgrade шаг? | OPEN | owner |
-| KQ-14 | strategy | go-wide vs consolidate-deep | OPEN | owner |
+| KQ-10 | engine | sum(cost) R1 vs R3 | ✅ RATIFIED (B1-e) | owner |
+| KQ-11 | vertical | memory step 6: проекция vs node | 🟡 PARTIAL (B2-a done; ядро OPEN) | owner |
+| KQ-12 | vertical | назвать hidden-поле + агента (step 8) | ✅ RATIFIED (B1-c) | owner |
+| KQ-13 | vertical | добавить 11-й plugin-upgrade шаг? | ✅ RATIFIED (B1-d) | owner |
+| KQ-14 | strategy | go-wide vs consolidate-deep | ✅ RATIFIED (B1-f) | owner |
 
 **Инвариант:** вопрос по ядру, всплывший в цикле, но не занесённый сюда = процессная ошибка
 (см. `../../open-questions/INDEX.md` → process/docs-first-and-question-capture).

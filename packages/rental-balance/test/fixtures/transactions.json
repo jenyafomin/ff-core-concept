@@ -1,0 +1,9 @@
+{
+  "_note": "Realistic Transactions (payments) for the one car. TXN-1001+1002 settle ORD-9001 (1000+800=1800 of 3000 ⇒ remaining 1200 — verify by hand: A1). TXN-1003 is a REAL discrepancy: it is paid-against ORD-9999, an order NOT in the graph (orphan) — the agent must RAISE it (A2). TXN-1004 is a structurally broken row (blank Amount) ⇒ quarantine, not silent.",
+  "rows": [
+    { "Txn": "TXN-1001", "Order Ref": "ORD-9001", "Amount": 1000, "Date": "2026-02-20" },
+    { "Txn": "TXN-1002", "Order Ref": "ORD-9001", "Amount": 800, "Date": "2026-02-25" },
+    { "Txn": "TXN-1003", "Order Ref": "ORD-9999", "Amount": 500, "Date": "2026-02-26" },
+    { "Txn": "TXN-1004", "Order Ref": "ORD-9001", "Amount": "", "Date": "2026-02-27" }
+  ]
+}

@@ -156,6 +156,34 @@ describe('rebuild-from-journal — bit-for-bit equivalent (ADR-0008 Validation �
   });
 });
 
+describe('projection visibility — default-deny floor; readable_by is DATA, scoped (not a core literal)', () => {
+  it('a projected node whose act declares NO readable_by stays default-deny (resolve read = deny)', () => {
+    const { store, engine } = newEngine();
+    engine.write(domainEvent('a1', 'sheets:Orders#500', 'h1', { type: 'order', total: 1 }));
+    const node = nodeOf(store, 'sheets:Orders#500')!;
+    expect(node.visibility).toEqual({}); // the shared reducer NEVER widens visibility on its own
+    expect(engine.resolve('read', 'agent:anything', node)).toBe('deny'); // ADR-0004 floor intact
+  });
+
+  it('an act that declares readable_by is readable ONLY by the declared subject (scoped, no wildcard)', () => {
+    const { store, engine } = newEngine();
+    engine.write({
+      id: 'a2',
+      actor: 'sync:x',
+      provenance: { source_ref: 'dom:Order#1', snapshotHash: 'h' },
+      recordedAt: '',
+      actKind: 'domain_event',
+      edges: [],
+      payload: { type: 'order', total: 1, readable_by: ['agent:balance-observer'] },
+    });
+    const node = nodeOf(store, 'dom:Order#1')!;
+    expect(node.visibility).toEqual({ readable_by: ['agent:balance-observer'] });
+    expect(node.body).toEqual({ total: 1 }); // `readable_by` is reserved — it does NOT leak into body
+    expect(engine.resolve('read', 'agent:balance-observer', node)).toBe('allow');
+    expect(engine.resolve('read', 'agent:other', node)).toBe('deny'); // scoped, not agent:*
+  });
+});
+
 describe('tombstone — an archived domain_event marks the node, it does NOT disappear', () => {
   it('an archived act flips tombstone=archived, node persists with its last snapshot', () => {
     const { store, engine } = newEngine();

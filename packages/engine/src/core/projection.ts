@@ -14,7 +14,8 @@
  * CQRS gate). "Freshest wins": a superseding domain_event (same source_ref, new snapshotHash) replaces
  * the node's type/body; `state.version` counts the folded acts (version = depth of the act chain).
  */
-import type { Act, EnvelopeNode, Provenance } from './types.js';
+import { DEFAULT_PREDICATES, foldEdges } from './predicates.js';
+import type { Act, EnvelopeNode, PredicateRegistry, Provenance } from './types.js';
 
 /** Structured provenance if the act carries it (vs a plain audit-label string). */
 export function provenanceOf(act: Act): Provenance | null {
@@ -42,8 +43,15 @@ export function isProjectable(act: Act): boolean {
   return act.actKind === 'domain_event' && sourceRefOf(act) !== null;
 }
 
-/** Reserved payload keys that drive projection semantics rather than becoming node body fields. */
-const RESERVED_PAYLOAD_KEYS = new Set(['type', 'archived']);
+/**
+ * Reserved payload keys that drive projection SEMANTICS rather than becoming node body fields:
+ *  - `type`        → the node's type.
+ *  - `archived`    → tombstone.
+ *  - `readable_by` → who may read the projected node (visibility, as DATA — see below). A source that
+ *                    declares nothing leaves the node at the engine's default-deny floor (ADR-0004);
+ *                    the shared reducer NEVER widens visibility on its own.
+ */
+const RESERVED_PAYLOAD_KEYS = new Set(['type', 'archived', 'readable_by']);
 
 function payloadObject(act: Act): Record<string, unknown> {
   const p = act.payload;
@@ -59,8 +67,17 @@ function prevVersion(prev: EnvelopeNode | undefined): number {
  * Fold ONE act into the projection map (in place). No-op for a non-projectable act (kind filter +
  * missing key) — that is exactly how a mixed log (observations, traces) leaves canonical state
  * untouched. Mutates `proj` so incremental write and batch rebuild share one code path.
+ *
+ * D1 edge-fold: edges are MERGED into the node's prior edges by the predicate registry's cardinality
+ * (`foldEdges`), NOT hard-replaced. A superseding act (or an act from another actor on the same
+ * source_ref) therefore updates only the predicates it carries and never wipes foreign edges — the
+ * correct fix for the old `edges: act.edges ?? []` clobber.
  */
-export function foldInto(proj: Map<string, EnvelopeNode>, act: Act): void {
+export function foldInto(
+  proj: Map<string, EnvelopeNode>,
+  act: Act,
+  registry: PredicateRegistry = DEFAULT_PREDICATES,
+): void {
   if (!isProjectable(act)) return;
   const ref = sourceRefOf(act) as string;
   const prev = proj.get(ref);
@@ -80,13 +97,24 @@ export function foldInto(proj: Map<string, EnvelopeNode>, act: Act): void {
   const state: Record<string, unknown> = { version };
   if (archived) state.tombstone = 'archived'; // projection output, not a mutation of a stored node
 
+  // Visibility comes as DATA scoped to the domain, NOT a literal in this shared reducer: an act MAY
+  // declare who can read the node it projects (reserved `readable_by` payload key). ABSENT ⇒ the
+  // engine's default-deny floor (`{}`, ADR-0004) — a source that declares nothing stays unreadable, so
+  // M1 nodes are untouched. Freshest-wins, with inherit-on-silence (mirrors body): a supersede that
+  // omits the field keeps the last declared visibility rather than dropping to deny.
+  const declared = payload.readable_by;
+  const readableBy =
+    Array.isArray(declared) && declared.every((x) => typeof x === 'string') ? (declared as string[]) : undefined;
+  const visibility = readableBy ? { readable_by: readableBy } : prev?.visibility ?? {};
+
   proj.set(ref, {
     id: ref,
     type,
     state,
-    edges: act.edges ?? [],
+    // D1: merge by cardinality (not clobber) — preserves foreign predicates on supersede/cross-actor.
+    edges: foldEdges(prev?.edges ?? [], act.edges ?? [], registry),
     view: [],
-    visibility: {},
+    visibility,
     access: {},
     acts: [],
     policy_ref: [],
@@ -99,8 +127,11 @@ export function foldInto(proj: Map<string, EnvelopeNode>, act: Act): void {
  * journal`: tear the projection down to empty and re-fold every act in log order. Non-domain_event and
  * keyless acts are skipped by `foldInto`, so the result is exactly the canonical graph.
  */
-export function project(acts: readonly Act[]): Map<string, EnvelopeNode> {
+export function project(
+  acts: readonly Act[],
+  registry: PredicateRegistry = DEFAULT_PREDICATES,
+): Map<string, EnvelopeNode> {
   const proj = new Map<string, EnvelopeNode>();
-  for (const act of acts) foldInto(proj, act);
+  for (const act of acts) foldInto(proj, act, registry);
   return proj;
 }

@@ -8,6 +8,7 @@ export * from './core/envelope-validator.js';
 export * from './core/resolve.js';
 export * from './core/view-compiler.js';
 export * from './core/admission.js';
+export * from './core/predicates.js';
 export * from './core/projection.js';
 
 export * from './ports/store-port.js';

@@ -1,0 +1,49 @@
+{
+  "type": "attention-list",
+  "id": "ga-rentacar-nav-2026-07-25",
+  "title": "🚗 ga-rentacar — навигатор концепта (первый жилец FF)",
+  "summary": "Единая точка входа + пошаговый ход мысли по онбордингу проката авто в граф FF. Линзы/доступ УЖЕ есть в ядре (оси thing×actor×scope×lens×time + ADR-0004). Задача рентакара — прогнать реальные данные через модель на бумаге и найти, что ядро НЕ держит. Фаза: концептуальный переход (не код).",
+  "relatesTo": "docs/03-projects/ga-rentacar/INDEX.md",
+  "pool": "ga-rentacar",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/03-projects/ga-rentacar/INDEX.md",
+    "docs/03-projects/ga-rentacar/decisions/01-direction-and-mvp.decision.md",
+    "docs/03-projects/ga-rentacar/analyses/02-lenses-and-access-mapping.analysis.md"
+  ],
+  "paths": [
+    { "path": "docs/03-projects/ga-rentacar/INDEX.md", "role": "start", "pool": "карта", "note": "🧭 Навигатор проекта: статусы, источники данных, связи с ядром. Читать первым." },
+    { "path": "docs/03-projects/ga-rentacar/decisions/01-direction-and-mvp.decision.md", "role": "key", "pool": "решения", "note": "🟢 D1–D6 + границы первого среза (что доказать, что вырезать)." },
+    { "path": "docs/03-projects/ga-rentacar/decisions/02-topic-config-and-sessions.decision.md", "role": "key", "pool": "решения", "note": "🟢 D7–D10: процесс=конфиг топика, топик=умный конструктор, роли, сессии (отложено)." },
+    { "path": "docs/03-projects/ga-rentacar/analyses/01-data-and-dedup-risks.analysis.md", "role": "key", "pool": "анализы", "note": "🟢 Риски реальных данных + дедуп (проход Fable). Топ-3 риска." },
+    { "path": "docs/03-projects/ga-rentacar/analyses/02-lenses-and-access-mapping.analysis.md", "role": "key", "pool": "анализы", "note": "🔵 Линзы/доступ ↔ ядро FF: что уже готово, что рентакар добавляет (traverse-depth), формула=проекция." },
+    { "path": "docs/03-projects/ga-rentacar/analyses/03-capability-potential.analysis.md", "role": "key", "pool": "анализы", "note": "🟢 Потенциал по реальным данным, тиры impact×сложность; связи уже лежат в данных." },
+    { "path": "docs/03-projects/ga-rentacar/questions/open-questions.question.md", "role": "doc", "pool": "вопросы", "note": "🟡 Открытые вопросы (В-1 ждёт «строй»; В-4 линзы/роли)." },
+    { "path": "docs/02-project/core/00-kernel/axes-and-time.design.md", "role": "doc", "pool": "ядро", "note": "⚙️ Оси адресации (в т.ч. lens) + битемпоральное время. Сюда растят требования рентакара." },
+    { "path": "docs/02-project/core/00-kernel/INDEX.md", "role": "doc", "pool": "ядро", "note": "⚙️ Канон ядра: инварианты I-1..14, ADR-0004/5/6. Доступ уже спроектирован и доказан." }
+  ],
+  "children": [],
+  "thinking": {
+    "goal": "Прогнать реальные данные проката через модель памяти FF на бумаге → найти, что ядро держит, а что нет → минимальными правильными шагами к движку.",
+    "thesis": "Ядро-канон зрелее, чем ощущается: линзы, доступ, время, идентичность уже спроектированы. Рентакар = первый живой стресс-тест, а не проектирование с нуля. Строить, не переосмыслять.",
+    "phase": "КОНЦЕПТУАЛЬНЫЙ ПЕРЕХОД (бумага) — не код",
+    "stage_map": [
+      { "stage": "S1", "text": "Концепт-направление ga-rentacar", "status": "done" },
+      { "stage": "S2", "text": "Ядро-канон (инварианты + ADR-0004/5/6 + оси incl. lens + время)", "status": "done (design), доказано killer-прогоном" },
+      { "stage": "S3", "text": "ТЫ ЗДЕСЬ: прогон рентакар-данных через модель на бумаге (линзы, синк, форки, паспорт)", "status": "in-progress" },
+      { "stage": "S4", "text": "Спек инжеста (1 стр.) + первый срез синка Orders ×2", "status": "waiting-build (В-1)" },
+      { "stage": "S5", "text": "Тонкий движок (TOOLS/ff-engine), phase-1", "status": "not-started" }
+    ],
+    "current_direct_tasks": [
+      { "id": "T-1", "text": "Линзы рентакара ↔ ядро: подтвердить, что lens-ось + ADR-0004 покрывают чат/агент/роль/сделку. Найдена 1 дыра: traverse-depth bound.", "status": "done", "priority": 1 },
+      { "id": "T-2", "text": "Бизнес-процесс проката на словах (владелец) → прогнать через модель (какие акты, какие линзы, где форки).", "status": "next-needs-owner", "priority": 1 },
+      { "id": "T-3", "text": "Формула/виртуальное поле (профит по дням) = проекция/л인за, не хранимое поле. Зафиксировано в анализе 02.", "status": "done", "priority": 2 }
+    ],
+    "open_for_owner": [
+      "В-1: даём «строй» на спек инжеста + прогон синка? (пока бумага)",
+      "В-4: линза зашита под (роль × топик) — это правильное решение? (см. анализ 02)",
+      "traverse-depth bound в view-компилятор — роутить в kernel open-questions (KQ)?"
+    ]
+  }
+}

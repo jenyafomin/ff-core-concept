@@ -1,7 +1,7 @@
 ---
 Status: active
 Owner: jenya.stasik@gmail.com
-Date: 2026-07-25
+Date: 2026-07-26
 Scope: project
 ---
 
@@ -9,6 +9,160 @@ Scope: project
 
 > Это единственная «точка входа при старте новой сессии»: сначала сюда, потом — свежий HANDOFF.
 > Обновляется в конце каждой сессии. Полная карта канона — `docs/INDEX.md` (переписан 2026-07-21, живой).
+
+## ⭐⭐⭐ RESUME (2026-07-28 · P1 «платёж по одной машине» ПОСТРОЕН и зелёный · первый честный агент-цикл)
+> **🆕 КОНЕЦ СЕССИИ.** Владелец сдвинул фокус с линейной трубы на: (1) структуру связей/рост графа ПО
+> СПРОСУ, (2) честность агентского слоя, (3) завод простых реальных повторяющихся процессов (деньги).
+> 3 раунда агентов (широкий взгляд → заход A → пересмотр концептов) → рамка принята → **строй P1**.
+> **Построено (ветка `refactor-tree`, НЕ закоммичено):** вертикаль P1 = платёж по одной машине → акты →
+> граф (рёбра paid-against/for-car/for-customer) → **агент `balance-observer` читает граф, считает
+> остаток, пишет `observation` обратно** (первый реальный write-back-цикл — до этого 0 агентов в коде).
+> Owner-facing CLI: остаток 1200 + явно поднятое расхождение (платёж-сирота). **Структурный замок:**
+> реестр предикатов+кардинальность как ДАННЫЕ (заодно правильный фикс бага foldInto «рёбра затирались
+> целиком»); `source_ref`=`sourceId.<instance>:...`; провенанс-слот на ребре; актор на актах.
+> Тесты: `@ff/engine` **44/44** · `@ff/ingest-rentacar` **7/7** · **новый `@ff/rental-balance` 9/9** ·
+> typecheck чист. Reviewer-гейт PASS-WITH-CONDITIONS; замечание D-extra (wildcard-видимость в ядре)
+> **исправлено по соответствию** (default-deny восстановлен, видимость=данные сужены до agent:balance-observer,
+> заперто denial-тестами). **🔴 На подпись владельца:** отсрочка UUID-идентичности узла (D2, инвариант
+> M-G5) до P4 — сознательная. **Дальше:** реальный one-car экспорт в тот же порт («смотреть, как
+> отрабатывает») → лестница P2 штраф (время-на-ребре) → P3 продление → P4 same-as/доверие.
+> **📄 Дом сессии:** `docs/_log/2026-07-28-realization-concept-review/` (SYNTHESIS · BUILD-P1.spec · P1.build · P1.review · concept.json).
+> Спутники: `docs/_log/2026-07-28-wide-look-abstractions/` (10 ручек) · `docs/_log/2026-07-28-approach-A-source-driven/`.
+
+## ⭐⭐⭐ RESUME (2026-07-27 · M1 инжест аренды ПОСТРОЕН на фикстуре, зелёный · ждёт F-D для реальных данных)
+> **🆕 ОБНОВЛЕНО (конец сессии):** M1 построен и зелёный НА ФИКСТУРЕ. `@ff/engine` **36/36** + новый
+> `@ff/ingest-rentacar` **7/7**; DoD T1·G3·RB·QN зелёные. **4 коммита** в `refactor-tree` (не запушены):
+> `2aaa75a` M0-база · `86d37f4` M0-хардening · `2c8d177` CQRS-проекция · `23a569a` ingest-адаптер.
+> Спек **v2** (акты-first) суперседит v1. **🔴 Ждёт владельца: F-D** (полный экспорт Orders/4102 для T2 +
+> rebuild на живых данных) · продакшн `policy:constitution` · решение по пушу. **M2:** observation(T4)+same-as(T3).
+> **Инцидент шлюза** (фон-агент умер на рестарте → тишина) задокументирован: `docs/01-organization/process/bugs/gateway-agents-die-on-restart/INDEX.md`.
+> **📄 ХАНДОФФ:** `docs/_log/2026-07-27-m1-build-prep/HANDOFF.md` (читать в новой сессии).
+
+**Владелец сказал «строй M1 (инжест аренды), но качественно — не доверять спеку/M0 плоско, абстракциями,
+малым приростом».** Запустил 3 агента (reviewer/critic/analyst) — **сошлись в одну точку:**
+- **M1 нельзя строить как задумано.** Спек `ga-rentacar/specs/01-ingest-slice.spec.md` написан на до-CQRS языке:
+  описывает узлы-с-паспортом/`version`/`tombstone`/upsert-мутацию = **проекцию**, которой (а) в M0 физически нет
+  (`rebuild`=заглушка TODO-M2, идемпотентности записи нет) и (б) по ADR-0008 нельзя писать в обход лога. Плюс не
+  выполняет собственное предусловие M1 (ADR-0007 G3: PII через `payloadRef`+admission).
+- **Разводим по CQRS-шву:** M1 = сторона записи (идемпотентные акты + admission); M2 = проекция (узлы-паспорт,
+  дедуп, факт-из-чата). T3/T4/T5/T6 уезжают в M2.
+- **✅ Сделано:** M0 перепроверен зелёным (25/25) и **закоммичен** (`2aaa75a`, ветка `refactor-tree`); **2 дыры M0
+  зафикшены** (`86d37f4`): refuse-to-start без `policy:constitution` (fail-open закрыт) + admission сканирует
+  `edges[].meta`; тесты **29/29**. Идея межагентной коммуникации захвачена (`02-agents/ideas/02-inter-agent-communication/`).
+- **🔴 ЖДЁТ ВЛАДЕЛЬЦА — 4 форка** (до них код инжеста НЕ пишем): **F-A** граница M1 (рек. акты-only) · **F-B** где живёт
+  PII-payload (рек. file-first по hash) · **F-C** факт-из-чата = отдельный `observation`-акт (рек. да) · **F-D** дать
+  не-секретный экспорт Orders / путь к БД (T2-гейт открыт: peek=20 строк, полные 4102 за секретами — не полез).
+- **Артефакты:** синтез `docs/_log/2026-07-27-m1-build-prep/SYNTHESIS.md` (+ 3 разбора + `M0-fixes.build.md`); лог сессии `.../INDEX.md`.
+
+## ⭐⭐⭐ RESUME (2026-07-26, поздно · 4 ПОСТ-M0 НАПРАВЛЕНИЯ раскрыты параллельно, decision-ready)
+**Оркестровкой раскрыты 4 предсказанных трека (дизайн, не код) → decision-ready артефакты в
+`docs/_log/2026-07-26-ff-one-system-vision/post-M0-directions/`:**
+- **T1 · единица памяти** (`T1-memory-unit.ADR-draft.md`) — рек.: канонизировать на **EnvelopeNode**, FFNode→носитель, FileNodeStore оставить, +паспорт/markdown-facet. **Корневая развилка** (блокер низового). → будущий **ADR-0012**.
+- **T2 · agents-manager** (`T2-agents-manager-reconciliation.md`) — write-back = idempotent-consumer+outbox по `source_ref` (НЕ 2PC); StopList и resolve() сосуществуют. → **ADR-0009**.
+- **T3 · топология шлюзов** (`T3-gateway-topology.ADR-draft.md`) — один процесс/две BotEntity до split-триггера; изоляция через тот же resolve() с server-side viewer. → **ADR-0010**.
+- **T4 · корпуса/policy** (`T4-corpora-policy-seed.md`) — genesis-seed `packages/engine/seed/genesis-policy.json`; admission нужен discriminator по domain-типу, не ActKind.
+- **🔴 ВСПЛЫЛО (перепроверено):** `resolve.ts` **fail-OPEN при отсутствии `policy:constitution`** (потолок молча исчезает) — **must-fix в M0** (рек.: Engine refuse-to-start без конституции). Коллизия ADR-номеров исправлена (память=0012, не 0009).
+- **🔴 СЛЕДУЮЩИЙ ХОД:** читать **T1 первым** → закрыть owner-decisions → форма guard'а для fail-open → промоут черновиков в канон ADR → решение по коммиту M0. Параллелить можно T2·T3·admission-часть T4; T1+seed+fail-open — последовательно.
+- **Хендофф направлений:** `docs/_log/2026-07-26-ff-one-system-vision/post-M0-directions/HANDOFF-directions.md`.
+
+## ⭐⭐⭐ RESUME (2026-07-26, вечер · M0 ПОСТРОЕН и независимо проверен зелёным)
+**M0 built & independently verified green.** `packages/engine` (@ff/engine, на `@ff/core`) собран по
+M0-spec: `@ff/engine` **25/25** тестов · `@ff/core` **14/14** (регрессий нет) · `typecheck` чист · capability
+killer-test реальный в CI (NAIVE **3/15** → FIXED **15/15**) · обе дыры S11/S12 регрессия-заперты (mutation-guard
++ structural prune) · admission-gate (ADR-0007) fail-closed на inline-PII · `resolve()` = единственный путь
+видимости, усилен КОНСТРУКТИВНО (production-движок с не-FIXED policy физически несобираем). Независимый
+ревьюер-гейт PASS.
+- **НЕ сделано:** коммит (ждёт явной просьбы владельца — только `package-lock.json` + untracked
+  `packages/engine/`) · кристаллизация `03-DEEPENED-PLAN.md` в канон `realization-plan/` · сверка
+  `@ff/core`↔`StorePort` модели = TODO(M3) · ADR-кандидаты 0009/0010/0011 ещё не написаны.
+- **🔴 СЛЕДУЮЩИЙ ХОД:** владелец смотрит `packages/engine` + 4 отчёта → решает про коммит → затем 4
+  параллельных трека M0 (движок-хранилище · agents-manager реконсиляция · топология шлюзов · корпуса/capability).
+- **Хендофф:** `docs/_log/2026-07-26-ff-one-system-vision/M0-build/HANDOFF-M0-built.md`.
+
+## ⭐⭐⭐ RESUME (2026-07-26 · FF как ОДНА система — вектор выбран + 3 owner-форка ЗАКРЫТЫ)
+**Большой разворот владельца:** FF = одна система знаний на **одном движке**; агентская система (`agents-manager`)
+переписывается НА него (policy-as-data); инжест = inbox/acts-first; несколько Telegram-шлюзов (центральный бот
+владельца + бизнес-бот, свой токен); Telegram = кнопки/guards/mini-app; интеграция CRM. Видение → `docs/_log/2026-07-26-ff-one-system-vision/01-vision-capture.md`.
+- **Оркестровка 2 итераций** (разведка→фрейм→4 вектора→критика→синтез; всё СИНХРОННО — фон под шлюзом умирает).
+  Итог: рекомендован **V2★** (тонкий живой срез на «расчищенной земле»). Синтез → `.../02-SYNTHESIS-vector-selection.md`, навигатор → `.../INDEX.md`.
+- **Владелец подтвердил 3 форка (2026-07-26)** → артефакты в каноне:
+  **ADR-0008** (FQ25: лог=система-записи · граф=проекция/CQRS; закрывает P-06) · **ADR-0006** approved (PG-default+file-first;
+  KQ-9 open) · **ADR-0007** день-1 PII-правило approved (payloadRef+admission-gate) · **KQ-14** thin-vertical-first ·
+  **M0-spec** `realization-plan/phase-1-engine/M0-spec.md` (реальный CI-движок).
+- **Ключевые находки:** `TOOLS/ff-engine` физически НЕ существовал (был нарратив); движок → **`packages/engine` @ff/engine** в этом репо (зависит от `@ff/core`), owner-confirmable. Capability уже **15/15** в seed (без CI). В `agents-manager` — живой баг потери фоновых задач.
+- **Итерация-3 СДЕЛАНА (углубление плана, параллельно):** 5 областей углублены → **единый план** `_log/2026-07-26-ff-one-system-vision/03-DEEPENED-PLAN.md`
+  (архитектура + лестница M0→M6 + 4 параллельных трека + 3 пре-M3-гейта), откритикован (выжил условно, фиксы вшиты).
+  Design-доки → `.../design/01..05`. Новые ADR-кандидаты: 0009 (turn-atomic write-back) · 0010 (топология) · 0011 (node-MCP).
+- **🔴 СЛЕДУЮЩИЙ ХОД:** **«строй» на M0** (первый код: `packages/engine`, порт обоих seed, resolve()=PEP, 15/15 в CI + regression-lock,
+  admission-gate) — единственная точка синхронизации; после неё 4 трека параллельно. Либо кристаллизовать план в `realization-plan/`. Пока — бумага/канон.
+- **📄 ХЕНДОФФ сессии (читать в новом чате):** `docs/_log/2026-07-26-ff-one-system-vision/HANDOFF.md`.
+
+## ⭐⭐⭐ RESUME (2026-07-26 · разблокировка ратификации ядра — ЖДЁТ ДА/НЕТ ВЛАДЕЛЬЦА)
+**Направление «разблокировать ратификацию»: свели 2 доказанных дубля + прогнали критиком. Новый file-first
+протокол** (обмен=нумерованные этапы, подтверждения=отдельные файлы в боксе, ответ в чат=короткий+путь на concept.json).
+- **Свод критика: 6 готово · 7 доработать · 1 CRITICAL-блок.** LOSE-NOTHING подтверждён.
+- **KQ-11↔L0** реконсиляция (L0 не переписан; дельта = I-4 только к `domain_event`, I-5 carve-out, Forget=флаг);
+  найден 3-й дом `act-kinds.design.md §5` без ссылки.
+- **KQ-8↔hard-erase** реконсиляция + **ADR-0007** (proposed) + **I-15** (предложение): split acts⟂payload,
+  3 режима, admission-gate день-1.
+- 🔴 **CRITICAL:** crypto-shred недоказуем против file-first payload в git-истории (ADR-0006); смыкается с Г20 → отдельный совет.
+- **R2 · НОВЫЙ ПРИНЦИП МЕТОДА** (владелец): развилку не полюсом, а настраиваемым **свойством** единицы/ребра/policy
+  с дефолтом → **гибкая база**; но врата/эрейж/append-only остаются жёсткими (тест-различитель) →
+  `docs/02-project/core/00-kernel/prefer-properties-over-poles.design.md`. B2-a закрыта: поле
+  `recallFeedback: off|passive|active` (дефолт passive). Реестр → **v2** (теги [BINARY]/[PROPERTY]/[HARD]).
+- **R3 · РАТИФИКАЦИЯ владельца** («почти всё да»): P-1 принцип + Блок 1 (твёрдые) + B2-a (дефолт `passive`)
+  ратифицированы. ✅ **ПРИМЕНЕНО НА ДИСК 2026-07-27** («Стартуй ратификацию»): дом-истина
+  `docs/02-project/core/00-kernel/decisions/2026-07-26-ratification-p1-block1-b2a.decision.md`; принцип
+  `prefer-properties-over-poles.design.md` → **approved**; `open-questions.md` — **KQ-3/5/6/7/10/12/13/14
+  RATIFIED**, KQ-11 PARTIAL.
+- **R7 · ФИКСЫ БЛОКА 3 ПРИМЕНЕНЫ** (2026-07-27, builder): 3-й дом `act-kinds §5` сведён (B3-a); два carve-out
+  I-4 → один патч §2-bis (B3-b/f); carve-out I-5 признан **МНИМЫМ** и снят (B3-c, KQ-11-Q4 = вопрос-фантом);
+  режим удаления = свойство `hide|prune|shred`, `shred` ограничен file-first (B3-d); admission-gate=[HARD];
+  **`epistemic-band` → `persistence-band`** (9 вхождений в ADR-0007, B3-e); дом band = ADR-0007 (B3-g).
+  Trace: `_log/…/r7-block3-fixes/3-result.md`. Механически готов к ратификации — ждёт подписи владельца.
+- **R8 · СОВЕТ «эрейж ⟂ file-first/git» ПРОВЕДЁН** (2026-07-27, critic, 4 линзы): вердикт
+  **APPROVE-WITH-SUBSTRATE-CHANGE** по ADR-0007. Фикс на ДОПУСКЕ (admission-класс «PII/referent≠owner/
+  erasure-eligible = не file-first»), не на стирании. У file-first нет write-time-гейта (пост-фактум долг,
+  как ADR-0006g). Развилки Р1-Р4 + MUST-TRACK OQ-1/2/4/5 адресованы. Синтез:
+  `01-brain/…/07-soglasie/analyses/council-erase-vs-file-first-2026-07-26.analysis.md`. Правки на диск — ждут «строй».
+- **R3/R4/R5 · КОНЦЕПЦИЯ (граф↔дерево↔git)** — дом `docs/02-project/core/00-kernel/concepts/graph-tree-git-projection/`
+  (рефрейм: граф=истина, дерево+git=проекции, расширение ADR-0006). **Агенты РЕШИЛИ Q0–Q5** (скорость+удобство,
+  «оба через слои») → `decisions/resolved-q0-q5-2026-07-26.decisions.md`; критик 2 SOUND·4 AMEND·0 WRONG; **фикс-пас**
+  закрыл AMEND → `decisions/amend-q2-q4-q5-2026-07-26.decisions.md` (Q2 порог операционный · Q3 git=read-only сигнал,
+  коммит→observation, I-3/I-4 целы · Q4 scope⟂folder-node · Q5 крючок дёшев). Полигон = `02-agents/examples/02-folder-tree-as-graph/`
+  (git-ось → под-папка `03-git-signal/`). **Осталось 2 развилки (обе с рек.):** killer-поддерево=`docs/` FF · дом полигона оставить.
+- **📋 ХЭНДОФФ сессии** → `docs/_log/2026-07-26-kernel-ratification-unblock/HANDOFF.md` (обе ветки, крисп-список для владельца).
+- **Навигатор сессии** → `docs/_log/2026-07-26-kernel-ratification-unblock/concept.json` (этапы R1/R2/R3).
+
+## ⭐⭐⭐ RESUME (2026-07-26 · ga-rentacar = первый реальный жилец + DRIVER ядра)
+**Новая нить-потребитель ядра.** Прокат авто (Dubai) заведён как первый живой жилец платформы, который
+**тестирует ядро на реальных данных** (Orders ~4100 · Transactions 8742 · Fines · Cars · Maintenance).
+- **Дом:** `docs/03-projects/ga-rentacar/` — навигатор `INDEX.md` + визард `ga-rentacar.concept.json` (lint ✅).
+- **Решено D1–D10:** узкий вертикальный срез (Sheets=upstream, граф=проекция) · паспорт узла+**ребра**
+  расширен (версия/снапшот · tombstone · уверенность/происхождение/время) · identity=**Вариант А** (локально +
+  обратимое `same-as`, без автослияния) · процесс проката = **конфиг топика** (не ядро) · роли из CRM · сессии отложены.
+- **Анализы:** риски данных+дедуп (проход Fable, топ-3) · линзы/доступ/формулы ↔ ядро (формула=проекция) · потенциал по данным (Tier 1/2/3).
+- **Координация (2 стороны):** кормит ядро → traverse-depth bound (В-5) + расширение паспорта; потребляет ←
+  **KQ-11** (память=проекция → «факт из чата») + **KQ-8** (удаление → удалённые строки Sheets, tombstone).
+- **🔴 Направление (владелец одобрил):** ядро **с ga-rentacar как driver** — первый срез Tier 1 покажет, какие KQ
+  реально блокируют, их и закрываем (не всё подряд). Ждёт **«строй»** на срез (В-1). Пока — только бумага.
+- **Развилка** «библиотека памяти vs независимый сервер» → phase-1 `TOOLS/ff-engine` (склон: **независимый сервер** — переиспользуем многими gateway).
+- **🆕 Захвачена параллельная идея:** наслойность агентской системы + независимый TG-бот →
+  `docs/02-project/core/02-agents/ideas/01-draft-telegram-agent-layering/README.md` (референс: Cardex). НЕ в стройку.
+
+## ⭐⭐⭐ RESUME (2026-07-25 · совет по открытым вопросам ядра)
+**Совет 6 агентов** по двум фундаментальным двусторонним вопросам ядра сделан + **полный триаж 14 KQ**.
+- **KQ-11 (память: проекция vs узел):** контент = проекция; хранится АКТ запоминания = `observation`
+  (не `domain_event`); адресуемость только через **insight-EDGE с тонким паспортом**, не `type:memory` узел.
+- **KQ-8 (удаление):** «удаление» = 3 обязательства под одним словом; split иммутабельных `acts` ⟂
+  стираемого `payload`; 3 режима (tombstone+hide · crypto-shred · plugin-removal); нужен **I-15** + **ADR-0007**.
+- **META-FINDING:** `00-kernel/` переоткрыл решения `01-brain/` без ссылок (нарушен закон #2) →
+  реконсилировать **KQ-11↔`L0-memory-unit.md`**, **KQ-8↔hard-erase** (LOSE-NOTHING).
+- **Дома:** триаж/консолидация → `docs/02-project/core/00-kernel/analyses/council-2026-07-25/` ·
+  KQ-11 → `.../01-brain/01-overview/analyses/kq11-...analysis.md` ·
+  KQ-8 → `.../07-soglasie/decisions/kq8-...analysis.md` · trace → `docs/_log/2026-07-25-kernel-open-questions-council/`.
+- **Следующий ход:** ратифицировать корзину A (KQ-3, 5/6/7, 12, 13) + решить KQ-10 (агрегаторы = closed-enum
+  движка, ship в Phase-1) + KQ-14 (**вглубь**, не вширь); реконсилировать дубли; **ADR-0007** (эрейж).
 
 ## ⭐⭐⭐ RESUME (2026-07-25, НОЧЬ) — КАНОН СТРОГОСТИ ЯДРА заложен (6 циклов, впитан GPT-ревью)
 **Итог ночной итерации:** доработали Фазу 1 в сторону **строгости субстрата** — 6 циклов
