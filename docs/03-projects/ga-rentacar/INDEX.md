@@ -31,6 +31,14 @@ Related:
 |---|---|---|
 | Направление + границы MVP | 🟢 решено | [`decisions/01-direction-and-mvp.decision.md`](decisions/01-direction-and-mvp.decision.md) |
 | Процесс=конфиг топика; роли; сессии | 🟢 решено | [`decisions/02-topic-config-and-sessions.decision.md`](decisions/02-topic-config-and-sessions.decision.md) |
+| **Q1 вертикаль + диспозиция launch-подписей** (итог ночного аудита) | 🟢 **решено: пивот B (клиентская линза), M2→M3; деньги паркуются** | [`decisions/03-vertical-and-signoffs.decision.md`](decisions/03-vertical-and-signoffs.decision.md) |
+| **Дизайн-раунд M2/M3** (грунт на реальных данных, 6 артефактов) | 🟡 draft — критик: 1 FLAWED (Q2 ADR) · 4 REVISE | [`analyses/06-design-round-critic-verdicts.analysis.md`](analyses/06-design-round-critic-verdicts.analysis.md) |
+| ↳ Грунт на реальных данных (цифры, паттерны дублей) | 🟡 draft | [`analyses/04-real-data-grounding.analysis.md`](analyses/04-real-data-grounding.analysis.md) |
+| ↳ **Спек M2** (дедуп same-as + линза клиента) | 🟡 draft (REVISE: D5 авто-слияние) | [`specs/04-m2-dedup-and-customer-lens.spec.md`](specs/04-m2-dedup-and-customer-lens.spec.md) |
+| ↳ Контракт M3 (живой топик-агент) | 🟡 draft (REVISE) | [`specs/05-m3-topic-agent-contract.spec.md`](specs/05-m3-topic-agent-contract.spec.md) |
+| ↳ EQ-1 latest-wins (отзыв наблюдения) | 🟡 draft (REVISE: ключ=журнал) | [`specs/03-observation-latest-wins.spec.md`](specs/03-observation-latest-wins.spec.md) |
+| ↳ Q2 identity ADR-draft (canonicalId) | 🔴 draft (FLAWED — переписать на реальном коде) | [`decisions/04-node-identity-canonicalId.adr-draft.md`](decisions/04-node-identity-canonicalId.adr-draft.md) |
+| ↳ Ремедиэйшн-рескоуп под пивот B | 🟡 draft (REVISE) | [`analyses/05-remediation-rescope-under-pivot.analysis.md`](analyses/05-remediation-rescope-under-pivot.analysis.md) |
 | Риски данных и дедупа (проход Fable) | 🟢 зафиксировано | [`analyses/01-data-and-dedup-risks.analysis.md`](analyses/01-data-and-dedup-risks.analysis.md) |
 | Линзы/доступ/формулы ↔ ядро | 🟢 замаплено | [`analyses/02-lenses-and-access-mapping.analysis.md`](analyses/02-lenses-and-access-mapping.analysis.md) |
 | Потенциал по данным (impact×сложность) | 🟢 собрано | [`analyses/03-capability-potential.analysis.md`](analyses/03-capability-potential.analysis.md) |
