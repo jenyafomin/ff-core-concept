@@ -2,7 +2,7 @@
 
 > Собран `tools/lint/doc-tree.mjs`. НЕ править руками — перегенерировать: `node tools/lint/doc-tree.mjs`.
 > Архетипы: numbered(ствол) · plural(контейнер) · service(_служебное) · trace(_log) · dated · named.
-> 🔴 = в папке >6 прямых файлов (нарушение «нет loose-файлов»). Итого: 414 папок, 923 файлов.
+> 🔴 = в папке >6 прямых файлов (нарушение «нет loose-файлов»). Итого: 503 папок, 1215 файлов.
 
 ## 🔴 Папки с перегрузом (везде, где много файлов — не должно быть)
 - **32f** — `docs/base/product`
@@ -10,7 +10,11 @@
 - **18f** — `docs/02-project/core/01-brain/_archived/decomposition-pre-dissolve-2026-07-20/01-model/01-node`
 - **16f** — `docs/01-organization/doc-discipline/restructure-2026-07/brain-top-level`
 - **12f** — `docs/_log/2026-07-13-combination-fable`
+- **12f** — `docs/_log/2026-07-26-ff-one-system-vision/agents`
 - **10f** — `docs/00-states/04-improvement-plans`
+- **10f** — `docs/02-project/core/02-agents/examples/01-agent-manager/05-processes`
+- **10f** — `docs/02-project/core/02-agents/examples/01-agent-manager/_generated-examples`
+- **10f** — `docs/_log/2026-07-28-realization-concept-review`
 - **10f** — `docs/topics/20-analysis`
 - **9f** — `docs/01-organization/doc-discipline/restructure-2026-07`
 - **9f** — `docs/02-project/core/01-brain/01-overview/01-values`
@@ -19,24 +23,36 @@
 - **8f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-decision`
 - **8f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood/council`
 - **8f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood/research`
+- **8f** — `docs/_log/2026-07-27-m1-build-prep`
+- **8f** — `docs/_log/2026-07-29-rental-launch-readiness-audit/deliverables`
 - **8f** — `docs/base/council`
 - **8f** — `docs/topics/30-plan`
 - **7f** — `docs/01-organization/doc-discipline`
+- **7f** — `docs/02-project/core/00-kernel`
+- **7f** — `docs/02-project/core/00-kernel/analyses/council-2026-07-25`
 - **7f** — `docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy`
 - **7f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis`
 - **7f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-forks-both-variants`
 - **7f** — `docs/02-project/core/02-agents/01-orchestration`
+- **7f** — `docs/03-projects/ga-rentacar/specs`
 - **7f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood`
 - **7f** — `docs/_log/2026-07-11-agents-manager-battle-state`
 - **7f** — `docs/_log/2026-07-13-combination-fable/combination-scaffold/docs/decisions/ADR`
 - **7f** — `docs/_log/2026-07-14-agents-audit-and-vision`
 - **7f** — `docs/_log/2026-07-14-vector-and-defektovka`
+- **7f** — `docs/_log/2026-07-24-phase-0-gates`
+- **7f** — `docs/_log/2026-07-28-wide-look-abstractions`
 
 ## Дерево
 ```
-docs/  [3f, 11d] named 🟢
+docs/  [3f, 12d] named 🟢
   00-states/  [2f, 5d] numbered
-    00-global-build/  [2f] numbered 🟢
+    00-global-build/  [2f, 1d] numbered 🟢
+      realization-plan/  [1f, 4d] named 🟢
+        phase-0-gates/  [1f] named
+        phase-1-engine/  [3f] named
+        phase-2-memory/  [1f] named
+        phase-3-deploy/  [1f] named
     01-tree-rules-and-librarian/  [2f] numbered 🟢
     02-agent-system-mechanics/  [2f] numbered 🟢
     03-brain-productization/  [2f] numbered 🟢
@@ -53,7 +69,7 @@ docs/  [3f, 11d] named 🟢
         · state.md
   01-organization/  [3f, 6d] numbered
     data-canon/  [5f, 1d] named
-      forks/  [1f, 9d] named 🟢
+      forks/  [2f, 9d] named 🟢
         F1-domain/  [1f] named
         F2-units-law-or-exception/  [1f] named
         F3-project-axis-and-core/  [1f] named
@@ -101,19 +117,44 @@ docs/  [3f, 11d] named 🟢
             · infra-recording.concept.json
     idea-studio/  [4f] named 🟢
     process/  [4f, 1d] named
-      bugs/  [0f, 2d] named
+      bugs/  [0f, 4d] named
+        gateway-agents-die-on-restart/  [1f, 1d] named 🟢
+          design/  [4f] named
+        gateway-askquestion-not-delivered/  [1f] named 🟢
         gateway-dup/  [1f] named 🟢
         gateway-tool-permission-stream/  [1f] named
     rules-and-skills/  [1f, 4d] named
       full-paths/  [1f] named
       investigation-economics/  [1f] named
       investigation-reporting/  [1f] named
-      session-logging/  [2f] named
+      session-logging/  [3f] named
     session-handoff/  [1f] named 📦
   02-project/  [1f, 3d] numbered
-    core/  [1f, 3d] named
-      01-brain/  [3f, 9d] numbered 🟢
-        01-overview/  [3f, 4d] numbered
+    core/  [1f, 4d] named
+      00-kernel/  [7f, 3d] numbered  🔴 7 файлов — много (>6)
+          · INDEX.md
+          · axes-and-time.design.md
+          · invariants.md
+          · kernel-acceptance-tests.md
+          · open-questions.md
+          · prefer-properties-over-poles.design.md
+          · terminology.md
+        analyses/  [0f, 1d] plural
+          council-2026-07-25/  [7f] named  🔴 7 файлов — много (>6)
+              · 1-triage-14kq.analysis.md
+              · 2-consolidation-plan.analysis.md
+              · 3-kq4-trace-redaction-critic.analysis.md
+              · 4-kq1-assertion-critic.analysis.md
+              · I-15-proposal-2026-07-26.md
+              · README.md
+              · concept.json
+        concepts/  [0f, 1d] named
+          graph-tree-git-projection/  [2f, 2d] named
+            decisions/  [2f] plural
+            questions/  [7f] plural 🟢
+        decisions/  [1f] plural
+      01-brain/  [3f, 10d] numbered 🟢
+        01-overview/  [3f, 5d] numbered
           01-values/  [9f, 9d] numbered  🔴 9 файлов — много (>6)
               · GROWTH-MAP.md
               · V1-chitaemost.md
@@ -166,14 +207,17 @@ docs/  [3f, 11d] named 🟢
               04-edge-decay/  [1f] numbered
               05-composition-and-emergence/  [1f] numbered
               06-conflict-cycles-and-scale/  [1f] numbered
-            07-soglasie/  [2f, 7d] numbered
+            07-soglasie/  [2f, 8d] numbered
               01-referent/  [1f] numbered
               02-visibility/  [1f] numbered
               03-use-vs-read/  [1f] numbered
               04-consent-taint/  [1f] numbered
               05-revocation-erasure/  [1f] numbered
               06-custodial-override/  [1f] numbered
-              decisions/  [4f] plural
+              analyses/  [1f, 1d] plural
+                council-erase-vs-file-first-2026-07-26/  [0f, 1d] named
+                  raw/  [4f] plural
+              decisions/  [6f] plural
             _archived/  [0f, 1d] service
               gen1/  [0f, 7d] named
                 V1-chitaemost/  [3f, 1d] named
@@ -252,6 +296,7 @@ docs/  [3f, 11d] named 🟢
               questions/  [1f] plural
             _archived/  [4f, 1d] service
               02-agents-orchestration/  [6f] numbered
+          analyses/  [2f] plural
           portrait/  [1f] named
           scenarios/  [2f] plural
         02-infrastructure/  [2f, 4d] numbered
@@ -329,7 +374,7 @@ docs/  [3f, 11d] named 🟢
             02-stack/  [3f] numbered
             03-method/  [5f] numbered
           state-moved/  [1f] named
-        analyses/  [1f, 4d] plural
+        analyses/  [1f, 5d] plural
           2026-07-05-L1-values/  [4f] dated
           2026-07-05-fable-brain-dig/  [3f] dated
           2026-07-12-architecture-synthesis/  [5f, 1d] dated
@@ -361,13 +406,15 @@ docs/  [3f, 11d] named 🟢
                 · GR4-time-ops-origin.md
                 · GR5-significance-input.md
                 · forks.concept.json
-        decisions/  [3f, 6d] plural
+          2026-07-31-wider-multilevel-and-self-augmenting/  [2f] dated
+        decisions/  [4f, 6d] plural
           D1-engine-vs-registry/  [2f] named
           D2-agent-memory-location/  [2f] named
           D3-canonical-type-names/  [2f] named
           D4-rebuild-reconcile-owner/  [2f] named
           D5-routing-rule/  [1f] named 🟢
           _archived/  [1f] service
+        examples/  [1f] named
         plan/  [5f] named
         questions/  [9f, 25d] plural
           FQ01-chitaemost-sliyanie/  [1f, 1d] named
@@ -423,7 +470,7 @@ docs/  [3f, 11d] named 🟢
         todo/  [1f] named
         topics/  [0f, 1d] named
           01-constitution/  [1f] numbered
-      02-agents/  [1f, 3d] numbered
+      02-agents/  [1f, 5d] numbered
         01-orchestration/  [7f, 6d] numbered  🔴 7 файлов — много (>6)
             · DESIGN.md
             · README.md
@@ -438,6 +485,56 @@ docs/  [3f, 11d] named 🟢
           04-loop/  [1f] numbered
           analyses/  [1f] plural
           decisions/  [2f] plural
+        examples/  [1f, 3d] named
+          01-agent-manager/  [2f, 9d] numbered 🟢
+            01-overview/  [1f] numbered
+            02-defectovka/  [1f, 13d] numbered
+              01-agent/  [1f] numbered
+              02-user/  [1f] numbered
+              03-project/  [1f] numbered
+              04-space-team-role/  [1f] numbered
+              05-telegram/  [1f] numbered
+              06-planning/  [1f] numbered
+              07-knowledge-base/  [1f] numbered
+              08-skill-playlist/  [1f] numbered
+              09-graph-loop/  [1f] numbered
+              10-event/  [1f] numbered
+              11-cost-snapshot/  [1f] numbered
+              12-output/  [1f] numbered
+              13-action/  [1f] numbered
+            03-schema/  [2f] numbered
+            04-graph-view/  [1f] numbered
+            05-processes/  [10f] numbered  🔴 10 файлов — много (>6)
+                · README.md
+                · composition.process.md
+                · delegation.process.md
+                · event-trigger.process.md
+                · knowledge-resolve.process.md
+                · loop-run.process.md
+                · output-deliver.process.md
+                · playlist-bind.process.md
+                · snapshot-capture.process.md
+                · space-scope.process.md
+            06-how-it-works/  [1f] numbered
+            07-extensibility/  [2f] numbered
+            08-core-and-modules/  [2f] numbered
+            _generated-examples/  [10f] service  🔴 10 файлов — много (>6)
+                · README-depth2.md
+                · README.md
+                · nodes-cap.json
+                · nodes-depth2.json
+                · nodes-growth.json
+                · nodes.json
+                · run-capability.mjs
+                · run-growth.mjs
+                · run-view-depth2.mjs
+                · run-view.mjs
+          02-folder-tree-as-graph/  [2f, 1d] numbered
+            01-overview/  [1f] numbered
+          _schema/  [2f] service
+        ideas/  [1f, 2d] plural
+          01-draft-telegram-agent-layering/  [1f] numbered
+          02-inter-agent-communication/  [1f] numbered
         loop-system/  [3f] named
         runs/  [1f] named
       03-contract/  [1f] numbered
@@ -445,14 +542,28 @@ docs/  [3f, 11d] named 🟢
     substrate/  [1f] named
   03-projects/  [1f, 5d] numbered
     7days/  [1f] named
-    cardex/  [1f] named
+    cardex/  [2f] named
     dwizh/  [1f] named
-    ga-rentacar/  [1f] named
+    ga-rentacar/  [3f, 5d] named 🟢
+      analyses/  [10f] plural
+      decisions/  [6f] plural
+      plans/  [1f] plural
+      questions/  [1f] plural
+      specs/  [7f] named  🔴 7 файлов — много (>6)
+          · 01-ingest-slice.spec.md
+          · 02-ingest-acts.spec.md
+          · 03-observation-latest-wins.spec.md
+          · 04-m2-dedup-and-customer-lens.spec.md
+          · 05-m3-topic-agent-contract.spec.md
+          · 06-m2-build-steps.spec.md
+          · 07-durable-storeport.spec.md
     video-social-music/  [1f] named
   04-knowledge/  [1f] numbered
   _generated/  [1f] service
-  _inbox/  [1f] service 📦
-  _log/  [0f, 25d] trace
+  _inbox/  [1f, 2d] service 📦
+    1-gpt-review/  [4f] numbered
+    2026-07-26-kernel-ratification-unblock/  [3f] dated 🟢
+  _log/  [0f, 40d] trace
     2026-07-06-navigation/  [1f] dated 🟢
     2026-07-06-reorg-brain/  [4f] dated 🟢
     2026-07-07-brain-open-questions/  [1f] dated
@@ -594,9 +705,89 @@ docs/  [3f, 11d] named 🟢
     2026-07-22-abstraction-spine-and-forks/  [1f] dated
     2026-07-22-blind-comprehension-experiment/  [1f] dated
     2026-07-22-brain-direction-fable/  [3f] dated
+    2026-07-23-agent-manager-example/  [3f] dated
     2026-07-23-forks-adr-and-log-consolidation/  [1f] dated
+    2026-07-23-forks-sync/  [4f] dated
+    2026-07-24-phase-0-gates/  [7f] dated  🔴 7 файлов — много (>6)
+        · HANDOFF.md
+        · SYNTHESIS-phase-0-gates.md
+        · abstract-layered-resolution-primitive.md
+        · critic-boundary-ADR-0004.md
+        · critic-verify-killer-test.md
+        · evolvability-under-growth.analysis.md
+        · fq7-hard-erase-synthesis.md
+    2026-07-25-kernel-open-questions-council/  [5f] dated
+    2026-07-25-phase-1-design/  [4f] dated
+    2026-07-26-ff-one-system-vision/  [6f, 4d] dated 🟢
+      M0-build/  [6f] named
+      agents/  [12f] named  🔴 12 файлов — много (>6)
+          · critique-V1.md
+          · critique-V2.md
+          · critique-V3.md
+          · critique-V4.md
+          · develop-V1.md
+          · develop-V2.md
+          · develop-V3.md
+          · develop-V4.md
+          · iter2-M0-spec.md
+          · iter2-adr0006.md
+          · iter2-adr0007.md
+          · iter2-adr0008.md
+      design/  [5f] named
+      post-M0-directions/  [5f] named
+    2026-07-26-ga-rentacar-onboarding/  [1f] dated
+    2026-07-26-kernel-ratification-unblock/  [6f, 5d] dated
+      r2-forks-as-properties/  [3f] named
+      r3-graph-tree-git-concept/  [2f] named
+      r4-resolve-questions/  [3f] named
+      r7-block3-fixes/  [1f] named
+      r8-erase-council/  [1f] named
+    2026-07-27-m1-build-prep/  [8f] dated 🟢  🔴 8 файлов — много (>6)
+        · HANDOFF.md
+        · INDEX.md
+        · M0-fixes.build.md
+        · M0-recheck.review.md
+        · SYNTHESIS.md
+        · data-verification.analysis.md
+        · ingest-spec-critique.md
+        · projection.build.md
+    2026-07-28-approach-A-source-driven/  [6f] dated 🟢
+    2026-07-28-realization-concept-review/  [10f] dated 🟢  🔴 10 файлов — много (>6)
+        · 01-edge-structure-and-growth.analysis.md
+        · 02-agent-system-reality.analysis.md
+        · 03-realization-via-recurring-processes.design.md
+        · BUILD-P1.spec.md
+        · HANDOFF.md
+        · INDEX.md
+        · P1.build.md
+        · P1.review.md
+        · SYNTHESIS.md
+        · concept.json
+    2026-07-28-wide-look-abstractions/  [7f] dated 🟢  🔴 7 файлов — много (>6)
+        · 01-abstractions.analysis.md
+        · 02-linear-vs-knowledge.analysis.md
+        · 03-critique-gaps.analysis.md
+        · 04-creative-directions.idea.md
+        · INDEX.md
+        · SYNTHESIS.md
+        · concept.json
+    2026-07-29-rental-launch-readiness-audit/  [5f, 4d] dated
+      deliverables/  [8f] named  🔴 8 файлов — много (>6)
+          · COMPLETENESS-CRITIC.md
+          · GAP-REGISTER.md
+          · LAUNCH-RUNBOOK.md
+          · M3-LAUNCH-SPEC.draft.md
+          · OWNER-SIGNOFFS.md
+          · Q1-VERTICAL-DECISION-BRIEF.md
+          · READINESS-VERDICT.md
+          · REMEDIATION-SPECS.draft.md
+      dimensions/  [6f] named
+      proposals/  [3f] named
+      redteam/  [6f] named
+    2026-07-30-rental-design-push/  [4f] dated
+    2026-07-31-wider-abstraction/  [2f] dated
   architecture/  [0f, 1d] named
-    ADR/  [1f] named
+    ADR/  [5f] named
   base/  [3f, 10d] named
     architecture/  [4f, 1d] named
       ADR/  [2f] named
@@ -674,6 +865,8 @@ docs/  [3f, 11d] named 🟢
     qa/  [1f] named
     research/  [1f] named
     spec/  [1f] named
+  council/  [0f, 1d] named
+    raw/  [6f] plural
   topics/  [1f, 11d] named
     00-canon/  [2f, 2d] numbered
       ADR/  [0f] named

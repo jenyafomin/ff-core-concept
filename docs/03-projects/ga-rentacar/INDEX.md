@@ -19,11 +19,34 @@ Related:
 
 > 🧭 **Навигатор-визард (steps/paths):** [`ga-rentacar.concept.json`](ga-rentacar.concept.json) — через него включается навигация, не открывая файлы по отдельности.
 
+## 🔴 С ЧЕГО НАЧАТЬ ЧТЕНИЕ (утро 2026-07-31)
+
+**1. Главный файл → SYNTHESIS:**
+   [`docs/_log/2026-07-30-rental-design-push/SYNTHESIS.md`](../../../_log/2026-07-30-rental-design-push/SYNTHESIS.md) 
+   — картина за ночь, честный итог, 7 вопросов владельцу.
+
+**2. Вердикты критиков → что снять до кода:**
+   [`analyses/10-council-critic-verdicts.analysis.md`](analyses/10-council-critic-verdicts.analysis.md)
+   — 5 блокеров, приоритизированы по глубине; 4 критерия; что подтвердилось vs что упало.
+
+**3. Решения совета:**
+   - [`decisions/05-groupA-identity-engine.decision.md`](decisions/05-groupA-identity-engine.decision.md) — группа A
+   - [`decisions/06-groupB-data-pii.decision.md`](decisions/06-groupB-data-pii.decision.md) — группа B
+
+**4. Анализы (контекст):**
+   - [`analyses/09-qd1-qd2-data-findings.analysis.md`](analyses/09-qd1-qd2-data-findings.analysis.md) — канон Transactions, PII
+   - [`analyses/08-designpack-adversarial-critique.analysis.md`](analyses/08-designpack-adversarial-critique.analysis.md) — где лёгкий путь дырявый
+
+**5. Спец (обновлён):**
+   [`specs/06-m2-build-steps.spec.md`](specs/06-m2-build-steps.spec.md) — M2 build-steps после критики
+
+---
+
 ## 🪜 Где мы сейчас (стадии)
 - ✅ **S1** концепт-направление ga-rentacar
 - ✅ **S2** ядро-канон (инварианты + ADR-0004/5/6 + оси incl. `lens` + время) — спроектирован, доказан killer-прогоном
 - ✅ **S3** прогон рентакар-данных через модель на бумаге (линзы, синк, форки, паспорт)
-- 🟡 **S4 ← ТЫ ЗДЕСЬ:** спек инжеста написан ([`specs/01-ingest-slice.spec.md`](specs/01-ingest-slice.spec.md)); первый прогон синка Orders ×2 — ждёт «строй» на код (В-1)
+- 🟡 **S4 ← ТЫ ЗДЕСЬ:** спек инжеста написан ([`specs/01-ingest-slice.spec.md`](specs/01-ingest-slice.spec.md)); первый прогон синка Orders ×2 — **БЛОКИРОВАН 5 блокерами (SYNTHESIS §3 + вердикты § 10)**
 - ⬜ **S5** тонкий движок `TOOLS/ff-engine` (phase-1) — код не начат
 
 ## 📊 Статус по областям
@@ -39,13 +62,21 @@ Related:
 | ↳ EQ-1 latest-wins (отзыв наблюдения) | 🟡 draft (REVISE: ключ=журнал) | [`specs/03-observation-latest-wins.spec.md`](specs/03-observation-latest-wins.spec.md) |
 | ↳ Q2 identity ADR-draft (canonicalId) | 🔴 draft (FLAWED — переписать на реальном коде) | [`decisions/04-node-identity-canonicalId.adr-draft.md`](decisions/04-node-identity-canonicalId.adr-draft.md) |
 | ↳ Ремедиэйшн-рескоуп под пивот B | 🟡 draft (REVISE) | [`analyses/05-remediation-rescope-under-pivot.analysis.md`](analyses/05-remediation-rescope-under-pivot.analysis.md) |
+| **НОЧНОЙ РАУНД (2026-07-30): лёгкий путь vs реальный код** | 🟡 draft · **Трёхуровневый контроль (Fable + совет A/B/C + критика)** | [`docs/_log/2026-07-30-rental-design-push/SYNTHESIS.md`](../../../_log/2026-07-30-rental-design-push/SYNTHESIS.md) |
+| ↳ Критика дизайн-пака (поиск дыр в «бесплатной» клиентской линзе) | 🟡 draft | [`analyses/08-designpack-adversarial-critique.analysis.md`](analyses/08-designpack-adversarial-critique.analysis.md) |
+| ↳ Q-D1/Q-D2: канон платежей + паспорт/PII (на живых данных) | 🟡 draft | [`analyses/09-qd1-qd2-data-findings.analysis.md`](analyses/09-qd1-qd2-data-findings.analysis.md) |
+| ↳ Вердикты критиков (5 блокеров, 4 критерия готовности) | 🟡 draft | [`analyses/10-council-critic-verdicts.analysis.md`](analyses/10-council-critic-verdicts.analysis.md) |
+| ↳ Решение группы A: отложить canonicalId + лёгкий read-path | 🟡 draft | [`decisions/05-groupA-identity-engine.decision.md`](decisions/05-groupA-identity-engine.decision.md) |
+| ↳ Решение группы B: паспорт узла + PII-стратегия | 🟡 draft | [`decisions/06-groupB-data-pii.decision.md`](decisions/06-groupB-data-pii.decision.md) |
+| ↳ Спек M2 (build-steps, дополнен после критики) | 🟡 draft | [`specs/06-m2-build-steps.spec.md`](specs/06-m2-build-steps.spec.md) |
 | Риски данных и дедупа (проход Fable) | 🟢 зафиксировано | [`analyses/01-data-and-dedup-risks.analysis.md`](analyses/01-data-and-dedup-risks.analysis.md) |
 | Линзы/доступ/формулы ↔ ядро | 🟢 замаплено | [`analyses/02-lenses-and-access-mapping.analysis.md`](analyses/02-lenses-and-access-mapping.analysis.md) |
 | Потенциал по данным (impact×сложность) | 🟢 собрано | [`analyses/03-capability-potential.analysis.md`](analyses/03-capability-potential.analysis.md) |
 | Быстрый путь к живой базе (роудмап, driver-минимум) | 🟢 написан (draft) | [`plans/01-fast-path-roadmap.plan.md`](plans/01-fast-path-roadmap.plan.md) |
 | Спек инжеста (1 стр., паспорт + idem-upsert + тест-план) | 🟢 написан (draft) | [`specs/01-ingest-slice.spec.md`](specs/01-ingest-slice.spec.md) |
+| **Шлюз: баг агентов на рестарте** (параллельный трек) | 🟡 анализ+дизайн | [`../../01-organization/process/bugs/gateway-agents-die-on-restart/design/`](../../01-organization/process/bugs/gateway-agents-die-on-restart/design/) |
 | Открытые вопросы | 🟡 ждут владельца | [`questions/open-questions.question.md`](questions/open-questions.question.md) |
-| Первый срез (код/синк) | 🔜 не начат | ждёт «строй» на код по В-1 (спек готов) |
+| Первый срез (код/синк) | 🔜 **БЛОКИРОВАНО** | **5 блокеров (см. SYNTHESIS §3), затем «строй M2»** |
 
 ## 🗄 Источники данных (внешние проекты — указатели)
 - **Живые данные:** `/Users/mac16/Documents/IT/Apps/PROJETS/RENTACAR_EXCEL_ANALYTICS`

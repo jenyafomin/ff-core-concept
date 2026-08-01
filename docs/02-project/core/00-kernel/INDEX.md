@@ -41,6 +41,18 @@ related:
 
 **Планируется** (room to grow): интеграция битемпоральных полей · killer-прогон семантики (A-2) · persistence ADR (C5).
 
+## 🌱 Корневой билд / печать шва (2026-07-31)
+
+> Родился из pre-root раунда (4 линзы + рабочая команда, проверено кодом). Корень = **уже-построенный CQRS-шов**
+> (`@ff/engine`, 44/44, commit `2c8d177`), который надо **запечатать**. Знание durable здесь; трейс — в `_log/` (gitignored).
+
+| Файл | Что внутри |
+|------|-----------|
+| [`decisions/ADR-DRAFT-root-seal-durable-store.md`](./decisions/ADR-DRAFT-root-seal-durable-store.md) | Кандидат **ADR-0009**: контур корня S1–S8 · 3 пробела (durable StorePort · admission one-home · append-only-forward) · 4 движоковых долга = приёмка. ⚠ code-верификация W2: durable-store физически ОТСУТСТВУЕТ (RAM), домен утёк в `predicates.ts` (граница пробита). ⏳ 4 P0 владельцу |
+| [`durable-storeport.design.md`](./durable-storeport.design.md) | Контракт S7: durable append-on-write · rebuild-on-boot · single-writer · инвариант **survive-turn**; `sync`\|`async` decision-node ⏳ |
+| Фундамент read/write (дом brain): [`../01-brain/decisions/ADR-DRAFT-fork-discipline-read-write-planes.md`](../01-brain/decisions/ADR-DRAFT-fork-discipline-read-write-planes.md) | Инвариант «read = и-так-и-так / write = один-дом» = **топология** корня, не политика поверх |
+| Сверка канон↔код: [`../../../01-organization/process/2026-07-31-canon-vs-code-reconcile.analysis.md`](../../../01-organization/process/2026-07-31-canon-vs-code-reconcile.analysis.md) | DL-15/16/21 vs реальность — предложения владельцу |
+
 ## Связанные якоря
 
 - **Фаза 1 — движок:** [`phase-1-engine/README.md`](../../../00-states/00-global-build/realization-plan/phase-1-engine/README.md)
