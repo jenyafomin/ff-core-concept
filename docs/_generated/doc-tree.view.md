@@ -2,7 +2,7 @@
 
 > Собран `tools/lint/doc-tree.mjs`. НЕ править руками — перегенерировать: `node tools/lint/doc-tree.mjs`.
 > Архетипы: numbered(ствол) · plural(контейнер) · service(_служебное) · trace(_log) · dated · named.
-> 🔴 = в папке >6 прямых файлов (нарушение «нет loose-файлов»). Итого: 503 папок, 1215 файлов.
+> 🔴 = в папке >6 прямых файлов (нарушение «нет loose-файлов»). Итого: 507 папок, 1228 файлов.
 
 ## 🔴 Папки с перегрузом (везде, где много файлов — не должно быть)
 - **32f** — `docs/base/product`
@@ -19,6 +19,7 @@
 - **9f** — `docs/01-organization/doc-discipline/restructure-2026-07`
 - **9f** — `docs/02-project/core/01-brain/01-overview/01-values`
 - **9f** — `docs/02-project/core/01-brain/01-overview/02-domains/01-knowledge-graph/04-mechanics`
+- **8f** — `docs/02-project/core/00-kernel`
 - **8f** — `docs/02-project/core/01-brain/02-infrastructure/01-overview`
 - **8f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-decision`
 - **8f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood/council`
@@ -28,7 +29,6 @@
 - **8f** — `docs/base/council`
 - **8f** — `docs/topics/30-plan`
 - **7f** — `docs/01-organization/doc-discipline`
-- **7f** — `docs/02-project/core/00-kernel`
 - **7f** — `docs/02-project/core/00-kernel/analyses/council-2026-07-25`
 - **7f** — `docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy`
 - **7f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-basis`
@@ -88,7 +88,7 @@ docs/  [3f, 12d] named 🟢
         · method-03-concept-navigation.md
         · section-types-registry.md
       growth-and-sequencing/  [3f] named 🟢
-      restructure-2026-07/  [9f, 1d] named 🟢  🔴 9 файлов — много (>6)
+      restructure-2026-07/  [9f, 3d] named 🟢  🔴 9 файлов — много (>6)
           · DECOMPOSITION-DISSOLVE-MAP.md
           · HOOK-PROPOSAL.md
           · LOG-MODEL.md
@@ -98,6 +98,7 @@ docs/  [3f, 12d] named 🟢
           · README.md
           · REGISTRY-UNIFICATION.md
           · SKILL-UPGRADE-PROPOSAL.md
+        _proposals/  [3f] service
         brain-top-level/  [16f] named  🔴 16 файлов — много (>6)
             · 01-numbering-and-no-loose-files.md
             · 02-containers-and-exceptions.md
@@ -115,8 +116,9 @@ docs/  [3f, 12d] named 🟢
             · PLACEMENT-AUDIT-2026-07-21.md
             · README.md
             · infra-recording.concept.json
+        maps/  [3f] plural
     idea-studio/  [4f] named 🟢
-    process/  [4f, 1d] named
+    process/  [5f, 1d] named
       bugs/  [0f, 4d] named
         gateway-agents-die-on-restart/  [1f, 1d] named 🟢
           design/  [4f] named
@@ -131,9 +133,10 @@ docs/  [3f, 12d] named 🟢
     session-handoff/  [1f] named 📦
   02-project/  [1f, 3d] numbered
     core/  [1f, 4d] named
-      00-kernel/  [7f, 3d] numbered  🔴 7 файлов — много (>6)
+      00-kernel/  [8f, 3d] numbered  🔴 8 файлов — много (>6)
           · INDEX.md
           · axes-and-time.design.md
+          · durable-storeport.design.md
           · invariants.md
           · kernel-acceptance-tests.md
           · open-questions.md
@@ -152,7 +155,7 @@ docs/  [3f, 12d] named 🟢
           graph-tree-git-projection/  [2f, 2d] named
             decisions/  [2f] plural
             questions/  [7f] plural 🟢
-        decisions/  [1f] plural
+        decisions/  [2f] plural
       01-brain/  [3f, 10d] numbered 🟢
         01-overview/  [3f, 5d] numbered
           01-values/  [9f, 9d] numbered  🔴 9 файлов — много (>6)
@@ -532,9 +535,10 @@ docs/  [3f, 12d] named 🟢
           02-folder-tree-as-graph/  [2f, 1d] numbered
             01-overview/  [1f] numbered
           _schema/  [2f] service
-        ideas/  [1f, 2d] plural
+        ideas/  [0f, 3d] plural
           01-draft-telegram-agent-layering/  [1f] numbered
           02-inter-agent-communication/  [1f] numbered
+          03-agent-self-and-system-understanding/  [1f] numbered
         loop-system/  [3f] named
         runs/  [1f] named
       03-contract/  [1f] numbered
@@ -563,7 +567,7 @@ docs/  [3f, 12d] named 🟢
   _inbox/  [1f, 2d] service 📦
     1-gpt-review/  [4f] numbered
     2026-07-26-kernel-ratification-unblock/  [3f] dated 🟢
-  _log/  [0f, 40d] trace
+  _log/  [0f, 41d] trace
     2026-07-06-navigation/  [1f] dated 🟢
     2026-07-06-reorg-brain/  [4f] dated 🟢
     2026-07-07-brain-open-questions/  [1f] dated
@@ -707,7 +711,7 @@ docs/  [3f, 12d] named 🟢
     2026-07-22-brain-direction-fable/  [3f] dated
     2026-07-23-agent-manager-example/  [3f] dated
     2026-07-23-forks-adr-and-log-consolidation/  [1f] dated
-    2026-07-23-forks-sync/  [4f] dated
+    2026-07-23-forks-sync/  [5f] dated
     2026-07-24-phase-0-gates/  [7f] dated  🔴 7 файлов — много (>6)
         · HANDOFF.md
         · SYNTHESIS-phase-0-gates.md
@@ -786,6 +790,7 @@ docs/  [3f, 12d] named 🟢
       redteam/  [6f] named
     2026-07-30-rental-design-push/  [4f] dated
     2026-07-31-wider-abstraction/  [2f] dated
+    2026-08-01-docs-as-memory-and-tidy/  [1f] dated
   architecture/  [0f, 1d] named
     ADR/  [5f] named
   base/  [3f, 10d] named
@@ -866,7 +871,7 @@ docs/  [3f, 12d] named 🟢
     research/  [1f] named
     spec/  [1f] named
   council/  [0f, 1d] named
-    raw/  [6f] plural
+    raw/  [8f] plural
   topics/  [1f, 11d] named
     00-canon/  [2f, 2d] numbered
       ADR/  [0f] named

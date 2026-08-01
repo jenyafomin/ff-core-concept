@@ -6,9 +6,9 @@ node_type: idea
 title: «Синхронизационные» скиллы — агент понимает систему и себя
 source: owner voice 2026-07-25
 related:
-  - ../../00-kernel/terminology.md            # actor/scope/capability/policy/plugin
-  - ../../../../architecture/ADR/ADR-0004-layered-scope-resolution-and-capability-access.md
-  - ../../00-kernel/open-questions.md          # KQ-11 (рефлексивность памяти) — пересечение с «понимать себя»
+  - ../../../00-kernel/terminology.md            # actor/scope/capability/policy/plugin
+  - ../../../../../architecture/ADR/ADR-0004-layered-scope-resolution-and-capability-access.md
+  - ../../../00-kernel/open-questions.md          # KQ-11 (рефлексивность памяти) — пересечение с «понимать себя»
   # owner 2026-07-25: revisit when thinking about the agent-manager layer
 ---
 
