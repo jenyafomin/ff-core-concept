@@ -18,5 +18,6 @@ export * from './ports/viewer-resolver.js';
 
 export * from './adapters/store-memory.js';
 export * from './adapters/store-md.js';
+export * from './adapters/store-durable-fs.js';
 
 export * from './engine.js';
