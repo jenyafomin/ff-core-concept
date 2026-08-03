@@ -32,8 +32,29 @@ import type { Cardinality, Edge, PredicateRegistry } from './types.js';
  */
 export const DEFAULT_PREDICATES: PredicateRegistry = {};
 
-/** Cardinality of a predicate; unregistered ⇒ `many` (non-destructive default). */
+/**
+ * GAP 3 (b) — KERNEL-LOCKED structural-identity predicates, cardinality pinned to `'many'`, un-overridable
+ * by ANY registry (default or caller-supplied). This is NOT tenant vocabulary (does not break G1): identity
+ * resolution is a ROOT concern the engine holds for any content, so these predicates are named in the kernel.
+ *
+ * `same-as` is the identity-merge predicate: `'many'` means "these candidate identities coexist". A registry
+ * silently declaring it `'one'` would make `foldEdges` REPLACE-semantics every prior merge — un-merging
+ * identity history on the next `rebuild-from-journal` (mine A-C2, the concrete instance of the general
+ * append-only-forward hazard). The lock makes `'many'` an asserted CEILING, not an accident of the
+ * unregistered-fallback default — and closes the (a·same-as) replay-collapse by construction.
+ *
+ * The lock is a CEILING applied at the cardinality lookup (like I-8's clamp-after-fold), never a stack
+ * layer: it wins over caller data rather than being one merged input among many.
+ */
+export const LOCKED_MANY_PREDICATES: ReadonlySet<string> = new Set(['same-as']);
+
+/**
+ * Cardinality of a predicate; unregistered ⇒ `many` (non-destructive default). A kernel-locked identity
+ * predicate (`LOCKED_MANY_PREDICATES`) ALWAYS folds `many`, ignoring whatever the registry declares — the
+ * lock is an identity ceiling, not policy-as-data.
+ */
 export function cardinalityOf(predicate: string, registry: PredicateRegistry = DEFAULT_PREDICATES): Cardinality {
+  if (LOCKED_MANY_PREDICATES.has(predicate)) return 'many'; // lock wins over any registry (identity ceiling)
   return registry[predicate] ?? 'many';
 }
 

@@ -30,6 +30,20 @@ related:
 > Paper phase (DESIGN ON PAPER). No code/git touched. This file is the spec for RED tests that do not
 > exist yet — GREEN is future `builder` work, gated by owner "строй".
 
+## ✅ Реализация (2026-08-03, ветка `refactor-tree`)
+
+- **(b) same-as='many' locked — DONE (GREEN).** Kernel constant `LOCKED_MANY_PREDICATES = new Set(['same-as'])`
+  in `packages/engine/src/core/predicates.ts`; `cardinalityOf()` returns `'many'` for any locked predicate,
+  ignoring the caller registry (lock = identity ceiling, wins over data). Auto-exported via `index.ts`.
+- **(a·same-as instance) — DONE (GREEN), by construction via (b).** The concrete replay-collapse
+  (`same-as` narrowed `many→one` → `identity:A` silently dropped on `project`/`rebuild`) can no longer
+  happen: `same-as` never folds `one`. Tests: `packages/engine/test/write-plane.test.ts` (4 tests) —
+  proved RED first (identity:A vanished), then GREEN. Full suite 85 green, typecheck clean.
+- **STILL OPEN (deferred to `02-design-forks-a-general-and-c-home.design.md`, architect):**
+  - **(a) GENERAL guard** for a NON-`same-as` predicate narrowed `many→one` (refuse-on-narrow vs
+    versioned-registry-per-act) — genuine design fork, not guessed.
+  - **(c) one-home barrier** — needs the undesigned home-registry data shape + fact-key derivation.
+
 ## 0. Framing
 
 `ADR-DRAFT-root-seal-durable-store.md` §"Verification pass (W2)" point 4 names three invariants the
