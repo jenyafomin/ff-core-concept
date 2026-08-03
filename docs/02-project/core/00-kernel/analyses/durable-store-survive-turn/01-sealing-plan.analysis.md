@@ -239,9 +239,18 @@ related:
 **Результат:** `47/47` зелёных (44 старых не тронуты + 3 новых), typecheck чист. Акт, записанный в
 процессе P1, читается в свежем процессе P2 после `exit` — Витальность акта теперь > 0 через границу хода.
 
-**Что осталось из §2-матрицы:** Тест 2 (idempotent-reboot) и Тест 3 (forward-monotone-reboot) — durable-путь
-уже есть, спеки готовы; можно догнать следующим заходом. Тест 4 (concurrent-writer, OQ-4) — базовый lock есть,
-полноценный конкурентный тест отложен.
+**Тесты 2 и 3 — DONE (GREEN, 2026-08-03, продолжение того же захода):**
+- **`packages/engine/test/durable-reboot-matrix.test.ts`** (2 теста) — оба через реальный `spawn`+`exit`:
+  - **Тест 2 idempotent-reboot-reingest (C4/AC-3):** P1 пишет `domain_event` → exit → P2 бутится с диска,
+    ПОВТОРНО пишет байт-идентичный акт ⇒ `dedup=true` (сверка идёт с ДИСК-журналом, не с пустым RAM),
+    журнал не растит дубль (`subjectDomainEvents=1`); отдельная `observation` без `source_ref` дописана чисто.
+  - **Тест 3 forward-monotone-rebuild-after-reboot (C3/AC-4):** P1 пишет серию с поздним supersede,
+    сериализует финальную (инкрементальную) проекцию в контрольный файл на диске → exit → P2 бутится,
+    `rebuild('journal')`, каноническая (id-sorted, keys-sorted) сериализация проекции = P1 бит-в-бит (`match`).
+- **Хранесс расширен** (`test/harness/survive-turn-harness.ts`): режимы `--reingest`, `--write-series`,
+  `--rebuild-verify` (+ canonical/snapshot хелперы). Сьют: engine 57 🟢, всего 87 🟢, typecheck чист.
+- **Осталось:** Тест 4 (concurrent-writer, OQ-4) — базовый lock есть, полноценный конкурентный тест отложен
+  до появления реального второго параллельного писателя.
 
 ## Резюме для владельца (1 абзац)
 
