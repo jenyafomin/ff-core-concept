@@ -24,7 +24,7 @@
  * the store/reducer seam (`new MemoryStore(nodes, registry)`, `foldInto(proj, act, registry)`). This keeps
  * G2 true: a second, unrelated tenant registers its predicates as DATA, never by editing this file.
  */
-import type { Cardinality, Edge, PredicateRegistry } from './types.js';
+import type { Cardinality, Edge, PredicateRegistry, Problem } from './types.js';
 
 /**
  * The kernel default registry: EMPTY. The engine knows no domain noun (G1). A caller that folds edges of
@@ -56,6 +56,38 @@ export const LOCKED_MANY_PREDICATES: ReadonlySet<string> = new Set(['same-as']);
 export function cardinalityOf(predicate: string, registry: PredicateRegistry = DEFAULT_PREDICATES): Cardinality {
   if (LOCKED_MANY_PREDICATES.has(predicate)) return 'many'; // lock wins over any registry (identity ceiling)
   return registry[predicate] ?? 'many';
+}
+
+/**
+ * GAP 3 (a) — GENERAL append-only-forward guard. The registry may GROW (grow-by-demand, I-13) but must
+ * evolve FORWARD-MONOTONE: a predicate's effective cardinality may WIDEN (`one → many`) or be added anew,
+ * but must NEVER NARROW (`many → one`). A late `many → one` narrowing, applied on `rebuild-from-journal`,
+ * silently REPLACE-folds history that was accumulated under `many` — dropping earlier edges with zero
+ * error (mine A-C2, the general case of the (b) `same-as` instance already locked).
+ *
+ * Pure and store-agnostic: compares the registry a journal was folded under (`prev`) to the registry a
+ * fresh fold is about to use (`next`), by EFFECTIVE cardinality (via `cardinalityOf`, so kernel-locked
+ * identity predicates resolve `many` on both sides and never trip the guard). Returns one `Problem` per
+ * narrowed predicate; an empty list means the evolution is forward-safe. The engine/store calls this
+ * BEFORE re-folding under `next` and REFUSES (fail-closed) on any problem — integrity-as-engine-duty,
+ * not author discipline. Guard-only: rewrites no data, drops no edges, perturbs no Act envelope.
+ *
+ * A deliberate, owner-sanctioned re-baseline (narrow WITH intent) is a separate migration op, not this
+ * guard's concern — the kernel default here is REFUSE.
+ */
+export function assertForwardMonotone(prev: PredicateRegistry, next: PredicateRegistry): Problem[] {
+  const problems: Problem[] = [];
+  const predicates = new Set<string>([...Object.keys(prev), ...Object.keys(next)]);
+  for (const predicate of predicates) {
+    const before = cardinalityOf(predicate, prev);
+    const after = cardinalityOf(predicate, next);
+    if (before === 'many' && after === 'one') {
+      problems.push({
+        message: `forward-monotone: predicate '${predicate}' narrows many→one; a registry may widen or add, never narrow (append-only-forward, mine A-C2)`,
+      });
+    }
+  }
+  return problems;
 }
 
 /**

@@ -19,6 +19,7 @@ import {
   cardinalityOf,
   foldEdges,
   project,
+  assertForwardMonotone,
   DEFAULT_PREDICATES,
   LOCKED_MANY_PREDICATES,
   Engine,
@@ -102,6 +103,41 @@ describe('(a·same-as) a late same-as:one narrowing must not collapse historical
     const node = project(acts, { 'same-as': 'one' }).get('customer:42')!;
     const sameAs = node.edges!.filter((e) => e.predicate === 'same-as').map((e) => e.target).sort();
     expect(sameAs).toEqual(['identity:A', 'identity:B']); // history intact, no silent collapse to identity:B
+  });
+});
+
+describe('(a) GENERAL append-only-forward guard — a registry may widen/add but NEVER narrow many→one', () => {
+  // Design: .../invariants-enforcement/02-design-forks-a-general-and-c-home.design.md §Fork (a).
+  // Uses a NON-same-as tenant predicate ('linked-to') to prove the general guard beyond the (b) same-as lock.
+
+  it('RED today (the hazard is real): replaying history under a many→one narrowed registry SILENTLY collapses edges', () => {
+    // Two acts, same source_ref, DIFFERENT 'linked-to' targets, accumulated under the default `many`.
+    const acts: Act[] = [
+      { id: 'l1', actor: 'sync:t', provenance: { source_ref: 'n:1', snapshotHash: 'h1' }, recordedAt: '', actKind: 'domain_event', edges: [{ predicate: 'linked-to', target: 'A' }], payload: { type: 'x' } },
+      { id: 'l2', actor: 'sync:t', provenance: { source_ref: 'n:1', snapshotHash: 'h2' }, recordedAt: '', actKind: 'domain_event', edges: [{ predicate: 'linked-to', target: 'B' }], payload: { type: 'x' } },
+    ];
+    const wide = project(acts, {}).get('n:1')!; // registryV1 = {} ⇒ 'linked-to' effective 'many'
+    expect(wide.edges!.filter((e) => e.predicate === 'linked-to')).toHaveLength(2); // both A and B (baseline)
+    // The mine: re-fold the SAME journal under a narrowed registry — history collapses with no error.
+    const narrowed = project(acts, { 'linked-to': 'one' }).get('n:1')!;
+    expect(narrowed.edges!.filter((e) => e.predicate === 'linked-to')).toHaveLength(1); // A silently gone
+  });
+
+  it('GREEN — the guard REFUSES the many→one narrowing before any re-fold (naming the predicate)', () => {
+    const problems = assertForwardMonotone({} /* linked-to effective many */, { 'linked-to': 'one' });
+    expect(problems).toHaveLength(1);
+    expect(problems[0]!.message).toMatch(/linked-to.*many.*one|forward-monotone|narrow/i);
+  });
+
+  it('ALLOWS forward-safe evolution — widen one→many, add a brand-new predicate, and no-op are all clean', () => {
+    expect(assertForwardMonotone({ 'linked-to': 'one' }, { 'linked-to': 'many' })).toEqual([]); // widen
+    expect(assertForwardMonotone({}, { 'brand-new': 'many' })).toEqual([]); // additive growth (I-13)
+    expect(assertForwardMonotone({ 'for-car': 'one' }, { 'for-car': 'one' })).toEqual([]); // stable one→one
+  });
+
+  it('kernel-locked same-as never trips the guard — it resolves many on BOTH sides (no double-jeopardy with (b))', () => {
+    // Even a registry that TRIES to declare same-as:one reads as 'many' via cardinalityOf ⇒ no false refusal.
+    expect(assertForwardMonotone({}, { 'same-as': 'one' })).toEqual([]);
   });
 });
 
