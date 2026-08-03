@@ -254,3 +254,42 @@ GREEN so it isn't lost.
 - **Owner** — these three gaps are exactly AC-debt-1 (one-home), AC-debt-3 (forward-monotone) in
   `ADR-DRAFT-root-seal-durable-store.md` §"Validation plan"; ratifying that ADR's open questions 3/6
   turns this analysis from "spec" into "accepted acceptance-test contract."
+
+---
+
+## ✅ Реализация (2026-08-03 · продолжение лупа, owner-online)
+
+Все три под-инварианта GAP 3 закрыты красно-зелёно на ветке `refactor-tree` (не запушено, без GPG).
+Дизайн-развилки (a)-general и (c) сняты на бумаге ПЕРВЫМ ходом → `./02-design-forks-a-general-and-c-home.design.md`.
+
+| Под-инвариант | Статус | Коммит | Где |
+|---|---|---|---|
+| **(b)** `same-as='many'` locked | 🟢 ранее | `6e7bb9e` | `predicates.ts` `LOCKED_MANY_PREDICATES` |
+| **(a·same-as instance)** | 🟢 ранее (by construction b) | `6e7bb9e` | `write-plane.test.ts` |
+| **(a) GENERAL guard** | 🟢 **сейчас** | `30a83dc` | `predicates.ts` `assertForwardMonotone(prev,next)` + 4 теста |
+| **(c) one-home barrier** | 🟢 **сейчас** | `8c555fc` | `admission.ts` `admitHome()` + `engine.ts` 4-й ctor-arg + 4 теста |
+
+- **(a)** реализован как **чистый guard** `assertForwardMonotone(prev, next): Problem[]` — сравнивает
+  ЭФФЕКТИВНУЮ кардинальность (locked-предикаты резолвятся `many` с обеих сторон, double-jeopardy с (b)
+  нет). Отвергает только `many→one`; `one→many` (расширение) и добавление нового (I-13) разрешены.
+  Guard-only, обратим, 0 правок Act-конверта. RED-тест доказывает саму мину (сырой `project()` под
+  суженным реестром молча схлопывает историю), GREEN — guard её ловит.
+- **(c)** реализован на гранулярности **factKind→homeDomain**, stateless per-act (без durable
+  admission-state, без cross-source_ref идентичности). Реестр инъектится 4-м опциональным ctor-arg
+  (отсутствует ⇒ барьер OFF, поведение не меняется). Домен/factKind читаются из уже-открытого
+  `provenance` (аддитивные поля), frozen-конверт не тронут. fail-OPEN на отсутствующий `domain`.
+- Сьют **70 🟢**, typecheck чист.
+
+### Остаточные развилки владельца (флагнуты архитектором, НЕ выдуманы)
+1. **(a) re-baseline op** — когда владелец ОСОЗНАННО хочет сузить предикат (реальная коррекция модели),
+   guard отвергает. Существует ли отдельная миграция-операция и СОХРАНЯЕТ ли она историю широкой эры —
+   единственный по-настоящему необратимый семантический выбор. Дефолт ядра = отвергать.
+2. **(c) гранулярность** — factKind-home (выбрано, минимально) vs per-fact-instance (нужен `fact_key`
+   конвент + durable admission-state + согласие жильцов). Рек: factKind-home для M1.
+3. **(c) строгость на отсутствующем `domain`** — fail-OPEN (выбрано) vs fail-CLOSED. Дотягиваемо позже.
+
+### Остаточная аддитивная под-задача (не блокер, флагнута)
+Автоматическая enforcement (a) на durable-boot: append-only `registry-marker` в голове JSONL-журнала
+(`DurableFsStore`), чтобы `rebuild` сам сверял инъектированный реестр с записанным и отвергал
+cross-construction сужение. Формат маркера уже задан дизайном §Fork(a). Сейчас guard = вызываемый
+примитив (доказан тестом); авто-вызов на boot — следующий аддитивный шаг, трогает durable-формат.
