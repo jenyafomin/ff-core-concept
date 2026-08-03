@@ -44,12 +44,12 @@ function domainEvent(id: string, source_ref: string, snapshotHash: string, edges
   return { id, actor: 'sync:test', provenance: { source_ref, snapshotHash }, recordedAt: '', actKind: 'domain_event', edges, payload };
 }
 
-describe('D1 registry — cardinality is data (default many, domain predicates registered one)', () => {
-  it('unregistered predicate defaults to many; registered domain predicates are one', () => {
-    expect(cardinalityOf('who-knows')).toBe('many'); // non-destructive default
-    expect(cardinalityOf('for-car')).toBe('one');
-    expect(cardinalityOf('paid-against')).toBe('one');
-    expect(DEFAULT_PREDICATES['for-customer']).toBe('one');
+describe('D1 registry — cardinality is data; the KERNEL default is EMPTY (G1 / GAP 2)', () => {
+  it('kernel ships zero domain predicates; a tenant registry supplies the `one` cardinality', () => {
+    expect(DEFAULT_PREDICATES).toEqual({}); // GAP 2: no domain noun baked into the engine
+    expect(cardinalityOf('who-knows')).toBe('many'); // non-destructive default (unregistered)
+    expect(cardinalityOf('for-car')).toBe('many'); // unknown to the kernel until a tenant registers it
+    expect(cardinalityOf('for-car', REGISTRY)).toBe('one'); // tenant registry supplies the cardinality
   });
 });
 
@@ -90,7 +90,7 @@ describe('projection — a superseding domain_event replaces a `one` edge, keeps
       domainEvent('b', 'order:1', 'h2', [{ predicate: 'for-car', target: 'car:A' }], { type: 'order', total: 100 }),
       domainEvent('c', 'order:1', 'h3', [{ predicate: 'for-car', target: 'car:B' }], { type: 'order', total: 100 }),
     ];
-    const node = project(acts, DEFAULT_PREDICATES).get('order:1')!;
+    const node = project(acts, REGISTRY).get('order:1')!;
     const forCar = node.edges!.filter((e) => e.predicate === 'for-car');
     expect(forCar).toHaveLength(1); // NOT accumulated (the bug); replaced
     expect(forCar[0]!.target).toBe('car:B');
@@ -98,7 +98,8 @@ describe('projection — a superseding domain_event replaces a `one` edge, keeps
   });
 
   it('end-to-end through the Engine: supersede does not duplicate a `one` edge', () => {
-    const store = new MemoryStore([MIN_CONSTITUTION]);
+    // GAP 2: the tenant registry is injected at store construction (kernel default is empty).
+    const store = new MemoryStore([MIN_CONSTITUTION], { drives: 'one' });
     const engine = new Engine(store, FIXED_POLICY);
     engine.write(domainEvent('p1', 'order:9', 'h1', [{ predicate: 'drives', target: 'car:X' }], { type: 'order', total: 1 }));
     engine.write(domainEvent('p2', 'order:9', 'h2', [{ predicate: 'drives', target: 'car:Y' }], { type: 'order', total: 2 }));

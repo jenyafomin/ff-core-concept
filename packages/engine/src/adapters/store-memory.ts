@@ -12,7 +12,7 @@
  * Validation §2 gate made real (replaces the former M0 rebuild stub).
  */
 import { foldInto, project } from '../core/projection.js';
-import type { Act, EnvelopeNode } from '../core/types.js';
+import type { Act, EnvelopeNode, PredicateRegistry } from '../core/types.js';
 import type { StorePort } from '../ports/store-port.js';
 
 export class MemoryStore implements StorePort {
@@ -23,10 +23,17 @@ export class MemoryStore implements StorePort {
   private readonly journal: Act[] = [];
   /** read-model: source_ref → projected node, folded from the journal's domain_events. */
   private projection = new Map<string, EnvelopeNode>();
+  /**
+   * GAP 2 / G1: the TENANT predicate registry (cardinality-as-data), injected here. Defaults to `{}` —
+   * the kernel knows no domain noun; a tenant passes its own `{ … : 'one' }` at construction so its
+   * `one`-relations replace instead of accumulate. Unregistered predicates still fold as `many`.
+   */
+  private readonly registry: PredicateRegistry;
 
-  constructor(nodes: EnvelopeNode[]) {
+  constructor(nodes: EnvelopeNode[], registry: PredicateRegistry = {}) {
     this.base = [...nodes];
     this.baseById = new Map(this.base.map((n) => [n.id, n]));
+    this.registry = registry;
   }
 
   /** The current graph (read-model): substrate nodes plus the log-projected nodes. */
@@ -40,7 +47,7 @@ export class MemoryStore implements StorePort {
 
   writeAct(act: Act): Act {
     this.journal.push(act);
-    foldInto(this.projection, act); // incremental projection: a domain_event becomes/updates its node
+    foldInto(this.projection, act, this.registry); // incremental projection: domain_event → its node
     return act;
   }
 
@@ -58,7 +65,7 @@ export class MemoryStore implements StorePort {
     // ADR-0008: the graph is a deterministic projection of the log. Tear it down and re-fold every act
     // from the write-model — no incremental state consulted, so this is a true rebuild-from-journal.
     // (from==='files' is the M0 no-op: the base substrate is the source; the seam is additive-shaped.)
-    if (from === 'journal') this.projection = project(this.journal);
+    if (from === 'journal') this.projection = project(this.journal, this.registry);
     return this.load();
   }
 }

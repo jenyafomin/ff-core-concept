@@ -23,6 +23,7 @@ import {
   FilePayloadStore,
   runIngest,
   ACTOR,
+  RENTACAR_PREDICATES,
 } from '../src/index.js';
 
 // Engine refuses to START without a policy:constitution ceiling — minimal test fixture (as in engine tests).
@@ -42,7 +43,7 @@ const MIN_CONSTITUTION: EnvelopeNode = {
 const FIXTURES = fileURLToPath(new URL('./fixtures', import.meta.url));
 
 function newEngine(): { store: MemoryStore; engine: Engine } {
-  const store = new MemoryStore([MIN_CONSTITUTION]);
+  const store = new MemoryStore([MIN_CONSTITUTION], RENTACAR_PREDICATES);
   return { store, engine: new Engine(store, FIXED_POLICY) };
 }
 function newSource(): FixtureRowSource {

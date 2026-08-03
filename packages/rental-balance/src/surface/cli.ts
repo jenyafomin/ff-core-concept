@@ -8,7 +8,7 @@
  * drops into the same `--fixtures` dir (orders.json + transactions.json) with no code change.
  */
 import { Engine, FIXED_POLICY, MemoryStore, load, buildIndex, type Graph } from '@ff/engine';
-import { FixtureRowSource } from '@ff/ingest-rentacar';
+import { FixtureRowSource, RENTACAR_PREDICATES } from '@ff/ingest-rentacar';
 import { MIN_CONSTITUTION } from '../core/constitution.js';
 import { runPaymentIngest, type IngestSummary } from '../ingest.js';
 import { BalanceObserver, type BalanceObservation } from '../agent/balance-observer.js';
@@ -23,7 +23,7 @@ export interface VerticalRun {
 
 /** Build a fresh engine, ingest the fixtures, run the agent-cycle once. Reused by the CLI and tests. */
 export function runVertical(fixturesDir: string): VerticalRun {
-  const store = new MemoryStore([MIN_CONSTITUTION]);
+  const store = new MemoryStore([MIN_CONSTITUTION], RENTACAR_PREDICATES);
   const engine = new Engine(store, FIXED_POLICY);
   const summary = runPaymentIngest(engine, new FixtureRowSource(fixturesDir));
   const observer = new BalanceObserver(engine, store);

@@ -96,7 +96,7 @@ export function admit(act: Act, schema?: ActSchema): Admission {
     const reason = scan(act.payload, schema, '');
     if (reason) return refuse(reason);
   }
-  // Edge meta is a payload too. M1 puts confidence/provenance on `same-as`/`rented` edges, where a
+  // Edge meta is a payload too. A tenant may put confidence/provenance on identity/link edges, where a
   // phone/name can slip in — the same no-inline-PII rule applies, fail-closed, per-edge.
   for (let i = 0; i < (act.edges ?? []).length; i++) {
     const meta = act.edges[i]?.meta;

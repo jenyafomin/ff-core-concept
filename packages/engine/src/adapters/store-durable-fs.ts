@@ -38,7 +38,7 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 import { foldInto, project } from '../core/projection.js';
-import type { Act, EnvelopeNode } from '../core/types.js';
+import type { Act, EnvelopeNode, PredicateRegistry } from '../core/types.js';
 import type { StorePort } from '../ports/store-port.js';
 
 /** Thrown when the durable store cannot take the single-writer lock (a live writer already holds it). */
@@ -73,11 +73,14 @@ export class DurableFsStore implements StorePort {
   private readonly journalPath: string;
   private readonly lockPath: string;
   private lockHeld = false;
+  /** GAP 2 / G1: the TENANT predicate registry (see MemoryStore). Defaults to `{}` — kernel-neutral. */
+  private readonly registry: PredicateRegistry;
 
-  constructor(storeDir: string, base: EnvelopeNode[] = []) {
+  constructor(storeDir: string, base: EnvelopeNode[] = [], registry: PredicateRegistry = {}) {
     mkdirSync(storeDir, { recursive: true });
     this.journalPath = join(storeDir, 'journal.jsonl');
     this.lockPath = `${this.journalPath}.lock`;
+    this.registry = registry;
 
     this.acquireLock(); // C5: fail-closed against a second concurrent writer
 
@@ -149,7 +152,7 @@ export class DurableFsStore implements StorePort {
         break;
       }
     }
-    this.projection = project(this.journal);
+    this.projection = project(this.journal, this.registry);
   }
 
   /** The current graph (read-model): substrate nodes plus the log-projected nodes. */
@@ -172,7 +175,7 @@ export class DurableFsStore implements StorePort {
       closeSync(fd);
     }
     this.journal.push(act);
-    foldInto(this.projection, act);
+    foldInto(this.projection, act, this.registry);
     return act;
   }
 
@@ -185,7 +188,7 @@ export class DurableFsStore implements StorePort {
     // Same semantics as MemoryStore: the graph is a deterministic projection of the log. `journal`
     // re-folds the (disk-mirrored) log through the one pure reducer; `files` is the M0 no-op (base is
     // the source). No incremental state is consulted, so this is a true rebuild-from-journal.
-    if (from === 'journal') this.projection = project(this.journal);
+    if (from === 'journal') this.projection = project(this.journal, this.registry);
     return this.load();
   }
 }

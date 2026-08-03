@@ -8,7 +8,7 @@
 import { fileURLToPath } from 'node:url';
 import { describe, it, expect, vi } from 'vitest';
 import { Engine, MemoryStore, FIXED_POLICY, load, buildIndex, type EnvelopeNode } from '@ff/engine';
-import { FixtureRowSource } from '@ff/ingest-rentacar';
+import { FixtureRowSource, RENTACAR_PREDICATES } from '@ff/ingest-rentacar';
 import {
   MIN_CONSTITUTION,
   runPaymentIngest,
@@ -29,7 +29,7 @@ const PLATE = 'DXB-55555';
 const ORDER = orderRef('ORD-9001');
 
 function newEngine(): { store: MemoryStore; engine: Engine } {
-  const store = new MemoryStore([MIN_CONSTITUTION]);
+  const store = new MemoryStore([MIN_CONSTITUTION], RENTACAR_PREDICATES);
   return { store, engine: new Engine(store, FIXED_POLICY) };
 }
 const domainNodes = (store: MemoryStore) => store.load().filter((n) => n.id !== 'policy:constitution');

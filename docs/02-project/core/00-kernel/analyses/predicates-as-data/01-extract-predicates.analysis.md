@@ -205,6 +205,25 @@ This section names both paths and their tradeoff; it does not choose.
   a currently-true gate violation; Path B trades a known, growing violation for sequencing this fix alongside
   the other four queued engine debts instead of as a one-off.
 
+## ✅ Реализация — 2026-08-03 (Path A «вынести сейчас», ветка `refactor-tree`)
+
+Владелец выбрал **Path A**. Ядро стало domain-free, вокабуляр уехал к жильцу, все тесты зелёные.
+- **Ядро пустое:** `packages/engine/src/core/predicates.ts` → `DEFAULT_PREDICATES = {}` (+ комментарии без арендных
+  слов). `packages/engine/src/core/admission.ts` — убрано `rented` из примера-комментария. Итог: в `packages/engine/src`
+  **ноль** из пяти существительных (проверено grep + Test C).
+- **Шов инъекции протянут в стор:** `MemoryStore` и `DurableFsStore` получили параметр конструктора
+  `registry: PredicateRegistry = {}` и прокидывают его в `foldInto`/`project` (writeAct · rebuild · hydrate).
+- **Реестр-жилец:** новый `packages/ingest-rentacar/src/predicates.ts` → `RENTACAR_PREDICATES` (те самые 5),
+  экспортирован из индекса. `rental-balance` (зависит от `@ff/ingest-rentacar`) импортирует его.
+- **Точки конструирования жильца** передают реестр: `rental-balance/src/surface/cli.ts` (прод),
+  `ingest-rentacar/test/ingest.test.ts`, `rental-balance/test/balance.test.ts`. Generic-CLI ядра остаётся на `{}`.
+- **Тесты:** новый `packages/engine/test/predicates-as-data.test.ts` — Test A (ядро пустое + нейтральный фолд),
+  Test B (жилец регистрирует незнакомый `attends` через `MemoryStore`/`Engine` без правки ядра),
+  Test C (G1-замок: grep `engine/src` = 0 арендных слов). `cardinality.test.ts` переведён на явный реестр.
+
+**Результат:** 81/81 тест зелёный (core 14 · engine 51 · ingest 7 · balance 9), typecheck по 4 пакетам чист.
+**G2 теперь ИСТИННА:** второй жилец регистрирует предикаты как данные, ядро не трогает (доказано Test B).
+
 ## Unresolved / left to the owner
 
 - Path A vs Path B (this section, above) — explicit non-decision, per task instructions.

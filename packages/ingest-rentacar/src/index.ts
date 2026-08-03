@@ -8,6 +8,7 @@ export * from './ports/payload-store.js';
 export * from './core/hash.js';
 export * from './core/keys.js';
 export * from './core/reduce.js';
+export * from './predicates.js';
 
 export * from './adapters/fixture-row-source.js';
 export * from './adapters/sheets-row-source.js';
