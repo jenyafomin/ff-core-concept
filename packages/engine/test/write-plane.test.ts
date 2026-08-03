@@ -21,10 +21,41 @@ import {
   project,
   DEFAULT_PREDICATES,
   LOCKED_MANY_PREDICATES,
+  Engine,
+  MemoryStore,
+  FIXED_POLICY,
   type Act,
   type Edge,
+  type EnvelopeNode,
+  type HomeRegistry,
   type PredicateRegistry,
 } from '../src/index.js';
+
+const MIN_CONSTITUTION: EnvelopeNode = {
+  id: 'policy:constitution',
+  type: 'policy',
+  state: { status: 'active' },
+  edges: [],
+  view: [],
+  visibility: { readable_by: ['agent:*'] },
+  access: { can_read: ['agent:*'], can_write: [] },
+  acts: [],
+  policy_ref: [],
+  body: { synthetic: true, no_read: [], protected_namespaces: [], default: 'deny' },
+};
+
+function paymentEvent(id: string, source_ref: string, domain: string): Act {
+  return {
+    id,
+    actor: `sync:${domain}`,
+    provenance: { source_ref, snapshotHash: id, fact_kind: 'payment', domain },
+    recordedAt: '',
+    actKind: 'domain_event',
+    edges: [],
+    payloadRef: `blob:${id}`,
+    payloadHash: `sha256:${id}`,
+  };
+}
 
 function sameAsEvent(id: string, source_ref: string, snapshotHash: string, target: string): Act {
   return {
@@ -71,5 +102,53 @@ describe('(a·same-as) a late same-as:one narrowing must not collapse historical
     const node = project(acts, { 'same-as': 'one' }).get('customer:42')!;
     const sameAs = node.edges!.filter((e) => e.predicate === 'same-as').map((e) => e.target).sort();
     expect(sameAs).toEqual(['identity:A', 'identity:B']); // history intact, no silent collapse to identity:B
+  });
+});
+
+describe('(c) one-home barrier — a factKind has exactly ONE writer-home domain (write=one-home law)', () => {
+  // Design: docs/02-project/core/00-kernel/analyses/invariants-enforcement/02-design-forks-a-general-and-c-home.design.md §Fork (c).
+  // Enforced STATELESSLY per-act at factKind granularity (no durable admission state, no cross-source_ref
+  // fact-key identity): a `payment` fact is homed to 'rental-balance'; a 'sheets' act claiming to write it
+  // is refused BEFORE the journal — even though its DIFFERENT source_ref evades Engine.write's ref-dedup.
+  const homeRegistry: HomeRegistry = { homes: { payment: 'rental-balance' } };
+
+  function engineWithHome() {
+    const store = new MemoryStore([MIN_CONSTITUTION]);
+    const engine = new Engine(store, FIXED_POLICY, [], homeRegistry);
+    return { store, engine };
+  }
+
+  it('the home domain writes its own factKind: admitted and journaled (baseline GREEN)', () => {
+    const { store, engine } = engineWithHome();
+    const ack = engine.write(paymentEvent('pay-42', 'rental-balance:pay-42', 'rental-balance'));
+    expect(ack.ok).toBe(true);
+    expect(store.acts()).toHaveLength(1);
+  });
+
+  it('a FOREIGN domain claiming a homed factKind is REFUSED before any journal write', () => {
+    const { store, engine } = engineWithHome();
+    expect(engine.write(paymentEvent('pay-42', 'rental-balance:pay-42', 'rental-balance')).ok).toBe(true);
+    // sheets claims `payment` with a DIFFERENT source_ref — ref-dedup can NOT catch it; the domain barrier must.
+    const ack = engine.write(paymentEvent('pay-123', 'sheets:payment-123', 'sheets'));
+    expect(ack.ok).toBe(false);
+    if (!ack.ok) expect(ack.reason).toMatch(/one-home|second.writer|home/i);
+    expect(store.acts()).toHaveLength(1); // refuse-before-journal: the foreign act never landed
+  });
+
+  it('CONTROL — a legitimately new payment from the HOME domain (different ref) still writes', () => {
+    // Proves it is a DOMAIN barrier, not a blanket block on a homed factKind: the home may keep writing.
+    const { store, engine } = engineWithHome();
+    expect(engine.write(paymentEvent('pay-42', 'rental-balance:pay-42', 'rental-balance')).ok).toBe(true);
+    const ack = engine.write(paymentEvent('pay-99', 'rental-balance:pay-99', 'rental-balance'));
+    expect(ack.ok).toBe(true);
+    expect(store.acts()).toHaveLength(2);
+  });
+
+  it('barrier OFF by default — no homeRegistry injected ⇒ a foreign-domain payment writes (behaviour unchanged)', () => {
+    const store = new MemoryStore([MIN_CONSTITUTION]);
+    const engine = new Engine(store, FIXED_POLICY); // no 4th arg
+    expect(engine.write(paymentEvent('pay-42', 'rental-balance:pay-42', 'rental-balance')).ok).toBe(true);
+    expect(engine.write(paymentEvent('pay-123', 'sheets:payment-123', 'sheets')).ok).toBe(true);
+    expect(store.acts()).toHaveLength(2); // reversibility: the injected barrier is opt-in
   });
 });

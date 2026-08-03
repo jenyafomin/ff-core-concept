@@ -82,6 +82,47 @@ function scan(value: unknown, schema: ActSchema | undefined, path: string, root 
   return null;
 }
 
+// ── GAP 3 (c) — one-home barrier (S5) ────────────────────────────────────────────────────────────
+/** A tenant's noun for a class of fact ('payment', 'car'). Tenant vocabulary — the kernel holds none. */
+export type FactKind = string;
+/** A writer-home domain ('rental-balance', 'sheets'). Tenant vocabulary. */
+export type Domain = string;
+
+/**
+ * The one-home registry (S6 policy-as-data, injected — NOT baked into the kernel, G1). Maps a factKind to
+ * its SOLE writer-home domain. Grows by INSERT (I-13). Absent ⇒ the barrier is OFF (behaviour unchanged).
+ */
+export interface HomeRegistry {
+  homes: Record<FactKind, Domain>;
+}
+
+/**
+ * GAP 3 (c) — the one-home barrier: a factKind has exactly ONE writer-home domain. A `domain_event` whose
+ * declared `provenance.domain` differs from the registered home for its `provenance.fact_kind` is REFUSED —
+ * even when its `source_ref` differs (a different ref is exactly what `Engine.write`'s ref-dedup does NOT
+ * catch; this is the domain barrier that does). Enforced STATELESSLY per-act at factKind granularity: the
+ * kernel never needs to know two differing source_refs are the same underlying fact.
+ *
+ * Domain/factKind are read from the already-OPEN `provenance` object (additive convention fields), so the
+ * frozen Act envelope is untouched. Fail-OPEN on a missing `domain` (chosen minimal default — owner may
+ * tighten to fail-closed; flagged in docs/_inbox). No-op when no `homeRegistry` is injected.
+ */
+export function admitHome(act: Act, homeRegistry?: HomeRegistry): Admission {
+  if (!homeRegistry) return ok();
+  const p = act.provenance;
+  if (p === null || typeof p !== 'object') return ok();
+  const fk = (p as { fact_kind?: unknown }).fact_kind;
+  if (typeof fk !== 'string' || !Object.prototype.hasOwnProperty.call(homeRegistry.homes, fk)) return ok();
+  const home = homeRegistry.homes[fk];
+  const dom = (p as { domain?: unknown }).domain;
+  if (typeof dom === 'string' && dom !== home) {
+    return refuse(
+      `one-home: fact_kind '${fk}' is homed to '${home}'; act domain '${dom}' may not write it (second writer-home)`,
+    );
+  }
+  return ok();
+}
+
 /**
  * The admission predicate. Refuses an act that inlines PII; passes an act that references PII via
  * payloadRef + payloadHash. Fail-closed on ambiguity.

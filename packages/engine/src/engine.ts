@@ -6,7 +6,7 @@
  * is ever called — an inline-PII act never reaches the append-only journal. `recordedAt` is
  * engine-assigned here (immutable, not caller-supplied) per the frozen act-envelope.
  */
-import { admit, type ActSchema } from './core/admission.js';
+import { admit, admitHome, type ActSchema, type HomeRegistry } from './core/admission.js';
 import { load } from './core/loader.js';
 import { isProjectable, snapshotHashOf, sourceRefOf } from './core/projection.js';
 import { PermissionPolicy } from './core/resolve.js';
@@ -37,6 +37,8 @@ export class Engine implements EngineClient {
     private readonly store: StorePort,
     private readonly policy: PermissionPolicy,
     private readonly schemas: ActSchema[] = [],
+    /** GAP 3 (c): optional one-home barrier registry. Absent ⇒ barrier OFF (behaviour unchanged). */
+    private readonly homeRegistry?: HomeRegistry,
   ) {
     // Fail-closed BY CONSTRUCTION (I-7 hardening): a non-FIXED policy has an UNGATED cost-tree
     // (the NAIVE visibility bypass) — it must never back a production Engine. `mode` is the exact
@@ -72,6 +74,11 @@ export class Engine implements EngineClient {
     const finalized: Act = { ...act, recordedAt: new Date().toISOString() };
     const verdict = admit(finalized, this.schemas.find((s) => s.actKind === finalized.actKind));
     if (!verdict.ok) return { ok: false, reason: verdict.reason }; // REFUSE before any journal write
+
+    // GAP 3 (c): one-home barrier — a factKind has one writer-home domain. A foreign-domain claim on a
+    // homed factKind is refused BEFORE any journal write, even when its source_ref evades the ref-dedup.
+    const homeVerdict = admitHome(finalized, this.homeRegistry);
+    if (!homeVerdict.ok) return { ok: false, reason: homeVerdict.reason };
 
     // Idempotency (T1, ADR-0008 §1 / ingest-spec §4): a byte-identical re-write of a projectable
     // domain_event (same source_ref + snapshotHash already in the log) is a NO-OP — the log does not
