@@ -10,6 +10,7 @@ export * from './core/view-compiler.js';
 export * from './core/admission.js';
 export * from './core/predicates.js';
 export * from './core/projection.js';
+export * from './core/erasure.js';
 
 export * from './ports/store-port.js';
 export * from './ports/engine-client.js';
