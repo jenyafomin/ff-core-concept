@@ -13,6 +13,7 @@ import { validate } from '../core/envelope-validator.js';
 import { FIXED_POLICY } from '../core/resolve.js';
 import { compile, costTree } from '../core/view-compiler.js';
 import { MemoryStore } from '../adapters/store-memory.js';
+import { DurableFsStore } from '../adapters/store-durable-fs.js';
 import { Engine } from '../engine.js';
 import type { EnvelopeNode, ViewDef } from '../core/types.js';
 
@@ -30,12 +31,22 @@ export function runCli(argv: string[]): number {
   };
   const corpusPath = flag('corpus');
   if (!verb) {
-    process.stdout.write('usage: engine <validate|view|resolve|load|rebuild|write|bench> --corpus <nodes.json> [...]\n');
+    process.stdout.write(
+      'usage: engine <validate|view|resolve|load|rebuild|write|bench> --corpus <nodes.json> [--store <memory|durable>] [--store-dir <path>] [...]\n',
+    );
     return 1;
   }
   const nodes = corpusPath ? loadCorpus(corpusPath) : [];
   const graph = load(nodes);
-  const store = new MemoryStore(nodes);
+  // EXTENSIBLE (per header): store backend is a flag, verbs stay FROZEN. `memory` (default) keeps the
+  // in-process journal — backward-compatible. `durable` swaps in DurableFsStore so acts written via
+  // write/rebuild/resolve/view persist to a JSONL journal on disk and survive the process (Ц1 — "память
+  // навсегда" real at the CLI, not just in tests). `--store-dir` overrides the gitignored default `.store`.
+  const storeMode = (flag('store') ?? 'memory') as 'memory' | 'durable';
+  const storeDir = flag('store-dir') ?? '.store';
+  // `nodes` is the substrate/base (constitution + seed corpus), supplied on every boot; only ACTS are
+  // durable in DurableFsStore — identical base semantics to MemoryStore(nodes).
+  const store = storeMode === 'durable' ? new DurableFsStore(storeDir, nodes) : new MemoryStore(nodes);
   const engine = new Engine(store, FIXED_POLICY);
 
   switch (verb) {

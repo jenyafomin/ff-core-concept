@@ -28,6 +28,18 @@ Related:
 > answered the ⏳ gate questions (bottom). Fully reversible by `Status: superseded` + redirect (LOSE-NOTHING).
 > Grounded against the REAL engine code (commit `2c8d177`, 44/44 green), not against prose.
 
+> ### ✅ UPDATE 2026-08-04 — S7 SEALED in code; OQ-1 / gate-Q4 resolved
+> **S7 (§2 seam S7, table row S7 = `[N]`) is NO LONGER a gap.** `DurableFsStore` is built, tested across a
+> real OS-process boundary, and sealed: `packages/engine/src/adapters/store-durable-fs.ts`; commit
+> `b881212 seal GAP 1 — durable StorePort` (ancestor of HEAD); tests `packages/engine/test/survive-turn.test.ts`
+> + `durable-reboot-matrix.test.ts`. **§4 decision-node / gate-Q4 RESOLVED in code = Option A (sync + durable
+> fs).** Every S7 status mark below (`[N]`, «spec-07 stub — the key gap», «durability absent/physically absent»,
+> «evaporates at turn end») is now STALE — read S7 as `[E] sealed`. What remains is the S7 **TAIL** (R1 wire into
+> runner · R2 file-first pen · R3 crash-mid-turn · R4 batch-idempotency · R5 journal home · R6 retention) — see
+> `docs/_inbox/2026-08-04-durable-store-substrate/councils/2026-08-04-S7-durable-store/SYNTHESIS.md` and `../durable-storeport.design.md` §8.
+> This banner corrects **only** the S7 / OQ-1(sync-async) status. The other seams (S5-one-home,
+> S8-append-only-forward) and gate-questions 1/2/3/5/6/7 stand as written; do NOT read them as sealed here.
+
 > ### ⚠️ Verification pass (W2, code-adversarial 2026-07-31) — claims below are CORRECTED
 > An adversarial verifier ran the tests and grepped the engine. Four corrections override the optimistic
 > framing in this draft (full detail: `council/raw/2026-07-31-preroot-W2-verify-reframe.md`):

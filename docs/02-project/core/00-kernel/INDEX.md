@@ -48,8 +48,8 @@ related:
 
 | Файл | Что внутри |
 |------|-----------|
-| [`decisions/ADR-DRAFT-root-seal-durable-store.md`](./decisions/ADR-DRAFT-root-seal-durable-store.md) | Кандидат **ADR-0009**: контур корня S1–S8 · 3 пробела (durable StorePort · admission one-home · append-only-forward) · 4 движоковых долга = приёмка. ⚠ code-верификация W2: durable-store физически ОТСУТСТВУЕТ (RAM), домен утёк в `predicates.ts` (граница пробита). ⏳ 4 P0 владельцу |
-| [`durable-storeport.design.md`](./durable-storeport.design.md) | Контракт S7: durable append-on-write · rebuild-on-boot · single-writer · инвариант **survive-turn**; `sync`\|`async` decision-node ⏳ |
+| [`decisions/ADR-DRAFT-root-seal-durable-store.md`](./decisions/ADR-DRAFT-root-seal-durable-store.md) | Кандидат **ADR-0009**: контур корня S1–S8 · 3 пробела (durable StorePort · admission one-home · append-only-forward) · 4 движоковых долга = приёмка. ✅ 2026-08-04: **S7 SEALED** (`store-durable-fs.ts`, `b881212`), OQ-1=(A) sync; статус-банер S7 обновлён внутри. S5-one-home / S8 остаются open |
+| [`durable-storeport.design.md`](./durable-storeport.design.md) (Status: **active**) | Контракт S7: durable append-on-write · rebuild-on-boot · single-writer · **survive-turn**. ✅ **РЕАЛИЗОВАН+запечатан** (`packages/engine/src/adapters/store-durable-fs.ts`, `b881212`; тесты `survive-turn`+`durable-reboot-matrix`). OQ-1=(A) sync. Хвост R1–R6 = §8 |
 | Фундамент read/write (дом brain): [`../01-brain/decisions/ADR-DRAFT-fork-discipline-read-write-planes.md`](../01-brain/decisions/ADR-DRAFT-fork-discipline-read-write-planes.md) | Инвариант «read = и-так-и-так / write = один-дом» = **топология** корня, не политика поверх |
 | Сверка канон↔код: [`../../../01-organization/process/2026-07-31-canon-vs-code-reconcile.analysis.md`](../../../01-organization/process/2026-07-31-canon-vs-code-reconcile.analysis.md) | DL-15/16/21 vs реальность — предложения владельцу |
 

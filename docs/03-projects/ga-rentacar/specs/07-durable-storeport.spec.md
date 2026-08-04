@@ -1,10 +1,11 @@
 ---
-Status: draft
+Status: superseded
 Owner: jenya.stasik@gmail.com
-Date: 2026-07-30
+Date: 2026-08-04
 Scope: project
 node_type: spec
-title: A4 — персистентный диск-StorePort (durable append-on-write + rebuild-on-boot)
+superseded_by: ../../../../02-project/core/00-kernel/durable-storeport.design.md
+title: A4 — персистентный диск-StorePort (durable append-on-write + rebuild-on-boot) [SUPERSEDED]
 Related:
   - ./05-m3-topic-agent-contract.spec.md          # ПОТРЕБИТЕЛЬ этого порта; §4 задаёт требования-контракт M3↔A4
   - ./03-observation-latest-wins.spec.md           # EQ-1 latest-wins в read-path (наблюдения на диске)
@@ -15,10 +16,16 @@ Related:
 
 # A4 — персистентный диск-StorePort (durable append-on-write + rebuild-on-boot)
 
-> **Статус: СТАБ (draft).** Файл заведён, чтобы снять висячую ссылку из `specs/05` (критик A6) и дать A4
-> постоянный дом. Несущие требования к порту УЖЕ инлайн-зафиксированы в `specs/05` §4 (контракт M3↔A4);
-> здесь — их владелец и место для последующего раскрытия (реализация + недостающий тест). Полноценный
-> дизайн раскрывается, когда курс дойдёт до P2 (сейчас курс = M2, `specs/04`).
+> **⛔ SUPERSEDED (2026-08-04) — редирект-заглушка.** S7 durable StorePort **построен и запечатан в коде**:
+> `packages/engine/src/adapters/store-durable-fs.ts` (`DurableFsStore`), коммит `b881212 seal GAP 1`; тесты
+> `packages/engine/test/survive-turn.test.ts` + `durable-reboot-matrix.test.ts` гоняют реальную границу
+> OS-процесса. Контракт S7 — **корневой шов** (R3/R4), его постоянный дом переехал в
+> **`../../../../02-project/core/00-kernel/durable-storeport.design.md`** (Status: active). Этот файл был
+> проектным стабом; держать оба = два дома у одной темы (нарушение doc-tree закон №2). Контент ниже сохранён
+> (LOSE-NOTHING), но **НЕ источник истины**. Остаточный хвост (провязка в раннер · file-first · crash-тест ·
+> M3 topic-agent AC) ведётся в kernel-design §8 (R1–R6). **OQ-1 (sync|async) РЕШЁН кодом = (A) sync.**
+>
+> _(историч. ниже: Статус: СТАБ (draft) — заведён чтобы снять висячую ссылку из `specs/05` критика A6.)_
 
 ## 1. Проблема
 

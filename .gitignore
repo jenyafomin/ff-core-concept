@@ -8,6 +8,10 @@ dist/
 packages/*/.data/
 .data/
 
+# durable-store journal home (DurableFsStore default `--store-dir`) — local, not committed
+**/.store/
+.store/
+
 # local dialogue/session logs (underscore = cross-cutting, per R1) — not committed.
 # Unified conversation log: _log/<conversation>/ = trace (pointers); truth flows OUT to tracked homes.
 **/_log/
