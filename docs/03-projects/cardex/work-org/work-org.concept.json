@@ -1,0 +1,49 @@
+{
+  "type": "attention-list",
+  "id": "cardex-work-org-nav-2026-08-02",
+  "title": "🗂️ Cardex — организация работы (навигатор трека)",
+  "summary": "Operating model главного программиста: 4 интерфейса (PM · DevOps · команда-пользователи · сам), ритм Пн/Чт, мост capture→дерево. Отдельный трек рядом с графом продукта. Навигатор ведёт steps[] по реальным файлам.",
+  "relatesTo": "docs/03-projects/cardex/work-org/INDEX.md",
+  "pool": "cardex",
+  "project": "cardex",
+  "createdBy": "agent",
+  "keyFiles": [
+    "docs/03-projects/cardex/work-org/INDEX.md"
+  ],
+  "steps": [
+    { "title": "① Операционная модель — начни здесь", "path": "docs/03-projects/cardex/work-org/INDEX.md", "role": "start", "pool": "работа", "note": "Роль, 4 интерфейса, ритм Пн/Чт, capture→дерево, открытые вопросы." },
+    { "title": "② Альтернативы и как улучшить", "path": "docs/03-projects/cardex/work-org/alternatives.md", "role": "key", "pool": "выбор", "note": "Варианты A/B/C⭐/D (купить→собрать), слой «коннект», агенты-augmentation, развилки." },
+    { "title": "③ Capture + визуализация поверх Telegram", "path": "docs/03-projects/cardex/work-org/capture-and-view.md", "role": "key", "pool": "механизм", "note": "Ставка Telegram-first: reuse движка кнопок + wizard шлюза + дерево. Что собираем, UX, агенты, фазы." },
+    { "title": "③ Граф продукта (что реализуем)", "path": "docs/03-projects/cardex/INDEX.md", "role": "ref", "pool": "продукт", "note": "Экосистема Cardex — идеи, которые я реализую." },
+    { "title": "③ Проект-код Cardex CRM", "path": "cardex:crm-nest-telegram/README.md", "role": "ref", "pool": "проект", "note": "Реальный код (кросс-ссылка через реестр)." }
+  ],
+  "children": [],
+  "thinking": {
+    "goal": "Организовать работу главного программиста над Cardex так, чтобы взаимодействие с PM/DevOps/командой было плотным и контролируемым, а идеи/задачи не терялись в Telegram, а ссаживались в дерево.",
+    "thesis": "Ядро — мост capture→дерево: Telegram=поток, артефакты=истина. Ритм задаёт пара созвонов Пн/Чт; между ними — самоуправление задачами.",
+    "phase": "КОНЦЕПТ (организация работы) — не код",
+    "status": "exploring",
+    "iteration": 1,
+    "interfaces": [
+      { "id": "W-PM", "who": "PM / начальник", "flows": "большие идеи, отчёт по задачам/планам", "cadence": "созвоны Пн+Чт", "artifact": "план+статус" },
+      { "id": "W-OPS", "who": "DevOps", "flows": "перенос инфры на новые серверы, безопасность, CI/CD", "cadence": "плотно, по мере", "artifact": "infra-чеклист+handoff" },
+      { "id": "W-TEAM", "who": "команда-пользователи", "flows": "потребности, идеи/вопросы/предложения", "cadence": "постоянно", "artifact": "capture→узлы дерева" },
+      { "id": "W-SELF", "who": "я сам", "flows": "ставлю/закрываю задачи между созвонами", "cadence": "ежедневно", "artifact": "личный борд задач" }
+    ],
+    "open_for_owner": [
+      "Захват идей: внутри продукта (фича) или Telegram→дерево? или гибрид?",
+      "Формат отчётности PM (план/статус/метрики) — под шаблон созвонов Пн/Чт?",
+      "DevOps: первая задача = перенос инфры на новые серверы? нужен infra-чеклист-артефакт?",
+      "Нужен ли единый личный борд задач и где он живёт?"
+    ],
+    "next_moves": [
+      "Выбрать канал capture (in-app / Telegram / гибрид) — это отдельный под-трек.",
+      "Сделать шаблон отчёта под созвоны Пн/Чт (когда PM подтвердит формат).",
+      "Завести infra-чеклист с DevOps по переносу серверов."
+    ]
+  },
+  "decisions": [
+    { "id": "WDEC-1", "text": "Организация работы — отдельный трек рядом с графом продукта (docs/03-projects/cardex/work-org/). Не мешать с продуктовым графом.", "date": "2026-08-02" },
+    { "id": "WDEC-2", "text": "Ядро организации — мост capture→дерево (Telegram=поток, артефакты=истина). Ритм: созвоны Пн+Чт.", "date": "2026-08-02" }
+  ]
+}

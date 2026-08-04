@@ -2,7 +2,7 @@
 
 > Собран `tools/lint/doc-tree.mjs`. НЕ править руками — перегенерировать: `node tools/lint/doc-tree.mjs`.
 > Архетипы: numbered(ствол) · plural(контейнер) · service(_служебное) · trace(_log) · dated · named.
-> 🔴 = в папке >6 прямых файлов (нарушение «нет loose-файлов»). Итого: 507 папок, 1228 файлов.
+> 🔴 = в папке >6 прямых файлов (нарушение «нет loose-файлов»). Итого: 526 папок, 1278 файлов.
 
 ## 🔴 Папки с перегрузом (везде, где много файлов — не должно быть)
 - **32f** — `docs/base/product`
@@ -22,6 +22,7 @@
 - **8f** — `docs/02-project/core/00-kernel`
 - **8f** — `docs/02-project/core/01-brain/02-infrastructure/01-overview`
 - **8f** — `docs/02-project/core/01-brain/analyses/2026-07-12-fable-series/2026-07-12-fable-decision`
+- **8f** — `docs/03-projects/cardex`
 - **8f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood/council`
 - **8f** — `docs/_log/2026-07-10-directions-and-agents-mem-flood/research`
 - **8f** — `docs/_log/2026-07-27-m1-build-prep`
@@ -142,7 +143,7 @@ docs/  [3f, 12d] named 🟢
           · open-questions.md
           · prefer-properties-over-poles.design.md
           · terminology.md
-        analyses/  [0f, 1d] plural
+        analyses/  [0f, 4d] plural
           council-2026-07-25/  [7f] named  🔴 7 файлов — много (>6)
               · 1-triage-14kq.analysis.md
               · 2-consolidation-plan.analysis.md
@@ -151,14 +152,17 @@ docs/  [3f, 12d] named 🟢
               · I-15-proposal-2026-07-26.md
               · README.md
               · concept.json
+          durable-store-survive-turn/  [1f] named
+          invariants-enforcement/  [2f] named
+          predicates-as-data/  [1f] named
         concepts/  [0f, 1d] named
           graph-tree-git-projection/  [2f, 2d] named
             decisions/  [2f] plural
             questions/  [7f] plural 🟢
         decisions/  [2f] plural
-      01-brain/  [3f, 10d] numbered 🟢
+      01-brain/  [3f, 11d] numbered 🟢
         01-overview/  [3f, 5d] numbered
-          01-values/  [9f, 9d] numbered  🔴 9 файлов — много (>6)
+          01-values/  [9f, 10d] numbered  🔴 9 файлов — много (>6)
               · GROWTH-MAP.md
               · V1-chitaemost.md
               · V2-tozhdestvo.md
@@ -280,6 +284,7 @@ docs/  [3f, 12d] named 🟢
                 IDEA-auto-index-wave/  [1f] named
                 IDEA-constructor-cell/  [1f] named
                 IDEA-scale-as-feature/  [1f] named
+            analyses/  [1f] plural
           02-domains/  [3f, 2d] numbered
             01-knowledge-graph/  [1f, 6d] numbered
               01-explain/  [2f] numbered
@@ -418,6 +423,7 @@ docs/  [3f, 12d] named 🟢
           D5-routing-rule/  [1f] named 🟢
           _archived/  [1f] service
         examples/  [1f] named
+        ideas/  [1f] plural
         plan/  [5f] named
         questions/  [9f, 25d] plural
           FQ01-chitaemost-sliyanie/  [1f, 1d] named
@@ -546,10 +552,27 @@ docs/  [3f, 12d] named 🟢
     substrate/  [1f] named
   03-projects/  [1f, 5d] numbered
     7days/  [1f] named
-    cardex/  [2f] named
+    cardex/  [8f, 2d] named  🔴 8 файлов — много (>6)
+        · CONTINUE-PROMPT.md
+        · INDEX.md
+        · README.md
+        · STATE.md
+        · cardex-ecosystem.concept.json
+        · graph.md
+        · how-to-grow.md
+        · priorities.md
+      ideas/  [1f, 7d] plural
+        clients/  [3f] named
+        core/  [1f] named
+        deals-process/  [1f] named
+        experience/  [3f] named
+        infra-automation/  [5f] named
+        money/  [4f] named
+        team-control/  [6f] named
+      work-org/  [4f] named
     dwizh/  [1f] named
     ga-rentacar/  [3f, 5d] named 🟢
-      analyses/  [10f] plural
+      analyses/  [12f] plural
       decisions/  [6f] plural
       plans/  [1f] plural
       questions/  [1f] plural
@@ -564,10 +587,10 @@ docs/  [3f, 12d] named 🟢
     video-social-music/  [1f] named
   04-knowledge/  [1f] numbered
   _generated/  [1f] service
-  _inbox/  [1f, 2d] service 📦
+  _inbox/  [2f, 2d] service 📦
     1-gpt-review/  [4f] numbered
     2026-07-26-kernel-ratification-unblock/  [3f] dated 🟢
-  _log/  [0f, 41d] trace
+  _log/  [0f, 42d] trace
     2026-07-06-navigation/  [1f] dated 🟢
     2026-07-06-reorg-brain/  [4f] dated 🟢
     2026-07-07-brain-open-questions/  [1f] dated
@@ -789,8 +812,9 @@ docs/  [3f, 12d] named 🟢
       proposals/  [3f] named
       redteam/  [6f] named
     2026-07-30-rental-design-push/  [4f] dated
-    2026-07-31-wider-abstraction/  [2f] dated
+    2026-07-31-wider-abstraction/  [3f] dated
     2026-08-01-docs-as-memory-and-tidy/  [1f] dated
+    2026-08-03-parallel-seal-and-rentacar/  [2f] dated
   architecture/  [0f, 1d] named
     ADR/  [5f] named
   base/  [3f, 10d] named
@@ -871,7 +895,11 @@ docs/  [3f, 12d] named 🟢
     research/  [1f] named
     spec/  [1f] named
   council/  [0f, 1d] named
-    raw/  [8f] plural
+    raw/  [8f, 4d] plural
+      2026-08-01-acts-as-git/  [1f] dated
+      2026-08-01-facets/  [1f] dated
+      2026-08-01-states/  [1f] dated
+      2026-08-01-sync-adr0006/  [1f] dated
   topics/  [1f, 11d] named
     00-canon/  [2f, 2d] numbered
       ADR/  [0f] named

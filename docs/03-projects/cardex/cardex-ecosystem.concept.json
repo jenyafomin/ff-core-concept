@@ -3,17 +3,26 @@
   "id": "cardex-ecosystem-nav-2026-07-31",
   "title": "🧩 Cardex — граф идей экосистемы (навигатор концепта)",
   "summary": "Граф идей для проработки экосистемы Cardex по бизнес-процессам. Нелинейный: узлы = роли/клиенты/идеи/инфраструктура, рёбра = связи. Ядро всей задачи — противоречие «вести всё в одном месте vs у каждой роли/клиента/кошелька своя логика». Фаза: концепт (не код). Владелец сам доращивает узлы идеями; агент держит высоту и связность.",
-  "relatesTo": "docs/03-projects/cardex/README.md",
+  "relatesTo": "docs/03-projects/cardex/INDEX.md",
   "pool": "cardex",
+  "project": "cardex",
   "createdBy": "agent",
   "viewModes": ["preset", "all-files"],
   "keyFiles": [
-    "docs/03-projects/cardex/cardex-ecosystem.concept.json",
-    "docs/03-projects/cardex/README.md"
+    "docs/03-projects/cardex/INDEX.md",
+    "docs/03-projects/cardex/ideas/README.md",
+    "docs/03-projects/cardex/graph.md",
+    "docs/03-projects/cardex/priorities.md",
+    "docs/03-projects/cardex/how-to-grow.md"
   ],
-  "paths": [
-    { "path": "docs/03-projects/cardex/cardex-ecosystem.concept.json", "role": "start", "pool": "карта", "note": "🧭 Этот навигатор — граф идей. Читать первым. Узлы N*/R*/C*/I*/X* + рёбра." },
-    { "path": "docs/03-projects/cardex/README.md", "role": "doc", "pool": "карта", "note": "Заглушка проекта cardex в FF (цель/статус/связь с ядром)." }
+  "steps": [
+    { "title": "① Карта — начни здесь", "path": "docs/03-projects/cardex/INDEX.md", "role": "start", "pool": "карта", "note": "Что это, корень N0, категории идей, ссылка на проект Cardex." },
+    { "title": "② Проект, для которого делаем", "path": "cardex:crm-nest-telegram/README.md", "role": "ref", "pool": "проект", "note": "Реальный код Cardex CRM (кросс-ссылка через реестр проектов)." },
+    { "title": "③ Идеи — дерево по категориям", "path": "docs/03-projects/cardex/ideas/README.md", "role": "key", "pool": "идеи", "note": "Каждая идея — свой файл в своей категории; растёт в свою папку. Приоритет — в шапке идеи." },
+    { "title": "④ Карта связей (рёбра)", "path": "docs/03-projects/cardex/graph.md", "role": "key", "pool": "связи", "note": "Как узлы связаны (рёбра). Детали узлов — в ideas/." },
+    { "title": "⑤ Приоритеты (оверлей T1–T4)", "path": "docs/03-projects/cardex/priorities.md", "role": "key", "pool": "приоритет", "note": "Приоритет как оверлей поверх дерева — прыгает по категориям, не линеен." },
+    { "title": "⑥ Как доращивать сам", "path": "docs/03-projects/cardex/how-to-grow.md", "role": "key", "pool": "метод", "note": "Правило идеи, парковки, как идея становится папкой." },
+    { "title": "⑦ Машинный граф (для инструментов)", "path": "docs/03-projects/cardex/cardex-ecosystem.concept.json", "role": "doc", "pool": "данные", "note": "Поле thinking.nodes/edges — данные графа." }
   ],
   "children": [],
   "thinking": {
@@ -294,6 +303,7 @@
     { "id": "DEC-2", "text": "Экосистема моделируется графом (роли × клиенты/кошельки × идеи × инфра), а не линейным списком фич. Корневой узел — противоречие N0.", "date": "2026-07-31" },
     { "id": "DEC-3", "text": "raids (I1) и бухгалтерия/«стены» (I2) паркуются как вопросы до прояснения боль+актор; на неясном не строим.", "date": "2026-07-31" },
     { "id": "DEC-4", "text": "Виток 2: добавлены узлы бизнес-процессов — M1 монетизация, I3 вариативность сделок, I4 отчёты/агрегации, X3 интеграции/курсы бирж, X4 агенты/автозакрытие. Ценность (M1) и деньги-в-моменте (X3) стали явными осями.", "date": "2026-07-31" },
-    { "id": "DEC-5", "text": "Виток 3: добавлены U1 Telegram Mini Apps (UI-поверхность), U2 алерты, P1 спред-движок, G2 сверка балансов, G1 аудит/история, D1 онбординг/KYC, D2 справочники. Введены опциональные приоритеты priority_tiers T1–T4 (несущее → ценность → удобство → автоматизация/парк). Приоритеты двигаемые, не жёсткие.", "date": "2026-07-31" }
+    { "id": "DEC-5", "text": "Виток 3: добавлены U1 Telegram Mini Apps (UI-поверхность), U2 алерты, P1 спред-движок, G2 сверка балансов, G1 аудит/история, D1 онбординг/KYC, D2 справочники. Введены опциональные приоритеты priority_tiers T1–T4 (несущее → ценность → удобство → автоматизация/парк). Приоритеты двигаемые, не жёсткие.", "date": "2026-07-31" },
+    { "id": "DEC-6", "text": "Виток 4 (fix рендера): вьютер (concept-graph.util detectConcept) рендерит только steps[]/paths[]→реальные файлы, а не кастомные thinking.nodes. Контент вынесен в реальные .md (INDEX/graph/priorities/how-to-grow), навигатор ведёт steps[] по ним + кросс-ссылка cardex:crm-nest-telegram на проект. Дубль guide.concept.json удалён (один навигатор на трек). thinking-граф оставлен как машинные данные.", "date": "2026-08-02" }
   ]
 }

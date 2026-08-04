@@ -47,3 +47,9 @@ costly); (b) when a homed `factKind` arrives with NO declared `domain` — fail-
 **Home when triaged:** F-1 → `core/01-brain/01-overview/01-values/` (V7) or kernel `decisions/`; F-2/F-3 →
 `core/00-kernel/decisions/` (fold into ADR-DRAFT-root-seal or ratify the fork design doc). Move out of
 `_inbox/` on decision.
+
+## Добавлены 2026-08-04 (draft, из инбокс-разбора)
+- **F-4** — rented/for-customer (order→customer предикат): унифицировать write-side или ратифицировать как два постоянных факта → `docs/03-projects/ga-rentacar/_inbox/F-4-rented-vs-for-customer.decision.md`
+- **F-5 (=R8)** — resolve.ts write(prefix)/read(exact) ceiling симметрия → `docs/03-projects/ga-rentacar/_inbox/ADR-DRAFT-resolve-ceiling-symmetry.decision.md`
+
+_Заметка:_ канонический **F-3** (home granularity / fail-open-vs-closed) проработан в `docs/03-projects/ga-rentacar/_inbox/F-3-one-home-and-homeregistry.decision.md`.
