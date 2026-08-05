@@ -218,12 +218,16 @@ export class PermissionPolicy implements IPermissionPolicy {
       }
     }
     // CLAMP (order-independent, applied AFTER the fold):
-    const constitution = graph.byId.get('policy:constitution');
     const adminDeny = stack.some((s) => s.authority === 'admin' && s.value === DENY);
-    const constDeny = ((constitution?.body?.protected_namespaces as string[] | undefined) ?? []).some((ns) =>
-      node.id.startsWith(ns),
-    );
-    if (constDeny) return DENY; // Constitution ceiling
+    // WRITE ceiling = NAMESPACE-ceiling (PREFIX), gated by the integrity cap (ADR F-5 variant c).
+    // A protected family (e.g. `meta:cap/core:*`) rejects writes from anyone LACKING core:manage-core;
+    // a holder passes. A NEW node minted under the family is auto-protected (prefix ⊇ exact) — no policy
+    // edit needed. This is the *integrity* obligation; it is DELIBERATELY asymmetric with the per-node
+    // READ ceiling (resolveRead), which is EXACT. Do not "symmetrise" without a superseding ADR.
+    // SINGLE SOURCE OF TRUTH: delegated to the INJECTABLE gate (DEFAULT_META_GATES.canWriteNamespace) —
+    // no inline copy of the protected-namespace test that could drift from the gate. The gate is now
+    // load-bearing on the hot write path (not dead code), and a test can stub it to prove exactly that.
+    if (this.metaGates.canWriteNamespace(this, viewer, node.id, graph) === DENY) return DENY; // namespace ceiling (gated)
     if (adminDeny) return DENY; // authority VETO clamp (deny direction)
     return reach ?? DENY; // default-deny floor (admin ALLOW reaches here honored)
   }
@@ -232,7 +236,13 @@ export class PermissionPolicy implements IPermissionPolicy {
     const reach = inAllowlist(node.visibility?.readable_by, viewer) || inAllowlist(node.access?.can_read, viewer);
     if (this.mode === NAIVE) return reach ? ALLOW : DENY; // flat allowlist, no clamps
     const constitution = graph.byId.get('policy:constitution');
-    if (((constitution?.body?.no_read as string[] | undefined) ?? []).includes(node.id)) return DENY; // ceiling
+    // READ ceiling = PER-NODE-ceiling (ADR F-5 variant c). `no_read_ids` is EXACT (privacy-as-exception):
+    // sealing one node must NOT silently seal its siblings. `no_read_namespaces` (PREFIX) is RESERVED for
+    // the rare "seal a whole family on read" need — empty by default. Deliberately asymmetric with the
+    // gated NAMESPACE write ceiling above. Renamed from `no_read` → `no_read_ids`.
+    const cbody = constitution?.body;
+    if (((cbody?.no_read_ids as string[] | undefined) ?? []).includes(node.id)) return DENY; // exact per-node ceiling
+    if (((cbody?.no_read_namespaces as string[] | undefined) ?? []).some((ns) => node.id.startsWith(ns))) return DENY; // reserved family seal
     const tenant = node.body?.tenant as string | undefined; // tenant isolation clamp (S8)
     if (tenant && !this.holdsCapability(viewer, 'core:read', tenant, graph)) return DENY;
     return reach ? ALLOW : DENY;

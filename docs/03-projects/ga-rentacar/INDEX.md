@@ -19,6 +19,11 @@ Related:
 
 > 🧭 **Навигатор-визард (steps/paths):** [`ga-rentacar.concept.json`](ga-rentacar.concept.json) — через него включается навигация, не открывая файлы по отдельности.
 
+## 🆕 ОБНОВЛЕНИЕ 2026-08-04 (волна 6 команд — форки + ценности + spine, свежее блока ниже)
+Начать здесь: [`_inbox/HANDOFF-2026-08-04-wave-synthesis.md`](_inbox/HANDOFF-2026-08-04-wave-synthesis.md)
+— свод волны + очередь owner-решений (ценности #3 своевременность, F-3/F-4/F-5, D2 движка).
+Ревизия консистентности волны: [`_inbox/wave-review-docs.analysis.md`](_inbox/wave-review-docs.analysis.md).
+
 ## 🔴 С ЧЕГО НАЧАТЬ ЧТЕНИЕ (утро 2026-07-31)
 
 **1. Главный файл → SYNTHESIS:**
@@ -77,6 +82,12 @@ Related:
 | **Шлюз: баг агентов на рестарте** (параллельный трек) | 🟡 анализ+дизайн | [`../../01-organization/process/bugs/gateway-agents-die-on-restart/design/`](../../01-organization/process/bugs/gateway-agents-die-on-restart/design/) |
 | Открытые вопросы | 🟡 ждут владельца | [`questions/open-questions.question.md`](questions/open-questions.question.md) |
 | Первый срез (код/синк) | 🔜 **БЛОКИРОВАНО** | **5 блокеров (см. SYNTHESIS §3), затем «строй M2»** |
+| **Волна 2026-08-04 (6 команд):** | | |
+| ↳ Ценности company-first v2→v3 | 🟡 draft — КОНФЛИКТ #3 (BA vs critic), ждёт владельца | [`_inbox/values-v2/VALUES-canon-v3.idea.md`](_inbox/values-v2/VALUES-canon-v3.idea.md) · крит.: [`_inbox/values-v2/VALUES-critique.analysis.md`](_inbox/values-v2/VALUES-critique.analysis.md) |
+| ↳ F-3 one-home/HomeRegistry | 🟡 70% — не тронут кодом, ждёт fail-open/closed | [`_inbox/F-3-one-home-and-homeregistry.decision.md`](_inbox/F-3-one-home-and-homeregistry.decision.md) |
+| ↳ F-4 rented vs for-customer | 🟡 75% — реком. B (два факта), спек allow-list готов | [`_inbox/F-4-rented-vs-for-customer.decision.md`](_inbox/F-4-rented-vs-for-customer.decision.md) |
+| ↳ F-5 (R8) resolve-ceiling | 🟢 88% — реализовано (GREEN 7/7), ждёт proposed→approved | [`_inbox/ADR-DRAFT-resolve-ceiling-symmetry.decision.md`](_inbox/ADR-DRAFT-resolve-ceiling-symmetry.decision.md) |
+| ↳ Своевременность/Оперправда — мост движка (T5) | 🟡 58% design — кандидат ADR-0005, 4 развилки открыты | [`_inbox/timeliness-engine-bridge.design.md`](_inbox/timeliness-engine-bridge.design.md) |
 
 ## 🗄 Источники данных (внешние проекты — указатели)
 - **Живые данные:** `/Users/mac16/Documents/IT/Apps/PROJETS/RENTACAR_EXCEL_ANALYTICS`

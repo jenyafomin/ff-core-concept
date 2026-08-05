@@ -7,6 +7,7 @@ Related:
   - ../analyses/13-post-m2-review-and-m3-gap.analysis.md
   - ../../../_inbox/2026-08-03-owner-forks-root-seal.md
   - ../../../02-project/core/00-kernel/analyses/invariants-enforcement/02-design-forks-a-general-and-c-home.design.md
+Maturity: 70% (крепкое направление) — code-grounding проверен построчно и точен (admission.ts, оба cli.ts, reduce.ts совпадают); адверсариальный self-check есть; owner-ратификация fail-open/closed и canonical-home ещё открыта, зато НЕ блокирует рекомендованную часть работы.
 ---
 
 # F-3 — one-home policy + real HomeRegistry wiring

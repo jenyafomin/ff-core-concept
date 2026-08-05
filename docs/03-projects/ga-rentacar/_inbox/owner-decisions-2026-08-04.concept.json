@@ -1,0 +1,115 @@
+{
+  "type": "decision-wizard",
+  "id": "ga-rentacar-owner-decisions-2026-08-04",
+  "title": "🧭 ga-rentacar — визард owner-решений (волна 2026-08-04)",
+  "pool": "ga-rentacar",
+  "keyFiles": [
+    "docs/03-projects/ga-rentacar/_inbox/HANDOFF-2026-08-04-wave-synthesis.md",
+    "docs/03-projects/ga-rentacar/_inbox/values-v2/VALUES-canon-v3.idea.md",
+    "docs/03-projects/ga-rentacar/_inbox/values-v2/VALUES-critique.analysis.md"
+  ],
+  "steps": [
+    {
+      "title": "S0 · 🧭 Старт — свод волны (прочитать первым)",
+      "path": "docs/03-projects/ga-rentacar/_inbox/HANDOFF-2026-08-04-wave-synthesis.md",
+      "paths": [
+        "docs/03-projects/ga-rentacar/_inbox/values-v2/"
+      ],
+      "note": "Главный свод: 3 трека + очередь owner-решений + секция «Волна вычитки».",
+      "comment": "Дальше идёшь S1→S9. 📁 values-v2/ — папка версий ценностей (v1→v2→canon-v3 + критика), смотреть как эволюцию (LOSE-NOTHING)."
+    },
+    {
+      "title": "S1 · 🔴 Ценности — КОНФЛИКТ команд: #3 Своевременность",
+      "path": "docs/03-projects/ga-rentacar/_inbox/values-v2/VALUES-canon-v3.idea.md",
+      "paths": [
+        "docs/03-projects/ga-rentacar/_inbox/values-v2/VALUES-critique.analysis.md"
+      ],
+      "note": "РЕШИТЬ: #3 Своевременность — отдельная ЦЕННОСТЬ (BA) или сквозное ТРЕБОВАНИЕ (критик)?",
+      "comment": "canon-v3 = позиция «оставить ценностью» + метрики (дни просрочки, % дедлайнов с алертом ≥N дней). critique = «убрать, сделать сквозным требованием»: каждый провал = убыток #1/#2/#4. Рекомендация: решить сознательно — самостоятельная защищаемая ценность или нет; если нет → именованное сквозное требование, чтобы разрыв не потерялся."
+    },
+    {
+      "title": "S2 · 🟡 Ценности — Чистка: #7 и #1↔#5",
+      "path": "docs/03-projects/ga-rentacar/_inbox/values-v2/VALUES-canon-v3.idea.md",
+      "paths": [
+        "docs/03-projects/ga-rentacar/_inbox/values-v2/VALUES-critique.analysis.md"
+      ],
+      "note": "РЕШИТЬ: (а) #7 Усиление → Constraints (обе команды ЗА, подтвердить); (б) #1 Фин.целостность и #5 Оперправда — слить в одну или оставить две?",
+      "comment": "#1↔#5 был в прозе, не в списке. Рекомендация: #7 — да, в Constraints (критерий выбора, не операционная ценность). #1↔#5 — если #5 = «свежесть/непротиворечивость правды», а #1 = «точность цифр», это разные объекты → оставить две."
+    },
+    {
+      "title": "S3 · 🟡 Ценности — Добавить скрытые?",
+      "path": "docs/03-projects/ga-rentacar/_inbox/values-v2/VALUES-critique.analysis.md",
+      "note": "РЕШИТЬ по каждой: добавить ли ЛИКВИДНОСТЬ/кассовый разрыв · ДИСЦИПЛИНУ своего агента · РЕПУТАЦИЮ?",
+      "comment": "Критик нашёл ценности, которые компания реально защищает, но их нет в наборе. Ликвидность = про ВРЕМЯ денег (отдельно от точности сумм). Дисциплина агента = кто что вправе обещать (риск от СВОЕГО агента). Репутация = плохой отзыв = коммерческий риск. Рекомендация: ликвидность и дисциплина выглядят native; репутацию проверить, не растворяется ли в «клиент=граница»."
+    },
+    {
+      "title": "S4 · 🟡 Ценности — Иерархия / tie-break",
+      "path": "docs/03-projects/ga-rentacar/_inbox/values-v2/VALUES-critique.analysis.md",
+      "note": "РЕШИТЬ: нужна ли явная иерархия/правило разрешения конфликта ценностей (решает агент-арбитр, не человек)?",
+      "comment": "Пример конфликта: #2 «держи актив в работе» vs #4 «риск-клиент». Без tie-break агент непредсказуем. ⚠️ Сцеплено с F-3 (S6) и D4 (S8) — отвечать согласованно. Рекомендация: да, задать черновой порядок при канонизации."
+    },
+    {
+      "title": "S5 · 🟠 Форк F-5 — вариант (c) + ОСОЗНАННАЯ привилегия",
+      "path": "docs/03-projects/ga-rentacar/_inbox/ADR-DRAFT-resolve-ceiling-symmetry.decision.md",
+      "paths": [
+        "docs/03-projects/ga-rentacar/_inbox/wave-review-adversarial.analysis.md",
+        "docs/03-projects/ga-rentacar/_inbox/wave-review-engine.analysis.md"
+      ],
+      "note": "РЕШИТЬ: (а) утвердить вариант (c) двух потолков (proposed→approved)? (б) ОСОЗНАННО ли разрешаешь держателю core:manage-core писать в сам комбинатор прав?",
+      "comment": "Код построен, тесты 7/7, обхода прав не найдено. НО это privilege-change: раньше запись в meta:type/*, policy:access-priority была заморожена безусловно для всех. ADR это словами не называет. Рекомендация: подтвердить сознательно ИЛИ сузить protected_namespaces; завести риск-реестр под привилегией — не процедурная галочка."
+    },
+    {
+      "title": "S6 · 🟡 Форк F-3 — fail-open/closed (СЦЕПЛЕНО!)",
+      "path": "docs/03-projects/ga-rentacar/_inbox/F-3-one-home-and-homeregistry.decision.md",
+      "note": "РЕШИТЬ: (а) HomeRegistry при неизвестном доме — fail-open или fail-closed? (б) ратифицировать дом payment→rental-balance?",
+      "comment": "Кодом не трогали — чистое твоё решение. ⚠️ НЕ изолированно: этот ответ анкерит D4 timeliness (S8) и tie-break-иерархию (S4); делит wiring-предпосылку с F-4 (S7)."
+    },
+    {
+      "title": "S7 · 🟡 Форк F-4 — два факта (не сливать)",
+      "path": "docs/03-projects/ga-rentacar/_inbox/F-4-rented-vs-for-customer.decision.md",
+      "note": "РЕШИТЬ: (а) один ли это реальный заказ в реальности (sheets vs payment)? (б) строить allow-list СЕЙЧАС или отложить?",
+      "comment": "Вывод команды: два факта, не сливать (нет join-ключа; форс-merge приписал бы чужой платёж не тому заказу). Спек capability multi-domain allow-list живёт в admission.ts::admitHome, делит wiring с F-3. Maturity 75%."
+    },
+    {
+      "title": "S8 · 🟡 Движок — мост «Своевременность» (D1–D5)",
+      "path": "docs/03-projects/ga-rentacar/_inbox/timeliness-engine-bridge.design.md",
+      "note": "РЕШИТЬ 5 развилок: D1 материализовать vs derive-only · D2 кто тикает свип · D3 горизонты свежести · D4 fail-open/closed · D5 anti-corrosion v1/v2.",
+      "comment": "Дизайн готов, кандидат ADR-0005 «Temporal plane», Maturity 58%. Ключевой инвариант: время только через clock-порт на границе, НИКОГДА в редьюсер. Рекомендация: D2 = lazy+on-ingest (фон под шлюзом мёртв); D4 отвечать вместе с F-3 (S6); D5 ждёт F-4 (S7)."
+    },
+    {
+      "title": "S9 · 🔗 СЦЕПКИ + что дальше (прочитать вместе)",
+      "path": "docs/03-projects/ga-rentacar/_inbox/HANDOFF-2026-08-04-wave-synthesis.md",
+      "paths": [
+        "docs/03-projects/ga-rentacar/_inbox/wave-review-docs.analysis.md"
+      ],
+      "note": "Свериться со сцепками ПЕРЕД финальными ответами; выбрать следующую волну.",
+      "comment": "Сцепки: (1) F-3 ↔ D4 ↔ tie-break(#4) — один ответ анкерит остальные. (2) «да» на F-4 без «да» на F-3 = инертная капабилити. (3) #1↔#5. Дальше: скажешь «строй» → spine P3-P6 (PEP+same-as линза, seq, dedup-мост, torn-write); или дашь owner-ответы → канон ценностей v-final (синтез BA+critic, LOSE-NOTHING). Ревизия доков: противоречий нет; INDEX подчищен; STATE.md ещё указывает на старый хендофф — обновить.",
+      "branches": [
+        { "title": "→ строй spine P3-P6", "path": "docs/03-projects/ga-rentacar/_inbox/HANDOFF-2026-08-04-wave-synthesis.md", "note": "PEP+same-as линза · R7 seq · dedup-мост latest-wins · torn-write тесты." },
+        { "title": "→ канон ценностей v-final", "path": "docs/03-projects/ga-rentacar/_inbox/values-v2/", "note": "Синтез BA+critic после ответов S1–S4, LOSE-NOTHING." }
+      ]
+    }
+  ],
+  "thinking": {
+    "goal": "Провести владельца поэтапно по всем точкам внимания волны 2026-08-04 так, чтобы сцепленные решения не были отвечены противоречиво.",
+    "phase": "DESIGN (ценности/форки/мост) + точечный BUILD (движок P1-P2 + F-5 сделаны, зелёные)",
+    "stage_map": [
+      { "stage": "W1", "text": "Волна 1: 6 команд (ценности×2, форки×2, строй, мост)", "status": "done" },
+      { "stage": "W2", "text": "Волна 2: вычитка ×3 (код-гейт, доки, адверсариал)", "status": "done — поймала регресс" },
+      { "stage": "W3", "text": "Почин регресса dedup (текущий-акт) + консолидация прав", "status": "done — engine 92/92, ingest 32/32" },
+      { "stage": "W4", "text": "ТЫ ЗДЕСЬ: owner-решения по визарду (S1–S9)", "status": "in-progress" },
+      { "stage": "W5", "text": "Канон ценностей v-final + spine P3-P6 + ADR-0005", "status": "waiting-owner / waiting-«строй»" }
+    ],
+    "open_for_owner": [
+      "S1: #3 Своевременность — ценность или сквозное требование? (конфликт BA/critic)",
+      "S2: #7 → Constraints (подтвердить); #1↔#5 слить?",
+      "S3: скрытые ценности — ликвидность / дисциплина агента / репутация?",
+      "S4: нужна ли tie-break-иерархия ценностей?",
+      "S5: F-5 (c) approved + ОСОЗНАННЫЙ sign-off gated-привилегии",
+      "S6: F-3 fail-open/closed + дом (сцеплено)",
+      "S7: F-4 — один реальный заказ? allow-list сейчас?",
+      "S8: движок Своевременность D1–D5 (D4 сцеплено с F-3)",
+      "S9: сверить сцепки; выбрать след. волну"
+    ]
+  }
+}

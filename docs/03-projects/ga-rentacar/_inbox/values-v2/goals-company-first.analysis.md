@@ -10,6 +10,7 @@ Related:
   - ../../decisions/01-direction-and-mvp.decision.md
   - ../../decisions/03-vertical-and-signoffs.decision.md
   - ../../analyses/03-capability-potential.analysis.md
+Maturity: 50% (черновик-направление) — один вход в свод VALUES-company-first-v2; своя прозо-аналитика без операционного заземления.
 ---
 
 # Цели и ценности ga-rentacar — от лица компании (v2, поправка на клиент-центризм)

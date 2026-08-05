@@ -270,10 +270,11 @@
       "visibility": { "level": "visible-to-ai", "valve": "none", "readable_by": ["agent:*", "user:jenya"] },
       "access": { "can_read": ["agent:*"], "can_write": [] }, "acts": [], "policy_ref": [],
       "body": { "synthetic": true, "target": "*", "authority": "constitution",
-        "no_read": ["node:sealed-diary"],
+        "no_read_ids": ["node:sealed-diary"],
+        "no_read_namespaces": [],
         "protected_namespaces": ["meta:type/", "meta:envelope", "policy:constitution", "policy:access-priority", "meta:cap/core:"],
         "default": "deny",
-        "note": "Non-negotiable ceiling. no_read nodes are unreadable regardless of grant/readable_by. protected_namespaces reject writes from anyone lacking core:manage-core. access.can_write=[] — the constitution itself cannot be re-written by data. Applied as CLAMP after the fold." } },
+        "note": "Non-negotiable ceiling (ADR F-5 variant c). READ: no_read_ids = EXACT per-node seals (privacy-as-exception); no_read_namespaces = reserved PREFIX family-seal (empty). WRITE: protected_namespaces = PREFIX namespace-ceiling, rejects writes from anyone lacking core:manage-core (a holder passes). access.can_write=[] — the constitution itself cannot be re-written by data. Applied as CLAMP after the fold." } },
 
     { "id": "meta:type/capability", "type": "type",
       "state": { "status": "active" }, "edges": [ { "predicate": "example", "target": "meta:cap/core:read" } ], "view": [],

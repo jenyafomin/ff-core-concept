@@ -10,6 +10,7 @@ Related:
   - ../../decisions/01-direction-and-mvp.decision.md
   - ../../analyses/03-capability-potential.analysis.md
   - ../../../../02-project/core/01-brain/INDEX.md   # 7 ценностей brain — референс СТИЛЯ
+Maturity: 50% (черновик-направление) — второй вход в свод VALUES-company-first-v2; своя прозо-аналитика без операционного заземления.
 ---
 
 # Ценности аренды — от лица КОМПАНИИ
