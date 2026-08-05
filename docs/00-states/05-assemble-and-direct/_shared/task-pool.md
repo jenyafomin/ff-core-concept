@@ -7,7 +7,7 @@ date: 2026-08-05
 scope: project
 reuses: ./README.md
 state: ../state.md
-handoff: ../../../_log/2026-08-05-depth-and-path/HANDOFF.md
+handoff: ../../../_log/2026-08-05-movement-rules-and-census/HANDOFF.md
 ---
 
 # 🗂 Пул задач — Собрать и направить

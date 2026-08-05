@@ -7,7 +7,7 @@ owner: jenya.stasik@gmail.com
 opened: 2026-08-04
 updated: 2026-08-05
 agents: [orchestrator-fable]
-handoff: ../../_log/2026-08-05-depth-and-path/HANDOFF.md
+handoff: ../../_log/2026-08-05-movement-rules-and-census/HANDOFF.md
 council_brief: ./council-brief.md
 inputs:
   - ../../_inbox/2026-08-04-assemble-and-direct/design/00-fact-base.synthesis.md
@@ -69,11 +69,23 @@ Related:
   и незаведённые ветки; doc-discipline долги. (Этот стейт — первый шаг S-D.)
 - **Сквозное:** межценностный **арбитраж 7 ценностей** (развилка владельца, из вердикта Fable) → ADR.
 
+## Путь движения (полосы · порядок · 2026-08-05)
+> Правила: `../../01-organization/doc-discipline/growth-and-sequencing/CONVENTION-movement-and-selfcheck.md`.
+> Задачи: `_shared/task-pool.md`. Перепись (дыры плана): `../../_inbox/2026-08-04-assemble-and-direct/design/02-coverage-gate.synthesis.md`.
+- **S-D stage 1 — СДЕЛАНО:** правила движения + пул + шаблон хендофа + орган переписи (коммит `e306f95`).
+  Перепись уже поймала ошибки плана (CG-12 генератор D0 · CG-14 тавтологический same-as guard).
+- **Полоса A (ВХОД след. сессии) — «чистый план»:** `T-plan-honesty` (CG-11/12/13) + `T-sameas-guard`.
+  Последовательно, дёшево, разблокирует. Ошибка постановки — самое дорогое (P1).
+- **Полоса B (после A / далее веером) — «копнуть грань»:** одна грань/сессия. Кандидаты: Q5 referent-consent
+  (=#15, фундамент Ц7), Q1 recall+Q2 erasure (одна дверь). Прототип — только где перепись зелёная.
+- **Параллель:** цепь (A→прототип) последовательно; независимые грани — разные топики; слияние в этом пульте.
+
 ## Ворота состояния
 - [x] Фаза 0 — стейт + fact-base + бриф совета + хендофф (LOSE-NOTHING)
 - [x] Фаза 1 — совет провёл ≥2 круга (5 линз → реконсиляция → критика + Fable) → **план выполнения**:
       `../../_inbox/2026-08-04-assemble-and-direct/design/01-execution-plan.synthesis.md` (status: review).
       Сырьё совета: `.../design/council/` (wave1 ×5 · wave2 draft/critique/fable). Хендофф:
       `../../_log/2026-08-05-council-executed/HANDOFF.md`.
+- [x] S-D stage 1 — механизм движения (правила+пул+шаблон+перепись) материализован (коммит `e306f95`)
 - [ ] Фаза 2 — планы 1..N заведены с целевыми точками и правилами команд (**ждёт «строй» + развилки владельца**)
 - [ ] Каждый план доведён до «правильной точки» (не брошен)
