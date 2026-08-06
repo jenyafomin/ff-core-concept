@@ -80,7 +80,20 @@ future right-to-erasure without waiting for the erasure feature to ship.
 **Fable's non-waivable preconditions on D1.b (all four, no exceptions):**
 1. D1.a green (PEP-door enforced, `same-as` traversed).
 2. A **log-level test asserting NO `payload` key appears in any tenant journal line** (enforces by-ref).
-3. The `same-as` guard (`predicates.ts:78`) **fired clean on real replay** (not mis-attributing, not unresolved).
+3. A same-as-GROUP INTEGRITY check across a REAL DISK ROUND-TRIP (write via DurableFsStore.writeAct →
+   close → fresh DurableFsStore instance on the same storeDir → hydrateFromDisk, store-durable-fs.ts:139-156,
+   the C2 rebuild-from-journal contract at :15): snapshot every same-as group's real edge membership from
+   S1.load() BEFORE the reboot and from S2.load() AFTER the disk-rebuilt reboot; FAIL if any group's member
+   count shrinks, or any same-as edge between two nodes still live (node.state.tombstone !== 'archived',
+   projection.ts:49,98) present in S1 is absent in S2. This check must NOT call
+   `cardinalityOf`/`assertForwardMonotone`, and must NOT compare two in-memory `project()` calls over the
+   same journal in one process — neither path can ever observe a collapse (predicates.ts:49/57 locks the
+   registry check; foldEdges/foldInto/erasure.ts never delete a `same-as` edge in pure in-memory folding,
+   `erasure.ts:25-34` keeps `edges` in `IMMUTABLE_ACT_META`). The only real loss path is the disk boundary:
+   `hydrateFromDisk`'s C3 torn-line handling (store-durable-fs.ts:148-153) `break`s silently on the first
+   unparseable line, dropping every act after it — this check exists to catch exactly that class of loss
+   (catches torn-line C3 drop AND post-fsync boundary loss, not just C3 literally).
+   Grouping method (direct out-edges vs transitive closure) is DEFERRED to first real fail-observation.
 4. **`dist/src` parity checked** (rider R2 — trust no derived-green from a drifted meter).
 
 **FLIP conditions (change the rule only if):**
@@ -95,16 +108,30 @@ future right-to-erasure without waiting for the erasure feature to ship.
 
 | ID | Name | Standalone folder vs sub-item | Mode |
 |---|---|---|---|
-| **D0** | Harness skeleton (generated pult + harvest gate) | `00-states/05-assemble-and-direct/` (meta-state produces it) | Parallel W1; gates **only D1.c** |
+| **D0** | Harness skeleton (**pult generation = TODO, sized task `T-state-pult-generator`** + harvest gate) | `00-states/05-assemble-and-direct/` (meta-state produces it) | Parallel W1; gates **only D1.c** |
 | **D1** | **Vertical proof-slice** (keystone) | `00-states/06-substrate-slice/` | **Strict internal seq a→b→c** |
 | **D2** | Substrate hardening (rest of S-A, narrowed) | `00-states/07-substrate-core/` | Parallel (docs-only cleanup) |
 | **D3** | Agent-layer maturation (deferred contract) | `00-states/08-agent-layer/` | Deferred-until-triggered |
 | **D4** | Gateway reliability (2 bugs) | sub-plan under D3 card, ext `TOOLS/agents-manager` | Parallel today; gated (E2) |
 | **D5** | Process migration + sweep | sub-plan of `00-states/05-…` (meta) | Parallel-background, own branch |
-| **DV** | **Vitality / drift-detector** (the real "Vitality=0" debt) | `00-states/09-vitality-meter/` | Later, first-class (NOT in the slice) |
+| **DV** | **Drift-Observer** (process/usage-liveness drift — cards, branches, dist/src; NOT the canonical Vitality-graph value Ц4, see DV-graph) | `00-states/09-drift-observer/` | Later, first-class (NOT in the slice) |
 
 **KILL-SHOT 1 applied:** the live Vitality/usage observer is **DV**, a separate first-class plan — it is NOT
 smuggled into D1.c's gate. D1.c ships only a **hand-triggered verification script**.
+
+**Naming split (CG-11 — do not re-collide these three):**
+- **`DV`** — the process drift-observer above ONLY (cards/branches/dist-src usage-liveness-drift).
+- **`DV-graph`** (canon term, `task-pool.md:169`) — the canonical value Ц4 «Витальность»: 6 graph mechanisms (salience-weight ·
+  consolidation-emergence · forgetting-lifecycle · reinterpretation · pending-open-loops ·
+  metabolism-governance — `docs/02-project/core/01-brain/01-overview/01-values/04-vitalnost/README.md`).
+  **UNCLAIMED** — no branch in this plan owns it; backlog until an owner/home is chosen. `DV` does NOT
+  cover it despite the shared word "Vitality".
+- **`D0(b)` card-staleness-check** (§4 D0 Enforcement) — narrow, NOW, generator-level check on document
+  frontmatter age, scoped inside `D0` (gates `D1.c`). **Working reading (not settled fact): treated as
+  DISTINCT from `DV`** — `DV` is later/live/excluded from `D1.c`'s gate by KILL-SHOT 1; `D0(b)` is
+  static/cheap/doc-level and stays inside D0 on purpose. **Open alternative, not ruled out by the plan
+  text: `D0(b)` may instead be an early, narrow SLICE of `DV` pulled forward into D0**, not a separate
+  mechanism — the plan never states either reading explicitly (CG-11 gap). Pick one on next review.
 
 ---
 
@@ -114,12 +141,29 @@ Every gate below is paired with a **generator-level enforcement** (KILL-SHOT 2).
 
 ### D0 — Harness skeleton
 - **Right-point:** root `STATE.md` is a **generated** index (schema: id·theme·status·gate·home·handoff·
-  value-checkpoint·fork?); the 4 unregistered branches (ga-rentacar, durable-store, picture-coverage,
-  assemble-and-direct) registered as cards; the **HARVEST/CLOSE gate documented as a RULE**.
-- **Enforcement (not prose):** (a) root `STATE.md` **generated via existing `tools/lint/doc-tree.mjs`** —
-  teams edit **only their own card's frontmatter**, never the root table (kills the append-stack merge-rot);
+  value-checkpoint·fork? — see UNVALIDATED note below); the 4 unregistered branches (ga-rentacar,
+  durable-store, picture-coverage, assemble-and-direct) registered as cards; the **HARVEST/CLOSE gate
+  documented as a RULE**.
+- **Enforcement (not prose):** (a) **TODO — no generator exists yet.** `tools/lint/doc-tree.mjs` today only
+  emits a tree-shape view (`docs/_generated/doc-tree.view.md` — folder archetype + loose-file flag; verified
+  `tools/lint/doc-tree.mjs:82-83`); it does not read/write `id/theme/gate/home/handoff/value-checkpoint`.
+  **New sized task (`T-state-pult-generator`, own file `tools/lint/state-pult.mjs` — see CG-12/CG-13 shared-home
+  decision, do NOT extend doc-tree.mjs, do NOT fold into census-gate.mjs).** Owner: TBD. Sizing: S (one script
+  + fixture cards), blocks D1.c only, does not block D1.a/D1.b (`:205` unaffected). **Acceptance step:** the
+  schema `id·theme·status·gate·home·handoff·value-checkpoint·fork?` above is **UNVALIDATED** — it was never
+  checked against a real card's frontmatter and must be RE-DERIVED from the actual proven-pattern card,
+  `docs/00-states/04-improvement-plans/state.md:1-11`, whose real frontmatter fields are
+  `id, node_type, theme, status, owner, opened, updated, agents, handoff, last_session, plans` — no `gate`,
+  no `value-checkpoint`, no `home` field exists there. The task is not "wire up a generator to the schema
+  above"; it is "derive the pult schema from real cards, THEN build the generator." Until this task lands,
+  D0's "generated pult" is **not-yet-real** and D1.c stays gated on it exactly as `:153`/`:205` already say.
   (b) a generator check that **flags any `status: active` card stale past a threshold** (the anti-rot
-  mechanism, not a label).
+  mechanism, not a label) — **`D0(b)` "card-staleness-check"**, scoped to document frontmatter only, same
+  open dependency as (a) (folds into the same `T-state-pult-generator` task, not a second one). **Working
+  reading, NOT a settled fact (CG-11):** treated here as distinct from `DV`'s later live process-observer
+  (KILL-SHOT 1 still excludes `DV` from `D1.c`'s gate; `D0(b)` stays inside `D0` because it is static/cheap,
+  not "live"). **Open alternative:** `D0(b)` could instead be read as an early, narrow slice of `DV` pulled
+  forward into D0, not a separate mechanism — the plan text does not rule this out; resolve on next review.
 - **Folder:** `00-states/05-assemble-and-direct/` (existing meta-state; not a new 06+ folder — process lens).
 - **Team rules:** read-first [fact-base, `00-states/04-improvement-plans/state.md` as the proven pattern,
   `doc-tree.md`]; critic = process/doc-discipline agent; output = generated `STATE.md` + card set + `_log`
@@ -145,7 +189,10 @@ Every gate below is paired with a **generator-level enforcement** (KILL-SHOT 2).
 - Right-point: `MemoryStore` removed from the ga-rentacar path; durable writes are **meta-only + payloadRef +
   payloadHash**; PII payload by reference via `PayloadStore`/`erasure.ts` (`splitAct`/`redactAct`).
 - Enforcement (Fable's 4 preconditions, all machine-checked): D1.a green; **log-level test: no `payload` key
-  in any tenant journal line**; `same-as` guard `predicates.ts:78` fired clean on **real** replay;
+  in any tenant journal line**; same-as-group edge-membership check across a real DurableFsStore disk
+  round-trip (write → close → reboot new instance → hydrateFromDisk, store-durable-fs.ts:139-156 — catches
+  both torn-line C3 drop and post-fsync boundary loss) shows no group shrinkage and no dropped edge between
+  tombstone-live nodes;
   **`dist/src` parity check** green.
 - Files: `packages/rental-balance/src/surface/cli.ts`, ingest entrypoint, `store-durable-fs.ts:169`.
 - Critic = risk. Mode = seq after D1.a.
@@ -184,9 +231,15 @@ Every gate below is paired with a **generator-level enforcement** (KILL-SHOT 2).
   new index files only; live homes touched only to *gain a card pointer*. No path rename without a
   `.gateway/…/config.json` `cwd` audit (risk E4). Folder: sub-plan of `00-states/05-…`. Critic = process.
 
-### DV — Vitality / drift-detector (the real Vitality=0 debt, first-class)
-- Right-point: a live, cheap self-observation organ (usage/liveness/drift) — the meta-organ whose absence hid
-  the 5 truths. **Later, named, NOT in the slice.** Folder: `00-states/09-vitality-meter/`. Critic = value.
+### DV — Drift-Observer (process/usage-liveness drift, first-class; NOT the Vitality-graph value — see DV-graph, CG-11)
+- Right-point: a live, cheap self-observation organ (usage/liveness/drift OF THE PROCESS — cards,
+  branches, dist/src staleness; NOT the memory-graph's decay/forgetting) — the meta-organ whose absence
+  hid the 5 truths. **Later, named, NOT in the slice.** Folder: `00-states/09-drift-observer/`.
+  **Named debt (CG-08, merged here):** `selection/relevance` (which graph node an agent should
+  read, currently full-scan in `balance-observer.ts` per `council/drill-recall-design.md:102,108`) is
+  an explicit backlog line of this plan — owner TBD, sized when DV kicks off (Wave 3), NOT silently
+  assumed-covered. (Note: distinct from D0(b)'s card-staleness-check, §4 D0 — reading not settled, see
+  patch below.) Critic = value.
 
 ---
 
@@ -198,7 +251,7 @@ Every gate below is paired with a **generator-level enforcement** (KILL-SHOT 2).
 - **Wave 2 (strict seq, after D1.a green + fact-base re-verified per FORK-4):**
   `D1.b` (durable-by-ref) → `D1.c` (agent-read + hand-triggered status = **first true green**).
 - **Wave 3 (trailing / triggered):**
-  `D2`-rest ‖ `D5`-heavy (own branch, after snapshot) ‖ `D3` (on 2nd-agent trigger) ‖ `DV` (Vitality plan).
+  `D2`-rest ‖ `D5`-heavy (own branch, after snapshot) ‖ `D3` (on 2nd-agent trigger) ‖ `DV` (Drift-Observer plan; see CG-11 split for DV-graph/D0(b)).
 
 **Hard edges (unambiguous — KILL-SHOT 3 fixed):**
 - `D1.a → D1.b` (engineering + risk).
@@ -232,11 +285,11 @@ Every gate below is paired with a **generator-level enforcement** (KILL-SHOT 2).
 
 | # | Risk | Anchor | Mitigation in this plan |
 |---|---|---|---|
-| R1 | **same-as guard untested seam** | `predicates.ts:78` (0 non-test calls) | D1.b precondition: fired clean on **real** replay |
+| R1 | **same-as guard untested seam** | `predicates.ts:78` (0 non-test calls) | D1.b precondition: same-as-group edge-membership check across a real disk round-trip via DurableFsStore (write→reboot→re-read, store-durable-fs.ts:139-156) — catches BOTH a torn-line drop (C3, :148-153) and a post-fsync loss at the disk boundary; not an in-memory project() re-run and not the predicate-registry guard — see precond 3 rewrite |
 | R2 | **Real PII + fail-open erasure** | ~2000-2700 customers; `erasure.ts` "NOT the feature"; `PayloadStore` unread | PROCEED-BY-REF (§2) + FORK-2 standing |
 | R3 | **dist/src drift masks regressions** | prior CRITICAL-masking incident | R2 rider: `dist/src` parity is a precondition of trusting any derived-green (D1.b gate) |
-| R4 | **Card-rot** (`status:active` forever) | 4/5 `00-states` tracks frozen-but-active | D0: generated pult + stale-active generator check (mechanism, not label) |
-| R5 | **"Well-documented fiction"** — no named beneficiary, zero evidence memory changes behavior | value lens Q5 | D1 slice acceptance requires a real behavior-change; standing risk until DV exists |
+| R4 | **Card-rot** (`status:active` forever) | 4/5 `00-states` tracks frozen-but-active | D0: generated pult + stale-active generator check (**`D0(b)`, not `DV`** — mechanism, not label) |
+| R5 | **"Well-documented fiction"** — no named beneficiary, zero evidence memory changes behavior | value lens Q5 | D1 slice acceptance requires a real behavior-change; standing risk until `DV` (Drift-Observer) exists |
 | R6 | **`_log/` gitignored (no git undo) + `.gateway cwd` bindings** | 334 files; external configs | E5 snapshot-first; E4 `cwd` audit before rename; D5 own branch |
 
 ---

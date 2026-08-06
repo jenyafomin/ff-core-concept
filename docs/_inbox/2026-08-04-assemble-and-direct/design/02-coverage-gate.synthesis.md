@@ -57,7 +57,7 @@ source:
 | Ц1 | Читаемость (passport/temperature/…) | – | ⬜ | ⬜ | – | – | – | – | **UNCLAIMED**, весь корень |
 | Ц2 | Тождество (dedup/варианты/конфликт) | – | ◐(a: same-as traversed, M3-wiring частично) | – | – | – | – | – | PARTIAL — 1/6 граней, P1-грань 03 нет |
 | Ц3 | Доверие (provenance/data-honesty/…) | – | ⬜(a не задевает) | ◐(canon-honesty relabel, не механизм) | – | – | – | – | PARTIAL — только доку-честность |
-| Ц4 | Витальность (decay/forgetting/…) | – | – | ◐(cost-tree-relabel) | – | – | – | ⬜(имя совпадает, предмет другой — CG-11) | **MISLABELED-PARTIAL** |
+| Ц4 | Витальность (decay/forgetting/…) | – | – | ◐(cost-tree-relabel) | – | – | – | ⬜(DV-graph — расщеплено от DV, всё ещё UNCLAIMED — CG-11 РЕШЕНО-расщеплением, не покрытием) | **MISLABELED-PARTIAL, теперь однозначно** |
 | Ц5 | Суверенность (policy/capability/…) | – | ◐(a: resolve()/capability переиспользован) | – | – | – | – | – | PARTIAL — 2/6 косвенно |
 | Ц6 | Реляционность (edge/cascade/variants) | – | ⬜(a: same-as трогает ребро, не грань) | – | – | – | – | – | **UNCLAIMED**, весь корень |
 | Ц7 | Согласие (referent/consent-taint/…) | – | ◐(b: erasure-by-ref усиливает revocation-erasure) | – | – | – | – | – | PARTIAL — инфра эрейжа да |
@@ -86,11 +86,11 @@ source:
 | CG-04 | P2 (root целиком unclaimed) | Ц6×— | Весь корень Реляционность без дома | нет естественного дома → кандидат owner-fork (флаг) |
 | CG-01 | P2/P3 (root целиком unclaimed) | Ц1×— | Весь корень Читаемость без дома | как CG-04 — флаг |
 | CG-07 | **P1** (риск R1/R2 плана: мина на первом erasure) | Q2×D1 | `erasure-cascade` — D1.b учит эрейж-by-ref, но не специфицирует поведение рёбер на удалённый узел | D1.b (сосед `erasure.ts`) или FORK-2 |
-| CG-08 | P2 (process-honesty) | Q1/Q3×DV | `selection/relevance`-долг устно «в DV», DV-карточка его не называет — риск «второй cost-tree» | D0/DV — назвать долг явной строкой |
-| CG-11 | **P1** (класс canon-inflation) | Ц4×DV | `DV`=«drift-детектор процесса» ≠ «6 механизмов Витальности графа»; одно имя, разный предмет | D0 — расщепить DV-process vs DV-graph до Wave 3 |
-| CG-12 | **P1** (D1.c рассчитывает на него) | D0×D0 | код-проверено: `tools/lint/doc-tree.mjs` пишет `docs/_generated/doc-tree.view.md` (вид дерева), НЕ карточку-пульт схемы D0 | D0 — расширить `doc-tree.mjs`/отдельный генератор, до D1.c |
-| CG-13 | **P1** (гейт-прозой = то, что чиним) | R-b | сам census-gate сегодня проза, без generator-check (нарушает «no prose-only gate» плана §43-45) | D0 — generator-check R-b по карточкам |
-| CG-14 | **P1** (D1.b precond 3 доказывает пустоту) | Ц2×D1.b | `same-as` залочен в `many` (predicates.ts:49,57) → `assertForwardMonotone` (:78) для него ТАВТОЛОГИЧЕСКИ чист; «fired clean on replay» не доказывает R1 | D1.b — заменить precond 3 на ассёрт реальной кардинальности same-as-группы |
+| CG-08 | P2 (process-honesty) | Q1/Q3×DV | `selection/relevance`-долг устно «в DV» (`council/drill-recall-design.md:102,108`), сам план его не называл | **РЕШЕНО, слито**: явная строка добавлена в DV §4 (патч 4 выше), отдельная сущность не заведена |
+| CG-11 | **P1** (класс canon-inflation) | Ц4×DV | `DV` рисковал накрыть ТРИ предмета: process-observer / 6 механизмов Ц4 (DV-graph, канон `task-pool.md:169`) / D0(b) card-staleness-check | **РЕШЕНО**: расщеплено на `DV`/`DV-graph`/`D0(b)`, см. `polosa-a/01-cg11-dv-split.finding.md` |
+| CG-12 | **P1** (D1.c рассчитывает на него) | D0×D0 | код-проверено: `tools/lint/doc-tree.mjs` пишет `docs/_generated/doc-tree.view.md` (вид дерева), НЕ карточку-пульт схемы D0 | D0 — расширить `doc-tree.mjs`/отдельный генератор, до D1.c — **РЕШЕНО (задача заведена)**: `T-state-pult-generator` открыта (D0, TBD owner), план-текст исправлен на честный TODO, см. `polosa-a/02-cg12-d0-generator.finding.md` |
+| CG-13 | **P1** (гейт-прозой = то, что чиним) | R-b | сам census-gate сегодня проза, без generator-check (нарушает «no prose-only gate» плана §43-45) | D0 — generator-check R-b по карточкам — **РЕШЕНО (задача заведена)**: `T-census-check`+`T-census-check-ci` открыты (D0), см. `polosa-a/03-cg13-census-gate.finding.md` |
+| CG-14 | **P1** (D1.b precond 3 доказывает пустоту) | Ц2×D1.b | `same-as` залочен в `many` (predicates.ts:49,57) → `assertForwardMonotone` (:78) для него ТАВТОЛОГИЧЕСКИ чист; «fired clean on replay» не доказывает R1 | D1.b — заменить precond 3 на ассёрт реальной кардинальности same-as-группы — **РЕШЕНО (текст патча готов)**: precond 3 D1.b переанкорен на реальный disk round-trip (`DurableFsStore`), не на registry-guard; см. `polosa-a/04-sameas-guard.finding.md` §D + харвест-уточнение `polosa-a/05-harvest-gate.md` §1 |
 
 ## Как это гейтит строй (правило R-b)
 
