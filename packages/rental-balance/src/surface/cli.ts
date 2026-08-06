@@ -7,7 +7,7 @@
  * The whole vertical runs off the RowSource port (reused fixture adapter): the real one-car export
  * drops into the same `--fixtures` dir (orders.json + transactions.json) with no code change.
  */
-import { Engine, FIXED_POLICY, MemoryStore, load, buildIndex, type Graph } from '@ff/engine';
+import { Engine, FIXED_POLICY, MemoryStore, DurableFsStore, load, buildIndex, type Graph, type StorePort } from '@ff/engine';
 import { FixtureRowSource, RENTACAR_PREDICATES } from '@ff/ingest-rentacar';
 import { MIN_CONSTITUTION } from '../core/constitution.js';
 import { runPaymentIngest, type IngestSummary } from '../ingest.js';
@@ -16,14 +16,29 @@ import { computeOrderBalance, orderIdForPlate, orphanPayments } from '../balance
 
 export interface VerticalRun {
   engine: Engine;
-  store: MemoryStore;
+  store: StorePort;
   summary: IngestSummary;
   observations: BalanceObservation[];
 }
 
-/** Build a fresh engine, ingest the fixtures, run the agent-cycle once. Reused by the CLI and tests. */
-export function runVertical(fixturesDir: string): VerticalRun {
-  const store = new MemoryStore([MIN_CONSTITUTION], RENTACAR_PREDICATES);
+/**
+ * Build a fresh engine, ingest the fixtures, run the agent-cycle once. Reused by the CLI and tests.
+ *
+ * `opts.store` selects the persistence backend behind the SAME `StorePort` seam (mirrors
+ * `@ff/engine`'s CLI store-swap): `memory` (DEFAULT — backward-compatible, keeps `balance.test.ts` and
+ * the in-process journal untouched) vs `durable` = `DurableFsStore`, so the real ga-rentacar act is
+ * fsync'd to `<storeDir>/journal.jsonl` and survives the process (S10 keystone — durable proven on the
+ * PRODUCT path, not only in engine lab tests). `storeDir` is parameterized (never hardcoded) so prod
+ * points at a real dir and tests/CI use a unique tmp dir (single-writer lock, parallel-run safety).
+ */
+export function runVertical(
+  fixturesDir: string,
+  opts: { store?: 'memory' | 'durable'; storeDir?: string } = {},
+): VerticalRun {
+  const store: StorePort =
+    opts.store === 'durable'
+      ? new DurableFsStore(opts.storeDir ?? '.store', [MIN_CONSTITUTION], RENTACAR_PREDICATES)
+      : new MemoryStore([MIN_CONSTITUTION], RENTACAR_PREDICATES);
   const engine = new Engine(store, FIXED_POLICY);
   const summary = runPaymentIngest(engine, new FixtureRowSource(fixturesDir));
   const observer = new BalanceObserver(engine, store);
@@ -46,7 +61,7 @@ export function runCli(argv: string[]): number {
   const out = (s: string) => process.stdout.write(s + '\n');
 
   if (verb !== 'balance') {
-    out('usage: rental-balance balance --fixtures <dir> [--plate <plate>]');
+    out('usage: rental-balance balance --fixtures <dir> [--plate <plate>] [--store <memory|durable>] [--store-dir <path>]');
     return verb ? 1 : 1;
   }
   const fixturesDir = flag('fixtures');
@@ -55,7 +70,13 @@ export function runCli(argv: string[]): number {
     return 1;
   }
 
-  const run = runVertical(fixturesDir);
+  // Store backend is a flag (default `memory` — unchanged behavior). `--store durable --store-dir <path>`
+  // persists the real act to a JSONL journal on disk (S10). `--store-dir` is parameterized with a default,
+  // not hardcoded, so prod can point at a real dir and CI at a unique tmp dir (single-writer-lock safety).
+  const storeMode = (flag('store') ?? 'memory') as 'memory' | 'durable';
+  const storeDir = flag('store-dir') ?? '.store';
+
+  const run = runVertical(fixturesDir, { store: storeMode, storeDir });
   const graph = graphOf(run);
   const plate = flag('plate');
 

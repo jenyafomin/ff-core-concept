@@ -38,6 +38,7 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 import { foldInto, project } from '../core/projection.js';
+import { splitAct } from '../core/erasure.js';
 import type { Act, EnvelopeNode, PredicateRegistry } from '../core/types.js';
 import type { StorePort } from '../ports/store-port.js';
 
@@ -135,6 +136,36 @@ export class DurableFsStore implements StorePort {
     this.lockHeld = false;
   }
 
+  /**
+   * V7 erasure seam ON DISK (S10 / §9-2) — serialize an act into a journal line whose IMMUTABLE audit meta
+   * and its ERASABLE payload zone are physically DE-INTERLEAVED via `splitAct`. The top-level line object
+   * carries the meta fields (`id · actor · provenance · recordedAt · actKind · edges · payloadRef ·
+   * payloadHash`) directly and holds the erasable content under a SEPARATE `erasable` key — never a flat
+   * top-level `payload` key sitting next to the meta. A future hard-erase can shred `erasable` without
+   * rewriting the append-only audit trail. When the act carried no payload, `splitAct` yields
+   * `erasable: undefined`, which JSON.stringify drops — the line is then pure meta (indistinguishable from a
+   * legacy inline line by read, see `lineToAct` back-compat branch).
+   */
+  private actToLine(act: Act): string {
+    const { meta, erasable } = splitAct(act);
+    return `${JSON.stringify({ ...meta, erasable })}\n`;
+  }
+
+  /**
+   * Inverse of `actToLine` — reconstruct the ORIGINAL act from a journal line, re-merging the erasable zone
+   * back onto the meta so the read-model projection sees the same act the writer folded (RISK №1: split with
+   * no symmetric merge breaks round-trip). Back-compat: a legacy line serialized as the whole `act` inline
+   * has no `erasable` key and is returned as-is (its `payload` is already at top level).
+   */
+  private lineToAct(line: string): Act {
+    const parsed = JSON.parse(line) as Record<string, unknown>;
+    if ('erasable' in parsed) {
+      const { erasable, ...meta } = parsed;
+      return (erasable === undefined ? meta : { ...meta, payload: erasable }) as unknown as Act;
+    }
+    return parsed as unknown as Act; // legacy inline line (payload already at top level)
+  }
+
   /** C2/C3 — read the whole append-only journal off disk and re-fold it into the read-model. */
   private hydrateFromDisk(): void {
     this.journal = [];
@@ -146,7 +177,7 @@ export class DurableFsStore implements StorePort {
     for (const line of raw.split('\n')) {
       if (line.trim() === '') continue;
       try {
-        this.journal.push(JSON.parse(line) as Act);
+        this.journal.push(this.lineToAct(line));
       } catch {
         // C3: a torn final line (process killed mid-append) — stop here; earlier lines are intact.
         break;
@@ -166,7 +197,7 @@ export class DurableFsStore implements StorePort {
 
   /** C1 — durably append the act (fsync before return), then fold it into the read-model incrementally. */
   writeAct(act: Act): Act {
-    const line = `${JSON.stringify(act)}\n`;
+    const line = this.actToLine(act); // S10/§9-2: split immutable meta ⟂ erasable payload zone on disk
     const fd = openSync(this.journalPath, 'a');
     try {
       writeSync(fd, line);
