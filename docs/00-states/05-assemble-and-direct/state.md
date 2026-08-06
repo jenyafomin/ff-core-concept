@@ -5,9 +5,9 @@ theme: Как мы собираем всю базу и доводим до «м�
 status: active
 owner: jenya.stasik@gmail.com
 opened: 2026-08-04
-updated: 2026-08-05
+updated: 2026-08-06
 agents: [orchestrator-fable]
-handoff: ../../_log/2026-08-05-movement-rules-and-census/HANDOFF.md
+handoff: ../../_log/2026-08-06-d1b-keystone-gate-and-width-census/HANDOFF.md
 council_brief: ./council-brief.md
 inputs:
   - ../../_inbox/2026-08-04-assemble-and-direct/design/00-fact-base.synthesis.md
@@ -74,11 +74,43 @@ Related:
 > Задачи: `_shared/task-pool.md`. Перепись (дыры плана): `../../_inbox/2026-08-04-assemble-and-direct/design/02-coverage-gate.synthesis.md`.
 - **S-D stage 1 — СДЕЛАНО:** правила движения + пул + шаблон хендофа + орган переписи (коммит `e306f95`).
   Перепись уже поймала ошибки плана (CG-12 генератор D0 · CG-14 тавтологический same-as guard).
-- **Полоса A (ВХОД след. сессии) — «чистый план»:** `T-plan-honesty` (CG-11/12/13) + `T-sameas-guard`.
-  Последовательно, дёшево, разблокирует. Ошибка постановки — самое дорогое (P1).
+- **Полоса A — «чистый план» — СДЕЛАНО (2026-08-06):** план `01-execution-plan.synthesis.md` пропатчен
+  (12 правок), pool/census обновлены. Прогон: co-orch перепись → 4 исследователя → 4 критика (все REVISE) →
+  ревизия → харвест-гейт (ACCEPT ×4) → билдер → ревью (PASS). Сырьё: `_inbox/.../design/polosa-a/`.
+  Убито: тавтология same-as (2 круга — теперь disk-round-trip падуч), DV-коллизия (DV/DV-graph/D0(b)),
+  ложный D0-генератор (→ `T-state-pult-generator`), census-gate-прозой (→ `T-census-check`+`T-census-check-ci`).
+  Открыто владельцу: owner:TBD на 3 новых задачах; D0(b) distinct-vs-precursor (хедж, до Wave 3).
 - **Полоса B (после A / далее веером) — «копнуть грань»:** одна грань/сессия. Кандидаты: Q5 referent-consent
   (=#15, фундамент Ц7), Q1 recall+Q2 erasure (одна дверь). Прототип — только где перепись зелёная.
 - **Параллель:** цепь (A→прототип) последовательно; независимые грани — разные топики; слияние в этом пульте.
+- **РЕКОМЕНДАЦИЯ next-stage — APPROVED via gate (2026-08-06):** `_shared/RECOMMENDATION-2026-08-06-next-stage.decision.md`
+  — сделать **D1.b несущим = «сломать плоскость»** (by-reference инвариант), втянуть Q2 erasure в D1.b; потом
+  Q5 consent. Гейт (3 линзы: architect ГРАНИЦЫ · business ЦЕННОСТЬ · critic АДВЕРСАРИАЛ) → REVISE×3 →
+  направление подтверждено, кейстоун закреплён с 9 ужесточениями acceptance (§9 доки).
+- **ПЕРЕПИСЬ ШИРИНЫ D1.b — СДЕЛАНО (2026-08-06) → 🟥 ГЕЙТ I2 = БЛОК, «строй» ЗАПРЕЩЁН:**
+  `../../_inbox/2026-08-04-assemble-and-direct/design/d1b-width-census/00-width-census.synthesis.md`
+  (3 уникальные карты: real-surface · paired-faces · falsifiability → co-orch свёл матрицу 19 граней:
+  ✅1 · ⬜2 · 🟥16). Ветка D1.b всё ещё DESIGN. **Три блокера-кейстоуна (роняют ставку):**
+  (1) `F6` form-agnostic хребет проверен лишь на ОДНОЙ форме (ga-rentacar) = тавтология CG-14-класса;
+  (2) `S10` продуктовый путь пишет через `MemoryStore`, не `DurableFsStore` (`rental-balance/src/surface/cli.ts:26`);
+  (3) `§9-3` shred-assert тавтологичен по типу (`erasure.ts:25-34`) — **§9-3 патч применён** в доки-рекомендации.
+  Задачи `T-D1b-*` засеяны в `_shared/task-pool.md`. Волны (co-orch реко): 3 синхронные —
+  инфраструктура (S10+wire-erasure) → сердце падучести (§9-3/3b+F6) → property fault-injection (§9-4).
+- **BUILD Этап 1 (S10+§9-2) — СДЕЛАНО+ВЕРИФИЦИРОВАНО (2026-08-06, «строй» владельца):** помощник(prompter)
+  слепил задание → билдер (paттерн swap перенесён из `engine/src/surface/cli.ts:45-49`; `splitAct` подключён
+  к `store-durable-fs.ts:41,140`, симметрия `actToLine/lineToAct`) → **2 вектора наблюдения** (reviewer PASS
+  0-critical + runtime-verify CONFIRMED: `journal.jsonl` 8 актов на диске, payload физически разведён,
+  durable-тесты 10/10, свежая регидратация ОК). Спец: `d1b-width-census/build/stage1-wire-durable.assignment.md`.
+  Не коммичено. Хвост: `cli-durable.test.ts` гоняет generic-CLI, реальный ga-rentacar durable-путь без
+  коммит-теста → `T-D1b-rental-durable-test`.
+- **BUILD Этап 2 (§9-3/3b + F6) — СПЛАНИРОВАН, решение зафиксировано (2026-08-06):** 2 линзы (prompter +
+  abstract-thinker). Спец: `d1b-width-census/build/stage2-falsify-plane.assignment.md`. **Решения лида:**
+  (1) **ось F6 = `time-on-edge`** (`validFrom/validTo` `types.ts:38-41`) — самая дешёвая ЧЕСТНАЯ фальсификация
+  (хребет сам зарезервировал слот + обещал P2 non-breaking); критерий «структурно иного» = грузить ОСЬ ХРЕБТА,
+  не payload; тест-на-тавтологию (НЕТ по Q1/Q3) обязателен. (2) §9-3 **требует НОВОЙ продакшн-функции**
+  `shredPayload` на диске (`redactAct` сегодня только in-memory, к JSONL не применяется) → `T-D1b-shred-on-disk`,
+  держать МИНИМАЛЬНОЙ (перезапись файла; НЕ WAL/атомарность = F3/DEFER). Assert-мутант (`splitAct` роняет
+  `edges`) обязан падать. **Готово к сборке — ждёт хода на запуск волны Этапа 2.**
 
 ## Ворота состояния
 - [x] Фаза 0 — стейт + fact-base + бриф совета + хендофф (LOSE-NOTHING)
@@ -87,5 +119,9 @@ Related:
       Сырьё совета: `.../design/council/` (wave1 ×5 · wave2 draft/critique/fable). Хендофф:
       `../../_log/2026-08-05-council-executed/HANDOFF.md`.
 - [x] S-D stage 1 — механизм движения (правила+пул+шаблон+перепись) материализован (коммит `e306f95`)
+- [x] Полоса A — «чистый план»: 4 ошибки постановки (CG-11/12/13/14) убиты, план пропатчен + проверен (PASS, 2026-08-06)
+- [x] Гейт next-stage + перепись ширины D1.b (2026-08-06): направление подтверждено (REVISE×3), кейстоун закреплён,
+      ширина = 🟥 БЛОК (16/19 граней пусты) → «строй» D1.b запрещён, ветка ещё DESIGN
+- [ ] Закрыть 3 блокера-кейстоуна D1.b (F6 второй формат · S10 DurableFsStore на реальном пути · §9-3 независимый снимок) — **дизайн-волны**
 - [ ] Фаза 2 — планы 1..N заведены с целевыми точками и правилами команд (**ждёт «строй» + развилки владельца**)
 - [ ] Каждый план доведён до «правильной точки» (не брошен)
