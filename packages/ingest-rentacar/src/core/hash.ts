@@ -6,8 +6,15 @@
  * of the value. So we canonicalize first (sort object keys recursively) THEN sha256 — a differently
  * key-ordered but value-identical object hashes the same. Arrays keep order (order is meaning).
  *
- * NOTE: hashing PII is safe — a sha256 digest is not itself PII (one-way, not reversible to the phone).
- * The digest may sit on the journal; the raw PII may not (that is the whole point of §5).
+ * ⚠ NOTE (corrected 2026-08-07 — the old "hashing PII is safe" claim was FALSE): a bare sha256 of PII is
+ * one-way but NOT one-way-*enough* for low-entropy PII. A phone (~10⁹ candidates) or a name has so little
+ * entropy that an attacker holding the digest simply hashes every candidate and matches — the digest is a
+ * confirmation ORACLE, fully reversible by brute force. A raw digest is safe to retain as an erasure
+ * WITNESS on the journal ONLY when it was SALTED with high-entropy bytes that are CO-SHREDDED with the
+ * payload (so after erasure the salt is gone and the brute force can no longer be reproduced). That salting
+ * happens at the PayloadStore boundary (see adapters/file-payload-store.ts: `salted-sha256-v1`), NOT here —
+ * `hashOf` is the raw digest primitive, used both for the SALTED payload witness AND for the (deliberately
+ * unsalted, deterministic) idempotency `snapshotHash`. Do not put an UNSALTED digest of raw PII on the log.
  */
 import { createHash } from 'node:crypto';
 

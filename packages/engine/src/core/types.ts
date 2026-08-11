@@ -174,8 +174,22 @@ export const ACT_KINDS = [
   'access_event',
   'agent_trace',
   'system_telemetry',
+  // TERMINAL: records a by-ref payload erasure (V7 / I-4 by-ref canon). An `erased` act references the
+  // target act and retains its payloadRef/payloadHash/hashScheme as the witness; it carries NO payload and
+  // does NOT project (not a domain_event). The blob is shredded separately via PayloadStore.shred — the
+  // append-only journal is never rewritten. See core/erasure.ts::buildErasedAct.
+  'erased',
 ] as const;
 export type ActKind = (typeof ACT_KINDS)[number];
+
+/**
+ * Version tag for the scheme that produced a by-ref `payloadHash`. RETROFIT-IMPOSSIBLE on an append-only
+ * log, so it is laid in the frozen shape NOW (before the first prod PII), even though only one value exists
+ * today. `salted-sha256-v1` = sha256 over (high-entropy salt ‖ content), salt stored IN the blob and
+ * co-shredded with the payload → after erasure the retained hash is NOT a brute-force oracle (see
+ * erasure.ts::isWitnessNonReversible). A missing/plain scheme = an unsalted digest = reversible witness.
+ */
+export type HashScheme = string; // e.g. 'salted-sha256-v1'
 
 /**
  * Structured provenance (CQRS projection key, ADR-0008 §3 / ingest-spec §3). ADDITIVE widening of
@@ -208,6 +222,12 @@ export interface Act {
   edges: Edge[];
   payloadRef?: string;
   payloadHash?: string;
+  /**
+   * The scheme that produced `payloadHash` (e.g. `salted-sha256-v1`). Immutable audit meta: it tells an
+   * auditor whether the retained hash is a salted+co-shredded witness (safe to keep post-erasure) or a bare
+   * reversible digest. Set by the PayloadStore at `put`; carried forward onto an `erased` act.
+   */
+  hashScheme?: HashScheme;
   /** Inline payload. If present with PII content, the admission-gate REFUSES the act (fail-closed). */
   payload?: unknown;
 }

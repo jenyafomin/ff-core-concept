@@ -110,7 +110,7 @@ docs/
 | `02-project/substrate/` | 🔴 дубль | свернуть в `01-brain` редиректом | низкий |
 | `04-knowladge/` | 🔴 опечатка | `04-knowledge` или убрать до контента | низкий |
 | `docs/topics/`, `docs/base/` | 📦 архив | → владеет `00-states/04-improvement-plans/PLAN-03-docs-structure.md` (S03-4: stub-указатель + развести имя `topics`) | низкий |
-| единицы brain → `02-units/` | ⛔ заблокировано | ждёт 9 форков (см. PLACEMENT-AUDIT) | — |
+| единицы brain → `02-units/` | 🟡 продвигается | UNIT-SPEC-v1 (draft, `01-brain/03-unit/`) · шов стирания ратифицирован ADR-0009 · монумент = зарезервированная грань · остаётся owner-forks R3/R4/R5 + carve-out I-4 | — |
 
 ---
 

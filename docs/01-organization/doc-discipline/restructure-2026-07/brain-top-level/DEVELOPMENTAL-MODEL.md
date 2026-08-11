@@ -59,11 +59,15 @@ Related:
 Для generic-домена фасет-шаблон верен. Но `knowledge-graph` — **фундаментальный домен-субстрат, его
 предмет ЕСТЬ система типов.** Peer-отношение 5 единиц («вместе образуют модель») важнее их индивидуальной
 фасет-категории. Санкционированное исключение: **тип-семья субстрат-домена = слот `02-units/`.**
+> → **продвинуто:** `docs/02-project/core/01-brain/03-unit/UNIT-SPEC-v1.design.md` + ADR-0009 (2026-08-07) —
+> первая реализация зарезервированного слота (разблокирован рефреймом стирание→единица). Статус слота НЕ
+> superseded (план шире спеки), это указатель на движение.
 
 ```
 01-knowledge-graph/
   01-explain/
   02-units/          ⭐ node·edge·act·lens·plan-family — первоклассная семья, ВИДНА
+                     → продвинуто: 03-unit/UNIT-SPEC-v1.design.md + ADR-0009 (2026-08-07)
     01-node/ {01-explain·02-fields·04-mechanics·05-policy·06-nuances·questions·decisions}
     02-edge/ 03-act/ 04-lens/ 05-plan-family/  _shared/
   03-relations/      ← как единицы КОМПОНУЮТСЯ (node×edge, act→node, lens⊂graph)

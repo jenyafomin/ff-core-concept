@@ -33,12 +33,13 @@ import {
   openSync,
   readFileSync,
   unlinkSync,
+  writeFileSync,
   writeSync,
   fsyncSync,
 } from 'node:fs';
 import { join } from 'node:path';
 import { foldInto, project } from '../core/projection.js';
-import { splitAct } from '../core/erasure.js';
+import { redactAct, splitAct } from '../core/erasure.js';
 import type { Act, EnvelopeNode, PredicateRegistry } from '../core/types.js';
 import type { StorePort } from '../ports/store-port.js';
 
@@ -208,6 +209,53 @@ export class DurableFsStore implements StorePort {
     this.journal.push(act);
     foldInto(this.projection, act, this.registry);
     return act;
+  }
+
+  /**
+   * ⚠ DEPRECATED / DEV-ONLY (I-4 resolved 2026-08-07, by-ref separation): this INLINE hard-erase REWRITES
+   * the append-only journal line in place — a path that exists ONLY for the legacy inline-payload model. The
+   * CANON is by-ref: real PII lives in a `PayloadStore` blob (ingest-rentacar `FilePayloadStore`), erasure =
+   * `PayloadStore.shred(ref)` + a terminal `erased` act (engine erasure.ts::buildErasedAct), and the journal
+   * is NEVER rewritten. Do NOT route production erasure through here; kept for the inline dev/test fence only.
+   * See docs/_log/2026-08-07-whole-picture-and-cycle/I-4-RESOLUTION.decision.md. FORK-2 (supersede chain:
+   * only the first occurrence shredded) remains OPEN but is scoped to this deprecated inline path.
+   *
+   * V7 hard-erase ON DISK (§9-3 / S10) — physically strip the ERASABLE payload zone of the journal line
+   * carrying `actId`, leaving its IMMUTABLE audit meta (`id · actor · provenance · recordedAt · actKind ·
+   * edges · payloadRef · payloadHash`) byte-for-byte, then re-hydrate the read-model. This is `redactAct`
+   * applied to the WRITTEN LINE (not an in-memory act): a line serialized by `actToLine` is re-emitted with
+   * its `erasable` zone removed, so `lineToAct` reads it back as pure meta (payload gone, edges intact).
+   *
+   * DELIBERATELY MINIMAL: the whole file is read and rewritten in one pass. Atomic/WAL-ordered shred
+   * (fsync order, crash-safe rewrite) is a SEPARATE durability grain (F3) — NOT laid here.
+   *
+   * @deprecated Use the by-ref path (PayloadStore.shred + buildErasedAct); this rewrites the append-only log.
+   */
+  shredPayload(actId: string): void {
+    if (!existsSync(this.journalPath)) return;
+    const raw = readFileSync(this.journalPath, 'utf8');
+    let done = false; // FORK-2: shred the FIRST matching occurrence only
+    const out: string[] = [];
+    for (const line of raw.split('\n')) {
+      if (line.trim() === '') continue;
+      if (!done) {
+        let act: Act;
+        try {
+          act = this.lineToAct(line);
+        } catch {
+          out.push(line); // torn/unparseable line — leave untouched
+          continue;
+        }
+        if (act.id === actId) {
+          out.push(this.actToLine(redactAct(act)).replace(/\n$/, '')); // erasable zone removed, meta kept
+          done = true;
+          continue;
+        }
+      }
+      out.push(line);
+    }
+    writeFileSync(this.journalPath, out.length ? `${out.join('\n')}\n` : '');
+    this.hydrateFromDisk(); // re-fold the erased journal into the read-model
   }
 
   /** Read-only view of the append-only journal (write-model reader for CQRS/rebuild + PII greps). */

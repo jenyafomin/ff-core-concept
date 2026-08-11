@@ -24,6 +24,7 @@ Related:
     OVERVIEW.md · L0-memory-unit.md · portrait/ · scenarios/
     01-values/         7 ценностей (карточки V* + декомпозиция 0N-* + _cross-cutting + _archived/gen1)
     02-domains/        домены-ДАННЫХ (01-knowledge-graph = эталон фасет-шаблона)
+  03-unit/             единица КАК КОНТРАКТ — СПЕКА ЕДИНИЦЫ v1 (ядро+грани+один путь записи)
   02-infrastructure/   «как строим»
     01-overview/       архитектура-index + db-понимание + stack + scenarios
     02-backend/        движок исполнения + доступ
@@ -46,6 +47,7 @@ Related:
 | **— портрет** | ячейка «как есть» | [`01-overview/portrait/cell-portrait-now.md`](01-overview/portrait/cell-portrait-now.md) |
 | **— сценарии** | нелинейные сценарии → концепты | [`01-overview/scenarios/INDEX.md`](01-overview/scenarios/INDEX.md) |
 | **L2 — ИДЕИ/РЕШЕНИЯ** | под каждую ценность — куда копать | [`01-overview/01-values/`](01-overview/01-values/) |
+| **КОНТРАКТ — единица** | СПЕКА ЕДИНИЦЫ v1 (ядро+грани+один путь записи+5 швов) | [`03-unit/`](03-unit/INDEX.md) |
 | **— синтезы Fable** | сырые диги (снапшоты) | [`analyses/`](analyses/README.md) |
 | **— решения** | принятые замки | [`decisions.INDEX.md`](decisions.INDEX.md) |
 | **— задачи / план** | список / последовательность | [`todo/TODO.md`](todo/TODO.md) · [`plan/PLAN.md`](plan/PLAN.md) |

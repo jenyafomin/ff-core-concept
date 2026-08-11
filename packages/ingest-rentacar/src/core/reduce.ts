@@ -107,7 +107,7 @@ export function reduceOrderRow(row: Row, store: PayloadStore): RowResult {
     actKind: 'domain_event',
     edges: orderEdges,
     payload: compact({ type: 'order', orderType, rentType: rentType(orderType), remaining: num(row, 'Remaining'), numberOfDays: num(row, 'Number of Days'), status: str(row, 'Status') }),
-    ...(orderPii ? { payloadRef: orderPii.payloadRef, payloadHash: orderPii.payloadHash } : {}),
+    ...(orderPii ? { payloadRef: orderPii.payloadRef, payloadHash: orderPii.payloadHash, hashScheme: orderPii.hashScheme } : {}),
   };
 
   const customerAct: Act = {
@@ -120,6 +120,7 @@ export function reduceOrderRow(row: Row, store: PayloadStore): RowResult {
     payload: { type: 'customer', hasPhone: phone !== undefined },
     payloadRef: custPii.payloadRef,
     payloadHash: custPii.payloadHash,
+    hashScheme: custPii.hashScheme,
   };
 
   return { ok: true, acts: [orderAct, customerAct] };
