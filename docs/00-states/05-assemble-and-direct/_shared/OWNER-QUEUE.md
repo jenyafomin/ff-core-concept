@@ -29,7 +29,9 @@ run: autonomous-question-closure
 - **Рычаг:** разблокирует S2 (форма admission-гейта выпадает механически); без «да» S1 не закрывается.
 - **Нода:** `../plans/01-S1-ratify-two-laws/work/two-laws.invariant-candidate.md` (U-L1, критик CLEAN
   после патча — `work/critic-smuggle-check.critic.md`).
-- **status:** open
+- **status:** answered — 2026-08-09, Закон-1 ПРИНЯТ как кандидат-инвариант + Форма-4 valid-time «в область сейчас»
+  (`../plans/01-S1-ratify-two-laws/DECISION-READY-PACKET.md:26` — status: ratified). Карточка была протухшей `open`
+  (написана утром 08-09 до S1-ratify того же дня), релейбл T3-гигиены 2026-08-11.
 
 ### Q-Law2 · Ратифицировать Закон-2 как несущий (не отложенный) · срочность: 🔴
 - **Суть:** юнит-статус ЗАРАБАТЫВАЕТСЯ жизненным циклом (promotion-предикат: идентичность+состояние+
@@ -45,7 +47,9 @@ run: autonomous-question-closure
   стирание) структурно недостижима ДО повышения → C-зависимые операторы вырождаются в I+S. S3 обязан
   построить генуинную own-C=«да» пробу (`Q-S3-C-tooth` в `task-pool.md`), иначе оператор не фальсифицируем.
   Нода: `../plans/03-S3-prove-stake/questions/03-l2op/`.
-- **status:** open
+- **status:** answered — 2026-08-09, Закон-2 ПРИНЯТ как несущий (оси = идентичность+состояние; согласие =
+  следствие повышения, не 3-я равная опора) — `../plans/01-S1-ratify-two-laws/DECISION-READY-PACKET.md:27`.
+  Оператор (Q-L2op) ушёл в S3 и **S3 закрыт 2026-08-11** (`../../../_log/2026-08-11-S3-prove/HANDOFF.md`). Релейбл T3-гигиены 2026-08-11.
 
 ### Q-I4 · Гейт кода Шага-1 (I-4, монумент-контент carve-out) · срочность: 🔴
 - **Суть:** carve-out I-4 в `invariants.md` — как монумент-грань (ADR-0009 ③) исключается/трактуется в
@@ -54,7 +58,9 @@ run: autonomous-question-closure
   указатель на брифы.
 - **Рычаг:** блокирует код Шага-1 (`erased`-акт, порт `shred`, починка `hash.ts`/`erasure.ts`).
 - **Нода:** `../../../_log/2026-08-08-orchestrated-design-push/work/D4-decision-lens-briefs.analysis.md` (I-4).
-- **status:** open
+- **status:** answered — 2026-08-09, вариант **B** (пока I-4 не трогаем; код `erased`-акта зелёный 12/12 без
+  карвоута). A ратифицируется позже, когда у грани ③ появится реальное поле (отложено в DEFER-LEDGER D-3).
+  `../plans/01-S1-ratify-two-laws/DECISION-READY-PACKET.md:28`. Релейбл T3-гигиены 2026-08-11.
 
 ### Q-R4 · Admission fail-open/closed default + regime-B референт-классы · срочность: 🔴 (САМАЯ высокая)
 - **Суть:** Закон-1 кладёт только ФОРМУ admission-точки; какой DEFAULT (fail-open/fail-closed) и какие
@@ -74,7 +80,14 @@ run: autonomous-question-closure
 - **Рычаг:** блокирует S2 `T-admission-failclosed` (форма уже закладывается; наполнение ждёт этого ответа).
 - **Нода:** `../../../_log/2026-08-08-orchestrated-design-push/work/D4-decision-lens-briefs.analysis.md` (R4)
   + меню `../plans/01-S1-ratify-two-laws/questions/02-r4classes/` (7 классов, CLEAN, критик прошёл).
-- **status:** open
+- **status:** answered (partial) — 2026-08-09. **ЗАХВАТ + admission-DEFAULT ратифицированы:** захват DOB/license
+  включён неразмеченным сейчас; **A = fail-open вынужденный дефолт, ратифицирован ОСОЗНАННО**; записи пилота до
+  поля-разметки = принятая безвозвратная потеря (`../plans/01-S1-ratify-two-laws/DECISION-READY-PACKET.md:29`,
+  status: ratified). **ПОЛИТИКА классов-референтов** (regime-B / fail-closed) — НЕ open-развилка, а отложена с
+  ОБЪЕКТИВНЫМ триггером в `DEFER-LEDGER.md:25` (D-1: первый реальный не-fixture PII-payload). ⚠️ Прежний ярлык
+  `open 🔴 самая высокая` был ПРОТУХШИМ (написан утром 08-09 до S1-ratify) — council-critic прочёл его как «Q-R4
+  открыт», но ратифицированный packet бьёт протухшую карточку. **Следствие для PII-барьера:** unanswered-Q-R4 НЕ
+  блокирует реальные данные; остаётся отдельный **F-D-санкшн** (реальный экспорт). Релейбл T3-гигиены 2026-08-11.
 
 ### Q-F6-grain-A · F6 достаточность: form-agnostic по-слойно, второго кита НЕ строить · срочность: 🟠
 - **Суть:** F6 (form-agnostic хребет) проверен на serialization-уровне; вопрос — достаточно ли этого
@@ -94,7 +107,11 @@ run: autonomous-question-closure
 - **Рычаг:** влияет на форму S2-докета (opaque-edge-id §4/§6), но НЕ блокирует S1/S2 старт (форма кладётся
   как choke-point независимо от default).
 - **Нода:** `../plans/03-S3-prove-stake/questions/02-f6confirm/` (грань B).
-- **status:** open (provisional — финализируется после S3)
+- **status:** answered — 2026-08-11, **финализирована S3 ЧЕСТНОЙ ПЕРЕ-РЕЗКОЙ** (не reify-default и не
+  opaque-fallback): буквальный `edgeId` отклонён (сам=миграция), `supersedes`-на-Act отклонён (delete-history);
+  реализовано через зарезервированные `validFrom/validTo`+cardinality-as-data. DEFER-LEDGER D-4 РАЗРЯЖЕНА
+  (`../_shared/DEFER-LEDGER.md:28`); метка `provisional` снята с UNIT-SPEC §4(d). `../../../_log/2026-08-11-S3-prove/HANDOFF.md`
+  (Gate 1+4). Релейбл T3-гигиены 2026-08-11.
 
 ### Q-R3 · Юрисдикции считают топологический остаток identifying? · срочность: 🟠 (отложен)
 - **Суть:** юридическое суждение о риск-толерантности (закрывает ADR-0007 OQ-3) — не инженерный вопрос,
@@ -102,7 +119,9 @@ run: autonomous-question-closure
 - **Варианты:** решить сейчас (если владелец готов) / явно отложить (текущий дефолт по D4).
 - **Рычаг:** закрывает OQ-3 ADR-0007; низкая срочность относительно R4 (нет тикающего PII).
 - **Нода:** `../../../_log/2026-08-08-orchestrated-design-push/work/D4-decision-lens-briefs.analysis.md` (R3).
-- **status:** open (deferred по умолчанию — владелец подтверждает отсрочку ИЛИ решает)
+- **status:** answered (deferred confirmed) — 2026-08-09, R3 отложен владельцем осознанно (юр.суждение, нет
+  тикающего PII) — `../plans/01-S1-ratify-two-laws/DECISION-READY-PACKET.md:30`. Остаётся re-openable, если
+  владелец решит закрыть OQ-3 ADR-0007. Релейбл T3-гигиены 2026-08-11.
 
 ### Q-L1dom · Дом-файл двух законов (ядро `invariants.md` I-16/I-17 vs UNIT-SPEC-локально) · срочность: 🟠
 - **Суть:** куда физически падают Закон-1/Закон-2 при ратификации — тело `invariants.md` (субстрат-широкий
@@ -207,9 +226,17 @@ run: autonomous-question-closure
 - **Рычаг:** выбирает enforcement-стиль write-PEP; НЕ блокирует резервирование формы (шов одинаков).
   Связан с под-вопросом делегации (`T-actor-delegation`): может ли агент авторить как другой principal.
 - **Нода:** `./topics/03-actor-model/synthesis/02-resolution.synthesis.md` §5 (+ analyses/critic там же).
-- **⚠️ Срочность 🟡:** `SurfacePort` = 0 реализаций (paper-freeze) — не тикает как R4; не конкурирует с 4
-  🔴-карточками выше. НЕ смуглить в форму как «уже решено force-bind» (критик итер.8 поймал это в наброске).
-- **status:** open (низкий приоритет — можно отложить осознанно)
+- **⚠️ Срочность 🟡→🟢 СТАЛА ЖИВОЙ (2026-08-11):** пока write-сторона была paper-freeze, форк не тикал.
+  Но фикс **F3 `T-write-pep-unwired`** вклинивает write-PEP в путь записи → enforcement-стиль выбрать ОБЯЗАТЕЛЬНО.
+  НЕ смуглили в форму (критик итер.8) — вынесли явно владельцу, он ответил.
+- **status:** answered · 2026-08-11 · **РАСТВОРЁН через инвариант (не выбор реализации).** Design-волна
+  (abstract-thinker+critic) показала: force-bind vs attest = ОДНА форма, разные реализации. Ратифицирован
+  **ИНВАРИАНТ:** движок НИКОГДА не берёт ОСНОВАНИЕ ПРАВ из самозаявленного поля тела; записанная АТРИБУЦИЯ
+  в теле = ДАННЫЕ (Закон ② монумент/импорт), не авторитет. force-bind — единственная реализация СЕГОДНЯ;
+  attest не противоречит (приедет для marketplace). Формализация → ADR (свежая сессия).
+  Источник: пульт `state.md` баттон R3 + `../../../council/raw/2026-08-11-next-step-strategy/SYNTHESIS-next-step.md` §Раунд-3 +
+  хендофф `../../../_log/2026-08-11-trust-plane-principal-seam/HANDOFF.md`.
+  Под-вопрос `T-actor-delegation` (2 оси: кто действовал vs под чьим авторитетом) остаётся ОТДЕЛЬНЫМ — форма его резервирует, поведение отложено.
 
 ## Правило роста
 Новая карточка → добавляется В КОНЕЦ секции «Утренний пакет» (или новой датированной секции при следующем

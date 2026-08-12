@@ -17,6 +17,8 @@ export * from './ports/store-port.js';
 export * from './ports/engine-client.js';
 export * from './ports/surface-port.js';
 export * from './ports/viewer-resolver.js';
+export * from './ports/principal-resolver.js';
+export * from './ports/principal-stamper.js';
 
 export * from './adapters/store-memory.js';
 export * from './adapters/store-md.js';

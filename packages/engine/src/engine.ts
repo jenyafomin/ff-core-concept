@@ -72,7 +72,7 @@ export class Engine implements EngineClient {
 
   write(act: Act): Ack {
     // engine-assigned, immutable recordedAt (frozen envelope): ignore any caller-supplied value.
-    const finalized: Act = { ...act, recordedAt: new Date().toISOString() };
+    let finalized: Act = { ...act, recordedAt: new Date().toISOString() };
     const verdict = admit(finalized, this.schemas.find((s) => s.actKind === finalized.actKind));
     if (!verdict.ok) return { ok: false, reason: verdict.reason }; // REFUSE before any journal write
 
@@ -80,6 +80,50 @@ export class Engine implements EngineClient {
     // homed factKind is refused BEFORE any journal write, even when its source_ref evades the ref-dedup.
     const homeVerdict = admitHome(finalized, this.homeRegistry);
     if (!homeVerdict.ok) return { ok: false, reason: homeVerdict.reason };
+
+    // ── WRITE-SIDE PEP · trust plane (Stage-1, force-bind) ───────────────────────────────────────
+    // The read plane routes every read through resolve() (view-compiler); the write plane must not be
+    // ungated (T-write-pep-unwired). ONLY a projectable domain_event folds into a graph node (its
+    // source_ref) — so it is the ONLY act that can touch canonical / control-plane state (policy:* ,
+    // meta:cap/core:* , grant:*). Non-projectable acts (observation/agent_trace/…) ride the log as a
+    // side-journal, never mutate canonical truth, and carry no control-plane authority obligation → not
+    // gated here (balance-observer's observations still pass, behaviour unchanged).
+    //
+    // FORCE-BIND (owner-ratified FORK-U3): the writer principal the engine gates against is
+    // `finalized.actor` — treated as DATA (who claims to write), NEVER as the BASIS of authority. Authority
+    // is resolved ONLY from provenance-checked grants in the graph. In particular a grant's `minted_by` is
+    // STAMPED by the engine to the writer (below), so the act BODY can no longer self-declare `system`.
+    // NOTE (open fork, NOT closed by force-bind): `actor` is still self-declared under the frozen write(act)
+    // port — an actor that impersonates a *privileged* principal is the T-actor-delegation fork, which needs
+    // an authenticated principal source (ViewerResolver seam / port change). Out of Stage-1 scope; flagged.
+    if (isProjectable(finalized)) {
+      const targetId = sourceRefOf(finalized) as string;
+      const payload = (finalized.payload ?? {}) as Record<string, unknown>;
+      const isGrantWrite = payload.type === 'grant' || targetId.startsWith('grant:');
+
+      // F1 force-bind: the minter of a projected grant is the WRITER the engine sees — not a self-declared
+      // body string. A projected grant therefore can never carry an attacker-chosen `minted_by:'system'`.
+      if (isGrantWrite) {
+        finalized = { ...finalized, payload: { ...payload, minted_by: finalized.actor } };
+      }
+
+      // F2/F3 namespace ceiling: a write into a protected family (policy:* , meta:cap/core:* , …) is refused
+      // unless the writer holds core:manage-core. This is the INTEGRITY portion of the write PEP; it is a
+      // no-op when the Constitution lists no protected_namespaces, so ordinary writes are untouched.
+      if (this.policy.canWriteNamespace(finalized.actor, targetId, this.graph) === 'deny') {
+        return { ok: false, reason: `write refused: '${targetId}' is a protected namespace (requires core:manage-core)` };
+      }
+
+      // F1/F3 mint authority: minting/altering a grant is itself capability-gated (core:manage-grants). A
+      // forged self-mint (subject:self, allow:['core:*']) from a holder-less actor is refused here, BEFORE
+      // it can reach the projection — so grantValid's read-side trust rests on a gated write boundary.
+      if (isGrantWrite) {
+        const grantView: EnvelopeNode = { id: targetId, type: 'grant', body: (finalized.payload ?? {}) as Record<string, unknown> };
+        if (this.policy.canMintGrant(finalized.actor, grantView, this.graph) === 'deny') {
+          return { ok: false, reason: `mint refused: '${finalized.actor}' lacks core:manage-grants to mint grant '${targetId}'` };
+        }
+      }
+    }
 
     // Idempotency (P1 / R5, ADR-0008 §1 / ingest-spec §4): a re-write of a projectable domain_event whose
     // CONTENT already sits in the log is a NO-OP — the log does not grow, we return the existing entry

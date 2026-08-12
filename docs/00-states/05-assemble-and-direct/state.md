@@ -5,9 +5,9 @@ theme: Как мы собираем всю базу и доводим до «м�
 status: active
 owner: jenya.stasik@gmail.com
 opened: 2026-08-04
-updated: 2026-08-09
+updated: 2026-08-12
 agents: [orchestrator-fable]
-handoff: ../../_log/2026-08-09-S2-lay-forms/LAUNCH-S3.md
+handoff: ../../_log/2026-08-12-isolation-model-and-seam-freeze/HANDOFF.md
 council_brief: ./council-brief.md
 inputs:
   - ../../_inbox/2026-08-04-assemble-and-direct/design/00-fact-base.synthesis.md
@@ -21,14 +21,102 @@ Related:
 
 # 📍 STATE-05 — Собрать и направить
 
-> **🟢 ТЕКУЩИЙ БАТТОН (2026-08-11): S4+ «ширина / критические 20% граней» — СЛЕДУЮЩИЙ.** ✅ S1 ЗАКРЫТ (2 закона+I-4+R4
-> ратифицированы, `plans/01-S1-ratify-two-laws/DECISION-READY-PACKET.md`). ✅ S2 ЗАКРЫТ — формы заложены в
-> UNIT-SPEC v1.1 (`plans/02-S2-lay-forms/work/S2-critic-gate.critic.md`). **✅ S3 ЗАКРЫТ (2026-08-11) — ставка
-> ВСЕГО проекта «память растёт без миграций» ДОКАЗАНА В КОДЕ:** 4 ворот GREEN (2-я форма `time-on-edge` · анти-
-> тавтология-мутант КРАСНЫЙ на реальном коде · монумент-атрибуция держится · opaque-edge-id финализирована
-> ПЕРЕ-РЕЗКОЙ). **🟢 G2 = GREEN** (сердце готовности). Хендофф: `../../_log/2026-08-11-S3-prove/HANDOFF.md`.
-> **Next = S4+ (ширина)** — РАЗБЛОКИРОВАН. ⚠️ pre-S4: владелец ратифицирует «критические 20% граней»
-> (`_shared/task-pool.md#T-critical-face-list`; черновик = `Q-critical-faces` done). План: `plans/04-S4plus-breadth/README.md`.
+> **🟢 ТЕКУЩИЙ БАТТОН (2026-08-11, R2 — ВЫБОР ПО ЦЕННОСТИ): ФИКС TRUST-ПЛОСКОСТИ (S-C пререквизит).**
+> Личная команда лида (Fable-стратег + критик, потом builder-premise + architect-map, file-first) свела:
+> параллельная фаза T1-T4 была выбрана по ДОСТУПНОСТИ, не по ценности (критик). Ближе всего к цели
+> «доверяемая композиция» = агентный слой S-C, а его пререквизит = 3 бага, где **код СЕЙЧАС противоречит
+> инварианту «агент не может сломать доверие»** (подтверждено ПО КОДУ, не по словам):
+> **корень F3 `T-write-pep-unwired`** — `engine.ts:73-111` `write()` зовёт только PII/one-home/дедуп, а
+> `resolve('write')` НЕ вклинён в путь записи (control-plane объявлен, но не подключён) ·
+> **F1 `T-grant-forgery`** `resolve.ts:136-141` (слепо верит `minted_by:'system'`) · **F2 `T-policy-node-provenance`**
+> (перезапись узла-политики; поглощён F3). Зависимости: F1+F2 → `resolve.ts` (один write-lock), F3 → `engine.ts`.
+> Порядок: F3 → (F1+F2 одним проходом) + досыпать авторизующие гранты в фикстуры. Timebox ~3-5 ч. Контракт/`ports/` НЕ меняется; поведение меняется (фикстуры без грантов упадут — чинить вместе).
+> **✅ FORK-U3 РАТИФИЦИРОВАН владельцем (2026-08-11) = `force-bind` на Стадию-1** (движок штампует writer-principal
+> на границе записи; самозаявленный `Act.actor` не доверяется). `attest` (подпись/провенанс) — позже, когда
+> появятся плагинные агенты. Revisable (гибкость на концептах). Без этого фикс F3 был бы театром (architect).
+> **▶ Исполнение:** trust-плоскость (F3+F1+F2+фикстуры) собирается в ИЗОЛИРОВАННОМ worktree (дерево владельца не
+> трогаем), независимый вектор-проверки ДО «готово» → мердж по кивку владельца. Поэтапно, стоп если критично.
+> **Обзоры (не терять):** `../../../council/raw/2026-08-11-next-step-strategy/` — `SYNTHESIS-next-step.md` (Р1+Р2) ·
+> `FABLE-strategist.advisory.md` · `CRITIC-redteam.analysis.md` · `PREMISE-CHECK-trust-bugs.analysis.md` ·
+> `AGENT-LAYER-map.analysis.md`. ⏳ doc-discipline: эти file-first анализы позже переселить в дом дерева (сейчас в raw-стейджинге).
+>
+> **🟥 РЕЗУЛЬТАТ Стадии-1 (2026-08-11, СОБРАНА+ВЕРИФИЦИРОВАНА, НЕ коммичено, СТОП на владельца):** builder закрыл F3/F1/F2
+> (write-PEP в горячем пути `engine.ts:73-130`; `minted_by` force-bound + `canMintGrant`; namespace-ceiling + непустой seed);
+> тесты **180/180**, tsc чист, контракт/`ports/` НЕ тронут, balance-observer цел. Отчёт: `BUILD-trust-plane-stage1.impl.md`.
+> **НО независимый reviewer (opus) ЖИВЫМ ЭКСПЛОЙТОМ показал (PASS-WITH-CAVEATS, `REVIEW-trust-plane-stage1.review.md`):**
+> цель «агент не может сломать доверие» **НЕ достигнута** — PEP гейтит по **самозаявленному `actor`** (`engine.ts:100,113,122`);
+> mallory ставит `actor:'user:admin'` → минтит себе `core:*` + перезаписывает `policy:constitution` = `ok:true`. Фикс лишь
+> **перенёс подделку с `minted_by` на `actor`** (та же цена атаки). Это ровно предсказание architect и STOP-flag #1 билдера.
+> **⇒ Настоящий гейт (обострён, НЕ театр): аутентифицированный источник principal** = force-bind самого `actor`, а это
+> **смена порта** (`T-actor-delegation`, был отдельным под-вопросом FORK-U3). Force-bind на `minted_by` — необходим, но НЕ достаточен.
+> Стадия-1 merge-безопасна как ЧАСТИЧНОЕ ужесточение (0 регрессий), но НЕ фиксировать как «доверие защищено».
+> **▶ РАЗВИЛКА ВЛАДЕЛЬЦУ (следующий ход):** мерджить Стадию-1 как честное частичное ужесточение + открыть гейт
+> actor-authentication (порт), ИЛИ не мерджить и сперва спроектировать шов аутентификации principal. Остаток F2: engine-фикстуры ещё `protected_namespaces:[]` (нет единого канонического seed) — мелкий хвост.
+>
+> **🎯 РАУНД-3 ДИЗАЙН ШВА (2026-08-11, 3 линзы architect+abstract-thinker+critic, владелец выбрал «сперва проектируй»):**
+> `SYNTHESIS-next-step.md` §Раунд-3 (+ `DESIGN-principal-auth-seam.design.md` · `ABSTRACTION-recheck-trust-boundary.analysis.md` · `CRITIC-invariant-and-form.critic.md`).
+> Abstract-thinker: это ОДИН баг в 3 масках (`minted_by`/`source_ref`/`actor`); несущая абстракция = **«владелец шва
+> штампует принципала; тело — не авторитет»**; **FORK-U3 растворён** (force-bind vs attest = одна форма). Критик поправил
+> ДО ратификации: развести **АВТОРИТЕТ≠АТРИБУЦИЯ** (монумent/импорт истории носят атрибуцию в теле как ДАННЫЕ, Закон ②);
+> резерв доверия ПЕР-ОСЬ + issuer-id (не плоский enum); **не размораживать подпись `write()`** (резерв аддитивными полями
+> конверта, A/B-нейтрально); channel-trust-сейчас = ~ноль (нет аутентифиц. источника до M5). **ADR-класс.**
+> **✅ РАТИФИЦИРОВАНО ВЛАДЕЛЬЦЕМ (2026-08-11, «принимаю лучшее решение на текущий момент»):** ИНВАРИАНТ —
+> движок НИКОГДА не берёт ОСНОВАНИЕ ПРАВ из самозаявленного поля тела; записанная АТРИБУЦИЯ в теле = данные, не авторитет.
+> FORK-U3 растворён. Формализация в ADR + резерв формы (аддитивно) + enforcement-позже — задачи свежей сессии.
+> **📄 ADR НАПИСАН + ФОРМА ЗАРЕЗЕРВИРОВАНА В КОДЕ (2026-08-11, владелец дал «строй», оркестрация 3 агента синхр.):**
+> `../../../architecture/ADR/ADR-0010-principal-authority-vs-attribution.md` (SPLIT) —
+> ① Инвариант = **approved** (ратифицирован); ② резерв формы = **approved/в-коде** — `packages/engine/src/core/types.ts`
+> `Act.principal?: PrincipalAssurance` (пер-ось `whoActed`/`underWhoseAuthority` + `issuer` + слот `delegation`),
+> аддитивно, 0 миграций, подпись `write()` цела, **184/184 тестов**, tsc чист, `ports/` целы, Стадия-1 не тронута;
+> независимый reviewer **PASS-WITH-CAVEATS** (0 дефектов; тест compile-only by design — не читать как behavioral coverage);
+> ③ выбор A/B/C + enforcement = **open** (форк владельца, до M5/`ViewerResolver`). НЕ коммичено.
+> **✅ ХВОСТ ingest-`actor` РАЗРЕШЁН (analyst):** BOTH — атрибуция в эффекте, латентный авторитет по механизму
+> (`engine.ts:113/122` берут `finalized.actor` как viewer/minter); инертно лишь т.к. таргеты не привилегированы.
+> НЕ новое нарушение — тот же класс, что ③/`forge-actor`. + doc-smell: `ingest-rentacar`↔`rental-balance` дублируют ingest-пары (отдельная задача).
+> **⏭ Стадия-1 — держу uncommitted** (частичное ужесточение, форж переехал `minted_by`→`actor`); мердж/доработка = отдельный кивок.
+>
+> **🧭 DESIGN-ВОЛНА ПО DECISION ③ (2026-08-12, 4 агента: architect+analyst+critic+Fable-синтез, синхронно, file-first):**
+> `_shared/topics/03-actor-model/design/` — `01-seam-and-lifecycle.design.md` · `02-caller-reality.analysis.md` ·
+> `03-values-and-threat.critic.md` · `04-SYNTHESIS-decision-ready.md` (Fable — читать первым). **ВЕРДИКТ: DEFER build,
+> RATIFY shape** — строить seam-код сейчас = театр (дефолт-handle журналит НЕзаслуженные trust-метки в append-only лог →
+> отравляет retrofit-честность ②; ground truth: всё in-process, аутентифиц. источника личности НЕТ, M5/ViewerResolver не построен).
+> Зафиксировано текстом в ADR-0010 §③-bis (proposed): **A≡C растворены** (один механизм, ось = время жизни принципала) ·
+> **drop-and-re-stamp** · **`vouched`-деривация** · guardrails **G1** (REFUSE несовпадение, НИКОГДА молча не переписывать `Act.actor`) ·
+> **G2** (изоляция = явный prerequisite ③) · **G3** (доверие не растёт по умолчанию). Все 7 ценностей держатся ИМЕННО потому что не строим.
+> **🔑 MASTER-РАЗВИЛКА ВЛАДЕЛЬЦУ (несущая, впереди любой стройки): МОДЕЛЬ ИЗОЛЯЦИИ** — ISO-1 in-process / **ISO-2 out-of-process+IPC (шлюз M3 = первый инстанс)** / ISO-3 недовер. транспорт.
+> Решает: реальны ли A/C, обязателен ли B, скрытая посылка marketplace. Рек Fable: **ISO-2→ISO-3 как ADR-0011** → M5 под границу → ③ решается почти сам.
+> **OWNER PACKET (D1-D4, `04-SYNTHESIS §5`):** D1 ратифицировать дизайн-shape не строить · **D2 выбрать модель изоляции (ADR-0011)** · D3 принять G1-G3 · D4 зафиксировать A≡C. Порядок: D3+D4→D2→M5→enforcement-флип.
+>
+> **✅ ВОЛНА ИСПОЛНЕНИЯ (2026-08-12, владелец: «запускай, ресурсы есть, параллельно»; D2=ISO-2→ISO-3 принят; 5 агентов, 2 волны, синхронно):**
+> — **ADR-0011 написан+верифицирован+доработан** — `../../../architecture/ADR/ADR-0011-agent-isolation-model.md` (proposed): ISO-2→ISO-3,
+>   шлюз M3 = первый out-of-process инстанс. Critic-редтим → RATIFY-WITH-EDITS → внесено: **G4** (легитимность владельца-шва =
+>   резерв-форма: `seamAuthority`/issuer-of-issuer до кода; «host вызвал stamp()» ≠ авторизация) · **P-1…P-4** гейты флипа (**P-2** блокирует
+>   enforcement до линкованного фикса gateway-dup) · **ISO-1.5** (worker/SES-изоляция как альтернатива) · ISO-3 смягчён до provisional endstate.
+> — **Порты зашморожены (paper-freeze, PASS независимого reviewer)** — `packages/engine/src/ports/principal-resolver.ts` (+`PrincipalResolver extends
+>   ViewerResolver`, `AuthenticatedPrincipal`) · `principal-stamper.ts` (`PrincipalStampResult` refuse-или-stamp = G1 в ФОРМЕ, чинит кривой черновик stamper'а).
+>   Zero-behavior, `write()` цел, **187/187 тестов**, tsc чист, Стадия-1 не тронута. НЕ коммичено.
+> — **Ingest-smell разрешён** (`_shared/topics/03-actor-model/analyses/03-ingest-dedup-smell.analysis.md`): `ingest-rentacar`↔`rental-balance` = **комплементарны, не дубль**
+>   (rental-balance зависит от ingest-rentacar); держать оба. Отдельный продуктовый пробел: реальный Sheets-путь не построен (owner-decision «F-D»).
+> **⏭ Осталось владельцу/на потом:** судьба Стадии-1 (держу) · F2-seed хвост (сцеплен со Стадией-1) · doc-rehome raw 2026-08-11 → топик · M5 (surface-identity под выбранную границу) = следующая крупная работа по секвенсу ADR-0011→M5→③.
+> **🚀 ХОЛОДНЫЙ СТАРТ СЛЕДУЮЩЕЙ СЕССИИ:** `../../_log/2026-08-11-trust-plane-principal-seam/HANDOFF.md` (кнопка + план из 5 шагов + хвосты).
+> Стадия-1 (частичное ужесточение, 180/180) — uncommitted, мердж = отдельный кивок.
+>
+> ↓ **ОТЛОЖЕНО (availability-lane, резерв):** ПАРАЛЛЕЛЬНАЯ ФАЗА (post-S3) — `../../_log/2026-08-11-S3-prove/LAUNCH-PARALLEL-PHASE.md`.
+> ✅ S1 ЗАКРЫТ (2 закона+I-4+R4 ратифицированы, `plans/01-S1-ratify-two-laws/DECISION-READY-PACKET.md`). ✅ S2 ЗАКРЫТ —
+> формы заложены в UNIT-SPEC v1.1 (`plans/02-S2-lay-forms/work/S2-critic-gate.critic.md`). **✅ S3 ЗАКРЫТ (2026-08-11) —
+> ставка ВСЕГО проекта «память растёт без миграций» ДОКАЗАНА В КОДЕ:** 4 ворот GREEN (2-я форма `time-on-edge` · анти-
+> тавтология-мутант КРАСНЫЙ на реальном коде · монумент-атрибуция держится · opaque-edge-id финализирована ПЕРЕ-РЕЗКОЙ).
+> **🟢 G2 = GREEN** (сердце готовности). **✅ ЗАКОММИЧЕНО `ccbbb96`** (proof больше НЕ в uncommitted-дереве; recon-1 #1 снят).
+> Хендофф: `../../_log/2026-08-11-S3-prove/HANDOFF.md`.
+>
+> **▶ ПАРАЛЛЕЛЬНАЯ МОДЕЛЬ (2 слоя, связывающее ограничение = ВНИМАНИЕ владельца, не compute):**
+> **Слой A** = автономные треки БЕЗ гейта, в изоляции, не тратят внимание — **T3** гигиена доков (doc-only) ·
+> **T1a** demo rental-balance на фикстурах (worktree, движок через замороженный `ports/`) · **T4-spike** замер
+> hot-path @~100k (read-only, fenced). **Слой B** = ОДИН ствол-решение — **T2 S4-ширина**, гейт = один кивок
+> `Q-critical-faces-f3f4` (меню встроено в баттон). **Безопасный max ≈ 2 рулимых трека** (реестр `04` протух за
+> 3 недели, когда внимание ушло — evidence). **🔴 T1b/F-D реальные данные НЕ запускаются** (нужен F-D-санкшн;
+> R4-default уже ратифицирован, потеря принята — не блокер). **⛔ VETO T5** (файл↔единица) — пере-режет S3-форму.
+> Полностью: `LAUNCH-PARALLEL-PHASE.md`. S4 понижен из кампании в СТРАХОВКУ-гейт (`plans/04-S4plus-breadth/README.md`).
 
 > Отдельное состояние ПРОЦЕССА (не содержания): **как** мы соберём всё, что уже наработано, и доведём
 > до точки «можно наконец строить память, которая растёт». Владелец (08-04): «спешить нельзя, но

@@ -205,6 +205,48 @@ export interface Provenance {
 }
 
 /**
+ * Per-axis principal authenticity level — how strongly the SEAM OWNER vouched for one principal axis
+ * (ADR-0010 §Decision ②.1). Ordering by strength: `unverified` = an unauthenticated self-claim in the
+ * body; `channel` = a trusted caller/channel force-bind (as the gateway stamps `thread_id`, the OS kernel
+ * `uid`); `attested` = a cryptographically attested issuer token. Deliberately NOT a flat single enum —
+ * the two axes (who-acted / under-whose-authority) are INDEPENDENT and each carries its OWN level (critic
+ * edit #2: a flat 3-enum would collapse the two axes back into one and lose the issuer).
+ */
+export type PrincipalTrust = 'unverified' | 'channel' | 'attested';
+
+/**
+ * RESERVED FORM (ADR-0010 §Decision ②, Закон ①: reserve the FORM, defer the BEHAVIOR) — the
+ * principal-authentication seam, laid ADDITIVELY on the act envelope (same precedent as the additive
+ * `provenance` widening and the optional `hashScheme`). NO behavior: nothing populates or enforces these
+ * fields today; enforcement is deferred to Decision ③ (an authenticated write-principal source, M5 /
+ * `ViewerResolver` write-side). Reserved NOW because the journal is append-only and a per-act trust marker
+ * is RETROFIT-IMPOSSIBLE: without it a later auditor cannot tell pre-seam (unproven) acts from post-seam
+ * (proven) ones (§Decision ②).
+ *
+ * The two axes are kept INDEPENDENT (critic edit #2), mirroring the ratified invariant (Decision ①):
+ * AUTHORITY (`underWhoseAuthority` — the basis of rights) is NEVER taken from the act body once enforced;
+ * ATTRIBUTION (`whoActed` — the recorded fact of who acted) MAY live in the body but only as DATA.
+ * All fields are optional ⇒ additive: an existing `Act` with no `principal` still typechecks (0 migrations).
+ */
+export interface PrincipalAssurance {
+  /** ATTRIBUTION axis — authenticity of the recorded "who acted" (Decision ①: data, never a basis of rights). */
+  whoActed?: PrincipalTrust;
+  /** AUTHORITY axis — authenticity of "under whose authority" the act runs (Decision ①: never from the body once enforced). */
+  underWhoseAuthority?: PrincipalTrust;
+  /**
+   * Issuer-id — WHO stamped this trust (the trusting channel/issuer identifier). Retrofit-impossible
+   * (Decision ②.2): a journaled act with no "vouched by whom" is forever ambiguous to a later auditor.
+   */
+  issuer?: string;
+  /**
+   * RESERVED delegation slot (Decision ②.3, `T-actor-delegation`) — the "under whose authority" chain.
+   * Reserve PRESENCE only, NOT semantics: an EMPTY slot so a future delegation model does not break the
+   * envelope. Nothing consumes it today; the element shape is intentionally unresolved.
+   */
+  delegation?: unknown[];
+}
+
+/**
  * FROZEN act-envelope shape (G1/CQRS + ADR-0007 a): PII travels ONLY via payloadRef+payloadHash;
  * `recordedAt` is engine-assigned and immutable. `payload` (inline) is the thing the admission-gate
  * refuses when it carries PII.
@@ -228,6 +270,13 @@ export interface Act {
    * reversible digest. Set by the PayloadStore at `put`; carried forward onto an `erased` act.
    */
   hashScheme?: HashScheme;
+  /**
+   * RESERVED FORM (ADR-0010 §Decision ②) — principal-authentication seam: additive + optional, NO behavior.
+   * Nothing sets or enforces it today; it reserves the retrofit-impossible shape (per-axis trust + issuer +
+   * delegation slot) BEFORE the append-only journal accumulates history. See PrincipalAssurance. The
+   * `write(act): Ack` signature stays FROZEN — this is reserved via the envelope, not a new port parameter.
+   */
+  principal?: PrincipalAssurance;
   /** Inline payload. If present with PII content, the admission-gate REFUSES the act (fail-closed). */
   payload?: unknown;
 }

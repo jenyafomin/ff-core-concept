@@ -14,5 +14,9 @@ export const MIN_CONSTITUTION: EnvelopeNode = {
   access: { can_read: ['agent:*'], can_write: [] },
   acts: [],
   policy_ref: [],
-  body: { synthetic: true, no_read: [], protected_namespaces: [], default: 'deny' },
+  // F2 (T-policy-node-provenance): the control-plane families are namespace-PROTECTED (write ceiling,
+  // gated by core:manage-core). `policy:` seals the Constitution and any policy node against overwrite;
+  // `meta:cap/core:` seals the core capability nodes. Grants (`grant:`) are gated on the write path by
+  // canMintGrant (core:manage-grants), so they need no ceiling entry here. Empty ⇒ ceiling is a no-op.
+  body: { synthetic: true, no_read: [], protected_namespaces: ['policy:', 'meta:cap/core:'], default: 'deny' },
 };

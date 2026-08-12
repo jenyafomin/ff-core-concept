@@ -136,6 +136,13 @@ export class PermissionPolicy implements IPermissionPolicy {
   private grantValid(graph: Graph, g: EnvelopeNode): boolean {
     if (this.mode === NAIVE) return true; // NAIVE: anyone with write can mint — no gate
     const minter = g.body?.minted_by as string;
+    // `system`/`engine` = the SUBSTRATE root of trust — a grant SEEDED into the substrate at construction,
+    // not one produced by an agent. This is a base-case AXIOM, not a bearer-token any body may claim: the
+    // only path a NON-substrate grant enters the graph is Engine.write(), which now (a) FORCE-BINDS
+    // `minted_by` to the writer (so a written grant can never carry `minted_by:'system'`) and (b) gates
+    // minting on canMintGrant (T-grant-forgery). A forged self-mint is therefore refused at the write
+    // boundary — grantValid's read-side trust rests on that gate, it is not blind body-trust. (An in-graph
+    // node injected OUTSIDE write(), i.e. into the substrate itself, IS the root of trust by definition.)
     if (minter === 'system' || minter === 'engine') return true;
     return this.granterHasManageGrants(graph, minter, g.body?.in_scope as string);
   }
