@@ -21,7 +21,7 @@ import {
   project,
   assertForwardMonotone,
   DEFAULT_PREDICATES,
-  LOCKED_MANY_PREDICATES,
+  LOCKED_PREDICATES,
   Engine,
   MemoryStore,
   FIXED_POLICY,
@@ -72,7 +72,7 @@ function sameAsEvent(id: string, source_ref: string, snapshotHash: string, targe
 
 describe('(b) same-as cardinality is LOCKED to many (kernel identity ceiling, wins over any registry)', () => {
   it('same-as is a declared kernel-locked structural predicate (not an accident of the fallback default)', () => {
-    expect(LOCKED_MANY_PREDICATES.has('same-as')).toBe(true);
+    expect(LOCKED_PREDICATES['same-as']).toBe('many');
   });
 
   it('a registry that declares same-as:one is IGNORED — cardinalityOf still returns many', () => {

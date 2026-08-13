@@ -1,7 +1,7 @@
 # ADR-0010 — Trust-boundary: авторитет принципала ≠ атрибуция (шов аутентификации принципала для write-плоскости)
 
 - **Title:** Движок НИКОГДА не берёт ОСНОВАНИЕ ПРАВ (авторитет) из самозаявленного поля тела акта — «кто ты» с точки зрения прав штампует ВЛАДЕЛЕЦ ШВА (как шлюз ставит `thread_id`, ядро ОС — `uid`). Записанная АТРИБУЦИЯ «кто сделал» может жить в теле, но как ДАННЫЕ, не как основание прав. Резервируем ФОРМУ шва (доверие принципала пер-ось + issuer-id + слот делегации, аддитивно, без смены подписи `write()`); ВЫБОР источника (канал A / крипто-аттестация B / handle C) и enforcement — отложены.
-- **Status:** **SPLIT** — **Инвариант** (раздел Decision ①) = **approved** (ратифицировано владельцем 2026-08-11: «принимаю лучшее решение на текущий момент»; растворяет FORK-U3). **Резерв формы** (Decision ②) = **approved / зарезервировано-в-коде** (владелец дал «строй» 2026-08-11; форма в `packages/engine/src/core/types.ts` — `Act.principal?: PrincipalAssurance` с пер-осевым доверием `whoActed`/`underWhoseAuthority` + `issuer` + слот `delegation`; аддитивно, 0 миграций, подпись `write()` цела, 184/184 тестов, tsc чист; независимый reviewer PASS). **Выбор реализации A/B/C и enforcement** (Decision ③) = **open** — форк владельца, откладывается до построения аутентифицированного источника принципала (M5 / `ViewerResolver` write-сторона). Фаза проекта — **дизайн**: инвариант + форма зафиксированы, ПОВЕДЕНИЕ (enforcement) не включено.
+- **Status:** **SPLIT** — **Инвариант** (раздел Decision ①) = **approved** (ратифицировано владельцем 2026-08-11: «принимаю лучшее решение на текущий момент»; растворяет FORK-U3). **Резерв формы** (Decision ②) = **approved / зарезервировано-в-коде** (владелец дал «строй» 2026-08-11; форма в `packages/engine/src/core/types.ts` — `Act.principal?: PrincipalAssurance` с пер-осевым доверием `whoActed`/`underWhoseAuthority` + `issuer` + слот `delegation`; аддитивно, 0 миграций, подпись `write()` цела, 184/184 тестов, tsc чист; независимый reviewer PASS). **Выбор реализации A/B/C и enforcement** (Decision ③) = **open** — форк владельца, откладывается до построения аутентифицированного источника принципала (M5 / `ViewerResolver` write-сторона). **§③-bis (design-wave findings + guardrails G1/G2/G3)** = **approved / ратифицирован-как-ТЕКСТ 2026-08-12** (owner paper-move 2; DEFER-build + RATIFY-shape; см. `## Ratification 2026-08-12` ниже) — это ратификация ВЫВОДОВ дизайна (форма/секвенс/guardrails), НЕ включение поведения. Фаза проекта — **дизайн**: инвариант + форма + design-выводы зафиксированы, ПОВЕДЕНИЕ (enforcement Decision ③) НЕ включено.
 - **Owner:** jenya.stasik@gmail.com
 - **Date:** 2026-08-11
 - **Scope:** Project (FF-Personal-Management) · `packages/engine` (`ports/`, `engine.ts`, `core/types.ts`) — ветка `refactor-tree`
@@ -113,7 +113,7 @@ Write-принципала choke-point НЕТ. Северная звезда —
 ~ноль сверх force-bind — аутентифицированного принципала ещё нет (`ViewerResolver`/M5 не построен), а баги
 шлюза (dup/restart) подрывают само допущение «доверенный канал».
 
-#### ③-bis — Design-wave findings (2026-08-12, **proposed**, design-phase; pending owner D1/D3/D4)
+#### ③-bis — Design-wave findings (2026-08-12, **approved** — ратифицирован владельческим делегированием 2026-08-12; design-phase, enforcement НЕ включён)
 Волна из 4 агентов (architect · analyst · critic · Fable-синтез) в `_shared/topics/03-actor-model/design/`
 (`01-seam-and-lifecycle.design.md` · `02-caller-reality.analysis.md` · `03-values-and-threat.critic.md` ·
 `04-SYNTHESIS-decision-ready.md`) сошлась: **DEFER build, RATIFY shape.** Строить seam-код сейчас = либо мёртвые
@@ -205,3 +205,26 @@ Write-принципала choke-point НЕТ. Северная звезда —
 - **In-process vs out-of-process агенты** — влияет на силу channel-trust (A) и на угрозу шлюза (dup/restart).
 - **`T-actor-delegation`** — форма (② слот) резервирует, поведение отложено.
 - **F2 хвост:** engine-фикстуры всё ещё `protected_namespaces:[]` — нет единого канонического seed.
+
+---
+
+## Ratification 2026-08-12
+
+**Владельческий ход (paper-move 2, DESIGN-фаза, 0 кода):** ратифицирован **§③-bis** (design-wave findings + guardrails G1/G2/G3) как ТЕКСТ. Это подтверждает уже-approved инвариант ① и форму ②, и фиксирует design-выводы волны 2026-08-12 (**DEFER build, RATIFY shape**). Enforcement (Decision ③) НЕ включается — остаётся open-форком владельца.
+
+**Что именно ратифицировано (текст, не поведение):**
+- **§③-bis A≡C** — растворение под-развилки: `submit(id, act) ≡ makeEngineClient(resolve(id)).write(act)` — один механизм (`PrincipalResolver` + `PrincipalStamper`) на двух временах жизни принципала (per-write vs per-session); настоящая ось — время жизни, не «A против C».
+- **§③-bis master-развилка = модель изоляции** вынесена в **ADR-0011** как явный prerequisite Decision ③ (G2). Секвенс: **ADR-0010 §③-bis → ADR-0011 → M5 → enforcement-флип ③.**
+- **Guardrails заморожены как текст:** **G1** (enforcement REFUSE'ит несовпадение принципала, НИКОГДА молча не переписывает `Act.actor`; пишем только в `principal.*`) · **G2** (модель изоляции — явный prerequisite ③, → ADR-0011) · **G3** (доверие НИКОГДА не растёт по умолчанию; ни одной journaled-метки выше `unverified` без реального аутентифицированного источника; F7 consent = non-goal шва, F8 = будущий B-тест).
+
+**Evidence:**
+- Commit `3474cd1` «Brain going forward» (2026-08-12 04:36) — вся trust-линия (ADR-0010, ADR-0011, порты шва, Стадия-1, пульт) закоммичена; рабочее дерево чистое.
+- **Стадия-1** (force-bind `minted_by`→`actor`) уже в git — честное частичное ужесточение, не регрессия.
+- **Тесты зелёные**, M5-перепись ширины: **187/187 baseline** (21 грань: 5✅ = уже замороженная форма · 7⬜ · 9🟥); ноль работающего источника личности.
+- **Порты шва заморожены с 0 call-site** (`ports/principal-resolver.ts`, `ports/principal-stamper.ts`, paper-freeze; прецедент симметрии — `ports/viewer-resolver.ts`).
+
+**Честный предел (указывает вперёд, на owner-decision 4 из M5-синтеза §6):** зарезервированная форма ② + поле-аналог `seamAuthority` (G4, ADR-0011) НЕ делают личность неподделываемой сами по себе. **`seamAuthority` не является unforgeable без НАЗВАННОГО вне-полосного корня доверия** (кто удостоверяет право хоста штамповать, вне записи любого штампующего процесса и вне всего, что правит агент). Пока корень не назван, каждый штамп обязан честно нести «seam authority not vouched» (G3/G4). Резерв поля — retrofit-невозможен и потому дёшев СЕЙЧАС; названный якорь корня — отдельное открытое решение (M5-синтез §6, decision 4).
+
+**Provenance (2026-08-12, D2 landed):** ratified via owner delegation 2026-08-12 «answer as I would» — reversible if owner disagrees. Это переводит §③-bis из аспирационного `approved` (paper-move 2) в *подкреплённый* делегированной ратификацией и **снимает трёхстороннюю рассинхронизацию статуса** (top-clause `approved` / inline `proposed` / direction-review рек. `review`) в один честный `approved`. Каноничный вердикт: `docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/SYNTHESIS-owner-eye-verdicts.md` (D2).
+
+**Обратимость:** правка аддитивна (Status-уточнение + этот раздел + provenance-строка); ничего не удалено; откат = снять раздел и вернуть Status-клаузу §③-bis к `proposed`.

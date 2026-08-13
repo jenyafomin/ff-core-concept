@@ -31,3 +31,24 @@ Related:
 ## Настоящая починка (TODO для шлюза)
 - Дедуп входящих: игнорировать идентичное сообщение, пришедшее подряд (хеш текста + окно времени).
 - Не обрывать активные фоновые задачи при новом ходе (очередь/локи вместо kill).
+
+## Update 2026-08-12 — dedup landed, only crash-window remains
+> **Факт-коррекция (аддитивно; текст выше — исторический, НЕ удалён).** Диагноз «нет дедупликации
+> входящих» (§Причина) теперь **УСТАРЕЛ как корневая причина.** Дедуп УЖЕ починен в шлюзе.
+
+- **Что изменилось:** в `agents-manager` дедуп входящих реализован — `orchestrator.ts:79-88` строит
+  ключ `channel:conversationId:messageId` и зовёт `DedupStore.markIfNew()` (in-memory `Set` +
+  durable SQLite `SeenUpdate`, гидратируется до старта бота). Коммит `3e3327d` (2026-07-07, «F11»),
+  на `main` и `feat/sdk-runner`. Это **новее** всех исторических записей этого бага (2026-07-05/06).
+- **Остаточный узкий баг (не корень, а окно гонки):** `dedup-store.ts:41-56` помечает ключ в памяти
+  синхронно, но персистит fire-and-forget (`void this.persist(key)`). Крэш ДО flush → новый процесс
+  с пустым `Set`, строки в SQLite ещё нет → long-poll передоставляет апдейт → `markIfNew()` вернёт
+  `true` → тот же месседж = второй ход. Downstream-бэкстопа нет. Наблюдалось: **7 рестартов за 35ч**
+  под pm2 (crash-adjacent `ECONNRESET`/`Connection closed mid-response`), прямой репро дубля не
+  зафиксирован — открытый пункт репро-плана.
+- **Итог:** P-2 **в основном закрыт**; это **больше НЕ «длинный полюс»** критического пути (им стал
+  isolation uid-split). Остаётся закрыть fire-and-forget-окно (await persist ИЛИ duplicate-insert
+  guard в `message.repo`) или доказать отсутствие рецидива.
+- **Полный бриф (не дублировать здесь — это указатель):**
+  `docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/WORKORDER-gateway-dup-P2.decision.md`
+  (симптом · file:line-улики A/B/C · fix-подход · репро/верификация · linkage к trust-line/decision-③).

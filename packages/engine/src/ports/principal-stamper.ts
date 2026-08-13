@@ -42,6 +42,13 @@ export interface PrincipalStamper {
   /**
    * Drop any caller-supplied `incoming.principal`, then re-stamp `principal.*` from the AUTHENTICATED
    * principal. If `incoming.actor` mismatches `principal.subject`, REFUSE (G1) — do not rewrite `actor`.
+   *
+   * G4 (ADR-0011:123-145): on success, the re-stamped `principal.*` MUST carry `seamAuthority` copied
+   * verbatim from the `AuthenticatedPrincipal` argument — the stamper does not invent, default, or omit
+   * it; a resolver that cannot supply `seamAuthority` cannot legitimately call `stamp()` at all, by
+   * construction of `AuthenticatedPrincipal.seamAuthority` being REQUIRED (principal-resolver.ts). This
+   * only RESERVES the slot (P-3); naming the out-of-band trust root that makes `seamAuthority`
+   * non-self-declared (who vouches for the stamper) is a SEPARATE later decision (BEHAVIOR, M5-impl).
    * PAPER-FREEZE: signature only; no implementation at design-phase.
    */
   stamp(incoming: Act, principal: AuthenticatedPrincipal): PrincipalStampResult;

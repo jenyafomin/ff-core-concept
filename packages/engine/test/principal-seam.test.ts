@@ -20,13 +20,15 @@ import type {
 } from '../src/index.js';
 
 describe('ADR-0010 §③-bis write-principal seam — shape only, no behavior', () => {
-  it('(a) AuthenticatedPrincipal { subject, trust, issuer } is expressible', () => {
+  it('(a) AuthenticatedPrincipal { subject, trust, issuer, seamAuthority } is expressible', () => {
     const p: AuthenticatedPrincipal = {
       subject: 'user:jenya',
       trust: 'channel',
       issuer: 'gateway:agents-manager',
+      seamAuthority: 'host-registry:ff-engine', // G4 (ADR-0011): required — who vouches for the stamper
     };
     expect(p.trust).toBe('channel');
+    expect(p.seamAuthority).toBe('host-registry:ff-engine');
   });
 
   it('(b) PrincipalResolver is a ViewerResolver + resolveWritePrincipal (one read+write seam)', () => {

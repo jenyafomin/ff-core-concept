@@ -39,6 +39,50 @@ export interface Edge {
   validFrom?: string;
   /** RESERVED (P2 time-on-edge). Present in the shape now; NOT folded/consumed by projection at P1. */
   validTo?: string;
+  /**
+   * RESERVED FORM (F2-closure, ARCH-F2-closure.design.md) — subject-role assurance: "whose role" this
+   * edge encodes and (optionally) the consent that attests it. ADDITIVE + optional: an existing edge with
+   * no `subjectRole` typechecks unchanged (0 migrations). NO behavior/enforcement today (deferred за швом).
+   * The role of the edge itself has EXACTLY ONE home — `Edge.predicate` — so `SubjectRoleAssurance` carries
+   * no `role` field (critic C2: a second role home would drift). Any consent PII travels ONLY by ref
+   * (`evidenceRef`/`evidenceHash`); the admission-gate scans this slot for inline PII (R-G3.5).
+   */
+  subjectRole?: SubjectRoleAssurance;
+}
+
+/**
+ * RESERVED FORM (F2-closure) — the "whose role" assurance on an edge. paper-freeze: we reserve the SHAPE
+ * now; semantics/enforcement are за швом. It deliberately carries NO `role` field: the sole home of the
+ * edge's role is `Edge.predicate` (critic C2 — a duplicate `role` slot would be a second drifting home of
+ * one truth). Its only member is an optional attribution of CONSENT, itself PII-safe by construction.
+ */
+export interface SubjectRoleAssurance {
+  /** Optional consent attribution for this role assertion. Absence ≠ granted (G3 no-default-rise). */
+  consent?: ConsentAssurance;
+  // NO `role` field — the single home of the edge's role is `Edge.predicate` (C2).
+}
+
+/**
+ * RESERVED FORM (F2-closure) — consent travels as DATA-attribution: non-PII scalars (status/asOf/basis)
+ * plus a by-ref witness (`evidenceRef`+`evidenceHash`+`hashScheme`, the SAME by-ref rail as
+ * `payloadRef`/`payloadHash`, ADR-0007). There is DELIBERATELY no `unknown`/free-form field: with no slot
+ * to inline raw consent PII, the shape is a STRUCTURAL gate (critic C1 — a `consent?: unknown` slot would
+ * silently reopen the inline-PII hole G3 closed). The only PII-bearing surface is the reference+hash pair.
+ * All fields optional ⇒ additive; absence of `status` means "consent NOT attested", never `granted`.
+ */
+export interface ConsentAssurance {
+  /** Non-PII scalar: attested state of consent. Absence = not attested (never read as granted, G3). */
+  status?: 'granted' | 'revoked' | 'withdrawn';
+  /** Non-PII scalar: ISO timestamp the consent state was asserted as-of. */
+  asOf?: string;
+  /** Non-PII scalar: the legal/agreed basis label (e.g. a policy id). NOT a place for names/contacts. */
+  basis?: string;
+  /** By-ref witness: a stable reference (blob id / doc ref) to the consent evidence — PII lives ONLY here. */
+  evidenceRef?: string;
+  /** Content-hash anchoring `evidenceRef` (so the by-ref witness is verifiable / co-shreddable). */
+  evidenceHash?: string;
+  /** Scheme that produced `evidenceHash` (reuses `HashScheme`, e.g. `salted-sha256-v1`). */
+  hashScheme?: HashScheme;
 }
 
 /**
@@ -238,6 +282,18 @@ export interface PrincipalAssurance {
    * (Decision ②.2): a journaled act with no "vouched by whom" is forever ambiguous to a later auditor.
    */
   issuer?: string;
+  /**
+   * G4 (ADR-0011:123-145) — issuer-of-the-issuer, carried onto the journaled act by
+   * `PrincipalStamper.stamp()` from `AuthenticatedPrincipal.seamAuthority`. Optional/additive
+   * like `issuer` (Decision ②): an existing `Act` with no `principal`, or a `principal` with no
+   * `seamAuthority`, still typechecks — 0 migrations, `write(act): Ack` signature untouched.
+   * Absence MUST be read as "no seam authority vouched for this stamp" and must NEVER be treated
+   * as equivalent to a populated value by any future PEP/gate — mirrors G3's no-default-rise rule
+   * one layer up (trust axis → seam-legitimacy axis). P-3 (ADR-0011:251) is satisfied by this
+   * field's presence in the reserved form; it does NOT by itself satisfy G4's trustworthiness
+   * intent (see `principal-resolver.ts`'s `seamAuthority` doc-comment).
+   */
+  seamAuthority?: string;
   /**
    * RESERVED delegation slot (Decision ②.3, `T-actor-delegation`) — the "under whose authority" chain.
    * Reserve PRESENCE only, NOT semantics: an EMPTY slot so a future delegation model does not break the

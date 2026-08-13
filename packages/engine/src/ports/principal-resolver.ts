@@ -34,6 +34,21 @@ export interface AuthenticatedPrincipal {
   trust: PrincipalTrust;
   /** WHO vouched — the trusting channel/issuer id, e.g. `gateway:agents-manager` | `cli:trusted-operator` | `issuer:<kid>`. Retrofit-impossible audit fact. */
   issuer: string;
+  /**
+   * G4 (ADR-0011:123-145) — issuer-of-the-issuer: WHO authorized THIS host to be a stamper at
+   * all. Distinct from `issuer` (who vouched for THIS principal — attribution of the stamp act);
+   * `seamAuthority` answers "under what registration/policy is this host process itself a
+   * legitimate seam owner" (authority to stamp, not attribution of a stamp). Conflating the two
+   * reproduces the actor≠principal hole ADR-0010 closed, one level up (ADR-0011:137-141).
+   * REQUIRED (not optional): `AuthenticatedPrincipal` has zero implementations today (paper-
+   * freeze, this file's header) — this is the one moment a required field costs nothing (no
+   * implementer to break) and forecloses G4 being silently forgotten later, per ADR-0011's own
+   * retrofit-impossibility argument (:134-135). A real resolver MUST derive this from an external
+   * anchor it does not itself write (e.g. a capability grant / engine-side host registry) — never
+   * self-declare it — but that anchor mechanism is BEHAVIOR, deferred to M5-implementation, not
+   * fixed by this form.
+   */
+  seamAuthority: string;
 }
 
 /**

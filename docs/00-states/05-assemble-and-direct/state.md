@@ -5,9 +5,9 @@ theme: Как мы собираем всю базу и доводим до «м�
 status: active
 owner: jenya.stasik@gmail.com
 opened: 2026-08-04
-updated: 2026-08-12
+updated: 2026-08-13
 agents: [orchestrator-fable]
-handoff: ../../_log/2026-08-12-isolation-model-and-seam-freeze/HANDOFF.md
+handoff: ../../_log/2026-08-13-metric-and-minimal-slice/HANDOFF.md
 council_brief: ./council-brief.md
 inputs:
   - ../../_inbox/2026-08-04-assemble-and-direct/design/00-fact-base.synthesis.md
@@ -21,7 +21,68 @@ Related:
 
 # 📍 STATE-05 — Собрать и направить
 
-> **🟢 ТЕКУЩИЙ БАТТОН (2026-08-11, R2 — ВЫБОР ПО ЦЕННОСТИ): ФИКС TRUST-ПЛОСКОСТИ (S-C пререквизит).**
+> **🟢 ТЕКУЩИЙ БАТТОН (2026-08-13 · МЕТРИКА + МИНИМАЛЬНЫЙ СРЕЗ → РАМКА ЗАКОММИЧЕНА, F2 ratify-ready, следующий ход = BUILD; 3 синхр. волны ~12 агентов, adversarial, file-first):**
+> Оркестрация по 2 вопросам владельца (метрика прогресса · минимальный срез памяти под агента, путь B). Дом: `../../_log/2026-08-13-metric-and-minimal-slice/` (`NAVIGATOR.md` = карта). **Cold-start под стройку: `../../_log/2026-08-13-metric-and-minimal-slice/HANDOFF.md`.**
+> — **🧭 РАМКА ЗАКОММИЧЕНА (Fable, рефрейм-без-рефрейма):** необратимость входит только через ПЕРЕЧИСЛИМЫЕ порты; черта = ЗАКРЫТЫЙ СПИСОК портов, каждый fail-closed, intent-акт ДО срабатывания. **Черта живёт на egress (граница агент→мир), НЕ в памяти** (граф обратим by-construction, ADR-0008). Фальсификатор: необратимый эффект вне egress+shred → рамка ложна.
+> — **СЕКВЕНС СДВИНУТ:** M5/uid-split уходят с критпути ПОКА принципал один (триггер возврата = «второй принципал → M5 обратно»); enforcement ③ переезжает с движка на egress-guard.
+> — **ФОРМА F2 ЗАКРЫТА (ratify-ready, 0 миграций):** `author`→акт (есть) · `owner`+`referent`→паспорт-ребро; согласие by-ref (`ConsentAssurance`, нет `unknown`-поля → PII некуда вложить) + `admit()` сканирует `subjectRole` (R-G3.5); `owner`/`referent` kernel-lock (`LOCKED_PREDICATES`, как `same-as`). Спека: `../../_log/2026-08-13-metric-and-minimal-slice/wave3-route/ARCH-F2-closure.design.md`.
+> — **МАРШРУТ M0-M4:** M0 egress fail-open починен (choke-point УЖЕ есть — `sdk-runner.ts:184`, но MCP-тулы fail-open) → M1 P-2 закрыт доказательством → M2 форж `actor` не даёт egress → M3 владелец ВИДИТ нарушение без грепа → M4 машина едет N часов, 0 тихих пересечений = цель.
+> — **🚨 ВЕРДИКТ СХОДИМОСТИ (Fable + analyst независимо):** сходимся по картине (список замкнут, форма готова), НО нить шва доверия КРУЖИТСЯ 3-4 сессии (локус черты переехал 4× за ~72ч). **Триггер тревоги:** ещё 2 сессии без смёрженного кода + переезд локуса → WIP-правило → принудительный build M0. ⇒ следующая сессия = СТРОЙКА, не разбор.
+> **⏭ OWNER-PENDING (разблокирует максимум):** (1) 🔑 **закрытый список портов черты** — что агент НИКОГДА не делает сам (внешнее сообщение? деньги? стирание? действия от твоего имени?); (2) «строй» на код (F2 + M0); (3) кивок kernel-lock owner/referent; (4) M0 в чужом репо `agents-manager` — санкция на worktree-правку ИЛИ «ADR описывает, билд отдельно»; (5) DEC-A метрика (стоп=успех?). **P-2 land = рука владельца.** Пред. баттон ↓ (superseded).
+>
+> **◻️ (superseded 2026-08-13) БАТТОН (2026-08-12-d · OWNER-EYE ФОРКИ ЗАКРЫТЫ, adversarial round + owner-proxy синтез, file-first):**
+> Финальный owner-eye синтез над раундом адверсариал-ревью (2 стилмена + критик + owner-proxy) по открытым M5-форкам.
+> **Каноничный вердикт:** `_shared/topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/SYNTHESIS-owner-eye-verdicts.md`.
+> — **D2 · РАТИФИЦИРОВАН** (owner-delegation): ADR-0010 §③-bis + ADR-0011 → genuinely `approved` + provenance-строка.
+>   Заодно схлопнута **трёхсторонняя рассинхронизация статуса** (top=approved аспирационно / inline=proposed / direction-review рек.=review) в один честный `approved` — это был тот же класс prose-rot, что FORK-1.
+> — **D4 · ЛОЖНАЯ РАЗВИЛКА РАСТВОРЕНА → ЗАКРЫТ ОДИН РАЗ.** «(a) vs (c)» = не выбор: **(a) = ОБЪЕКТ** (engine `trust/`-дом + схема), **(c) = ГЕЙТ** (Constitution-clamp `policy:seam-authority` + честный `unverified`-пол + P-5). Оба стилмена независимо сошлись на ОДНОМ артефакте: engine `trust/` + схема + инертный canary + **машинно-проверяемый P-5-tripwire** + `unverified`-пол = *(a)-объект в (c)-гейте*. Форк decided (`FORK-decision4` status→`decided`), чтобы остановить ре-литигацию (решался ~3× при статусе `draft`). План исполнения = `tracks/` (01-root-of-trust).
+> — **D5-main · РЕШЁН = «брокер-семя»**, decided-BUNDLED-with-D4 (`FORK-decision5` status→`decided`). Sub-fork «модуль-в-шлюзе vs standalone» ОТКРЫТ (сцеплен с экстракцией шлюза `coupling=0`).
+> — **D8 · Sheets/F-D:** DEFER-не-блокирует-M5, НО «просто адаптер» недооценивает — санкция F-D открывает **D-1 (classifier-gap, ~100% строк стопорятся при наивном fail-closed)** + 4 суб-форка. Приходить как «4-частный бандл», не одна строка.
+> — **D9 · F2-seed фикстуры:** делать заодно со следующей engine-волной (test-only, аддитивно, есть mutation-probe).
+> **🔑 ЧЕСТНЫЙ ЗАГОЛОВОК (не обольщаться): реального ВОРОТА не сдвинуто.** Закрытие D4 = *convergence-closure* (ценность: не переоткрывать), НЕ «M5 стал buildable» — оно ЧЕКАНИТ P-5, а не гасит существующее ворото. **Настоящее движение вперёд = (i) LAND P-2** (ветка `fix/p2-voice-dedup-ingress` готова — владелец: merge + pm2 restart) **+ (ii) SCOPE ISO-2 uid-split** (единственный трек с дизайном=0, длинный полюс, `tracks/03-isolation-uid-split`). D4/D5 = названный текст поверх этого секвенса, не блокер.
+> **⚠️ Остаточная неуверенность (флаг, не решено мной):** формулировка P-5 в ADR-0011 блокирует флип ③ ЦЕЛИКОМ, но G1 (refuse forged `actor`) не зависит от vouched-корня G4 — возможно ③ надо расщепить на независимо-флипаемые под-гейты (technical-content, следующая дизайн-волна). Пред. баттон ↓ (superseded).
+>
+> **◻️ (superseded 2026-08-12-d) БАТТОН (2026-08-12-c · M5 SAFE PAPER-MOVES, 3 синхр. агента, file-first):**
+> Волна безопасных обратимых ходов из синтеза §6 (DESIGN, никакого enforcement/флипа):
+> — **P-3 `seamAuthority` зарезервирован (код)** — аддитивный тип-патч (другой агент: `types.ts`/`ports/*`); `write()` цел, 0 миграций, retrofit-невозможен позже → потому сейчас.
+> — **P-2 voice-dup** — фикс на ветке `fix/p2-voice-dedup-ingress` в ЧУЖОМ репо `agents-manager` (ingress-dedup ДО транскрипции); **ждёт land+restart владельцем.**
+> — **Doc-sync (Decision-1):** trust-линия УЖЕ в git (`3474cd1`); стале «не коммичено / держу Стадию-1» поправлены аддитивно (LOSE-NOTHING) в HANDOFF + этом пульте.
+> — **T5-тексты (Decision-7) материализованы:** non-goal («источник резолвера ≠ пути, куда пишет юнит») + гейт `forge-boundary-identity` →
+>   `_shared/topics/03-actor-model/decisions/T5-nongoal-and-forge-gate.decision.md`; **тест-заглушка `it.todo('forge-boundary-identity')`** добавлена в `packages/engine/test/trust-plane.test.ts` (инертна, сьют зелёный, seam-freeze не тронут).
+> — **Root-of-trust (Decision-4) оформлен PROPOSED-развилкой** `_shared/topics/03-actor-model/decisions/FORK-decision4-root-of-trust.decision.md` (НЕ ратифицирован).
+> **⚑ Канонический список решений = синтез §6:** `_shared/topics/03-actor-model/m5-surface-identity/design/04-SYNTHESIS-m5-decision-ready.md`.
+>
+> **⏭ OWNER-PENDING (decide-ready — только владелец):**
+> — **D2 · ратифицировать ADR-0010 §③-bis + ADR-0011** (сейчас `proposed`; текстовый кивок, 0 кода; P-2 НЕ обходит — enforcement блокирован независимо). **Рек: ратифицировать.** Пакет: `.../decisions/RATIFY-2026-08-12-adr-0010-0011.decision.md`.
+> — **D5 · топология шва = «брокер-семя»** (модуль на ярусе хоста, экстрагируемый). **Рек: брокер-семя;** sub-fork «модуль-в-шлюзе vs standalone» ОТКРЫТ (сцеплен с экстракцией шлюза `coupling=0`, вне M5). Разбор: `.../decisions/FORK-decision5-topology.decision.md`.
+> — **D4 · вне-полосный корень доверия `seamAuthority`.** ⚠️ **Расхождение на решение владельца:** синтез §6 предлагал **(a)** engine-реестр; более глубокая волна (`FORK-decision4-root-of-trust.decision.md` — 3 дизайна + threat-model) **refuted (a) как false-closure при same-uid ISO-2** и рекомендует **(c) назвать механизм (Constitution-clamp `policy:seam-authority`) + defer + гейт P-5** (+ опц. paper-freeze гибрид). **Рек волны: (c); нужен кивок владельца (a vs c).**
+> — **D8 · Sheets/F-D** (реальный ingest) — независим от trust-линии, объём = только адаптер; в своём темпе (рек: частичный CSV дешевле live). `.../decisions/OWNER-FORKS-2026-08-12.decision.md` FORK-3.
+> — **D9 · канонический seed `protected_namespaces` в тест-фикстурах** — мелко, продакшн не затронут; заодно со следующей engine-волной. `.../decisions/F2-seed-fixtures.spec.md`.
+> **Порядок (§6): 1-2 синхр. бумагу с реальностью → 3(P-3)+4(корень) → 5(форма, после 4) → 6(P-2 параллельно) → 7(бесплатно) → 8-9 хвосты.** Пред. баттон ↓ (superseded).
+>
+> **◻️ (superseded 2026-08-12-c) БАТТОН (2026-08-12-b · M5-CENSUS+TOPOLOGY, оркестрация 3 синхр. волны ~9 агентов, file-first):**
+> ⚠️ **Trust-линия УЖЕ закоммичена** (`3474cd1 "Brain going forward"`, 04:36) — прежнее «НЕ коммичено» по всему пульту
+> УСТАРЕЛО; **FORK-1 (судьба Стадии-1) схлопнут** (она в git, тесты зелёные). Рабочее дерево чистое.
+> **Перепись ширины M5** (21 грань, 9🟥; ноль работающего источника личности — зелёное = лишь замороженная ФОРМА) +
+> **топология** (3 яруса доверия T-ingress→T-agent→T-engine; разрыв на хопе T-agent, шлюз с движком FF не связан) +
+> **Fable-синтез** свели в **decision-ready пакет:**
+> `_shared/topics/03-actor-model/m5-surface-identity/design/04-SYNTHESIS-m5-decision-ready.md` (§6 = 9 решений владельца).
+> Сырьё: `.../census/01-03` · `.../design/01-03` · форки `.../decisions/OWNER-FORKS-2026-08-12.decision.md`.
+> **🔑 Несущее:** критический путь M5 = НЕ выбор топологии, а (a) фикс **P-2 gateway-dup** [чужой репо `agents-manager`] +
+> (b) назвать **вне-полосный корень доверия `seamAuthority`** (кто его удостоверяет). Оба тополого-инвариантны.
+> Рекоменд. форма шва = **«брокер-семя»** (модуль на ярусе хоста, недостижим агенту, host-stamped IPC-envelope; свернуть→A / вырастить→B).
+> Дешёвый ход ДО топологии: зарезервировать `seamAuthority` аддитивно (P-3, нужен «строй»; retrofit-невозможен после 1-го акта).
+> **Вердикт: DEFER-build ПОДТВЕРЖДЁН** — resolver-код сейчас = театр (P-2 red + корень доверия не назван). Легальны бумажные ходы 1-5,7.
+> **⏭ Чекпойнт на владельце:** дальнейшие агент-волны = театр; нужны 9 решений (§6 синтеза). Пред. баттон ↓ (superseded).
+>
+> ➕ **Коррекция 2026-08-12 (аддитивно):** «(a) фикс P-2 gateway-dup = критический путь» ВЫШЕ — **устарело.** Дедуп
+> УЖЕ починен в шлюзе (`agents-manager` `orchestrator.ts:79-88`, commit `3e3327d`); P-2 **почти закрыт**, остался узкий
+> crash-window (fire-and-forget persist, `dedup-store.ts:41-56`). **Длинный полюс теперь = isolation uid-split, НЕ P-2.**
+> Бриф: `_shared/topics/03-actor-model/decisions/WORKORDER-gateway-dup-P2.decision.md`. Строки 32/36/108-109 ждут финальной правки пульта.
+>
+> ➕ **Верифиц. коррекция 2026-08-12 (аддитивно):** «P-2 почти закрыт / не длинный полюс» ВЫШЕ — **корректируется.** Адверсариал по ГОЛОСОВОМУ пути: дедуп срабатывает лишь ПОСЛЕ ≤5-мин транскрипции (`telegram-channel.ts:449-470`), polling-offset grammY в памяти (`bot.js:81,192,421`) → крэш в окне = недедуплен. дубль-ход = **живой voice-dup симптом владельца, корень найден → P-2 ПЕРЕ-ПОВЫШЕН.** Фикс ведёт с ingress-dedup-до-транскрипции. Детали: `WORKORDER-gateway-dup-P2.decision.md` §"Verified correction 2026-08-12".
+
+> **◻️ (superseded 2026-08-12-b) БАТТОН (2026-08-11, R2 — ВЫБОР ПО ЦЕННОСТИ): ФИКС TRUST-ПЛОСКОСТИ (S-C пререквизит).**
 > Личная команда лида (Fable-стратег + критик, потом builder-premise + architect-map, file-first) свела:
 > параллельная фаза T1-T4 была выбрана по ДОСТУПНОСТИ, не по ценности (критик). Ближе всего к цели
 > «доверяемая композиция» = агентный слой S-C, а его пререквизит = 3 бага, где **код СЕЙЧАС противоречит
@@ -40,7 +101,7 @@ Related:
 > `FABLE-strategist.advisory.md` · `CRITIC-redteam.analysis.md` · `PREMISE-CHECK-trust-bugs.analysis.md` ·
 > `AGENT-LAYER-map.analysis.md`. ⏳ doc-discipline: эти file-first анализы позже переселить в дом дерева (сейчас в raw-стейджинге).
 >
-> **🟥 РЕЗУЛЬТАТ Стадии-1 (2026-08-11, СОБРАНА+ВЕРИФИЦИРОВАНА, НЕ коммичено, СТОП на владельца):** builder закрыл F3/F1/F2
+> **🟥 РЕЗУЛЬТАТ Стадии-1 (2026-08-11, СОБРАНА+ВЕРИФИЦИРОВАНА, НЕ коммичено `⤳[устар. 2026-08-12: закоммичено 3474cd1]`, СТОП на владельца):** builder закрыл F3/F1/F2
 > (write-PEP в горячем пути `engine.ts:73-130`; `minted_by` force-bound + `canMintGrant`; namespace-ceiling + непустой seed);
 > тесты **180/180**, tsc чист, контракт/`ports/` НЕ тронут, balance-observer цел. Отчёт: `BUILD-trust-plane-stage1.impl.md`.
 > **НО независимый reviewer (opus) ЖИВЫМ ЭКСПЛОЙТОМ показал (PASS-WITH-CAVEATS, `REVIEW-trust-plane-stage1.review.md`):**
@@ -69,11 +130,11 @@ Related:
 > `Act.principal?: PrincipalAssurance` (пер-ось `whoActed`/`underWhoseAuthority` + `issuer` + слот `delegation`),
 > аддитивно, 0 миграций, подпись `write()` цела, **184/184 тестов**, tsc чист, `ports/` целы, Стадия-1 не тронута;
 > независимый reviewer **PASS-WITH-CAVEATS** (0 дефектов; тест compile-only by design — не читать как behavioral coverage);
-> ③ выбор A/B/C + enforcement = **open** (форк владельца, до M5/`ViewerResolver`). НЕ коммичено.
+> ③ выбор A/B/C + enforcement = **open** (форк владельца, до M5/`ViewerResolver`). НЕ коммичено `⤳[устар. 2026-08-12: форма ② закоммичена 3474cd1; ③/enforcement всё ещё open]`.
 > **✅ ХВОСТ ingest-`actor` РАЗРЕШЁН (analyst):** BOTH — атрибуция в эффекте, латентный авторитет по механизму
 > (`engine.ts:113/122` берут `finalized.actor` как viewer/minter); инертно лишь т.к. таргеты не привилегированы.
 > НЕ новое нарушение — тот же класс, что ③/`forge-actor`. + doc-smell: `ingest-rentacar`↔`rental-balance` дублируют ingest-пары (отдельная задача).
-> **⏭ Стадия-1 — держу uncommitted** (частичное ужесточение, форж переехал `minted_by`→`actor`); мердж/доработка = отдельный кивок.
+> **⏭ Стадия-1 — держу uncommitted** `⤳[устар. 2026-08-12: УЖЕ в git 3474cd1, FORK-1 схлопнут; рек — признать как частичное ужесточение]` (частичное ужесточение, форж переехал `minted_by`→`actor`); мердж/доработка = отдельный кивок.
 >
 > **🧭 DESIGN-ВОЛНА ПО DECISION ③ (2026-08-12, 4 агента: architect+analyst+critic+Fable-синтез, синхронно, file-first):**
 > `_shared/topics/03-actor-model/design/` — `01-seam-and-lifecycle.design.md` · `02-caller-reality.analysis.md` ·
@@ -94,12 +155,12 @@ Related:
 >   enforcement до линкованного фикса gateway-dup) · **ISO-1.5** (worker/SES-изоляция как альтернатива) · ISO-3 смягчён до provisional endstate.
 > — **Порты зашморожены (paper-freeze, PASS независимого reviewer)** — `packages/engine/src/ports/principal-resolver.ts` (+`PrincipalResolver extends
 >   ViewerResolver`, `AuthenticatedPrincipal`) · `principal-stamper.ts` (`PrincipalStampResult` refuse-или-stamp = G1 в ФОРМЕ, чинит кривой черновик stamper'а).
->   Zero-behavior, `write()` цел, **187/187 тестов**, tsc чист, Стадия-1 не тронута. НЕ коммичено.
+>   Zero-behavior, `write()` цел, **187/187 тестов**, tsc чист, Стадия-1 не тронута. НЕ коммичено `⤳[устар. 2026-08-12: порты+ADR закоммичены 3474cd1]`.
 > — **Ingest-smell разрешён** (`_shared/topics/03-actor-model/analyses/03-ingest-dedup-smell.analysis.md`): `ingest-rentacar`↔`rental-balance` = **комплементарны, не дубль**
 >   (rental-balance зависит от ingest-rentacar); держать оба. Отдельный продуктовый пробел: реальный Sheets-путь не построен (owner-decision «F-D»).
-> **⏭ Осталось владельцу/на потом:** судьба Стадии-1 (держу) · F2-seed хвост (сцеплен со Стадией-1) · doc-rehome raw 2026-08-11 → топик · M5 (surface-identity под выбранную границу) = следующая крупная работа по секвенсу ADR-0011→M5→③.
+> **⏭ Осталось владельцу/на потом:** судьба Стадии-1 (держу) `⤳[устар. 2026-08-12: в git 3474cd1; FORK-1 схлопнут]` · F2-seed хвост (сцеплен со Стадией-1) · doc-rehome raw 2026-08-11 → топик · M5 (surface-identity под выбранную границу) = следующая крупная работа по секвенсу ADR-0011→M5→③.
 > **🚀 ХОЛОДНЫЙ СТАРТ СЛЕДУЮЩЕЙ СЕССИИ:** `../../_log/2026-08-11-trust-plane-principal-seam/HANDOFF.md` (кнопка + план из 5 шагов + хвосты).
-> Стадия-1 (частичное ужесточение, 180/180) — uncommitted, мердж = отдельный кивок.
+> Стадия-1 (частичное ужесточение, 180/180) — uncommitted `⤳[устар. 2026-08-12: закоммичено 3474cd1]`, мердж = отдельный кивок.
 >
 > ↓ **ОТЛОЖЕНО (availability-lane, резерв):** ПАРАЛЛЕЛЬНАЯ ФАЗА (post-S3) — `../../_log/2026-08-11-S3-prove/LAUNCH-PARALLEL-PHASE.md`.
 > ✅ S1 ЗАКРЫТ (2 закона+I-4+R4 ратифицированы, `plans/01-S1-ratify-two-laws/DECISION-READY-PACKET.md`). ✅ S2 ЗАКРЫТ —

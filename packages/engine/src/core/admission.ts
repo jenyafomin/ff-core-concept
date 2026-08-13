@@ -45,6 +45,10 @@ const DEFAULT_PII_KEYS = [
 // Defense-in-depth heuristics (NOT the primary gate).
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 const PHONE_RE = /(?:\+?\d[\s-]?){9,15}/;
+// A well-formed opaque pointer: `scheme:opaque` (e.g. `blob:abc-123`, `sha256:deadbeef`). By construction
+// it cannot hold an email (`@` is excluded) and a purely numeric opaque part is a legitimate id — so this
+// FORM, not the mere fact of being a string, is what exempts a ref slot from the content scan.
+const REF_RE = /^[a-z][a-z0-9]*:[A-Za-z0-9._-]+$/;
 
 const ok = (): Admission => ({ ok: true });
 const refuse = (reason: string): Admission => ({ ok: false, reason });
@@ -80,6 +84,40 @@ function scan(value: unknown, schema: ActSchema | undefined, path: string, root 
     if (r) return r;
   }
   return null;
+}
+
+/**
+ * R-G3.5 (F2-closure, ARCH-F2-closure.design.md) — the no-inline-PII gate extended to an edge's
+ * `subjectRole`. Consent PII travels ONLY by reference: `consent.evidenceRef`/`evidenceHash` are the
+ * pointer rail (same discipline as `payloadRef`) and are EXEMPT from the scan when they are proper STRING
+ * pointers (a pointer is not content, and a long numeric ref must not false-trip the phone heuristic).
+ * Every OTHER field of `subjectRole` is scanned with the SAME `scan()` as `meta`. A NON-string value in a
+ * ref slot is an inline-content channel (abuse of the by-ref rail) → scanned and refused fail-closed (I-9),
+ * symmetric to the `meta` scan. There is no free-form slot in the shape, so this closes critic C1 (an
+ * `evidenceRef` carrying an inline `{name, phone}` object is REFUSED here).
+ */
+function scanSubjectRole(sr: unknown, root: string): string | null {
+  if (sr == null || typeof sr !== 'object') return null;
+  const rec = sr as Record<string, unknown>;
+  const consent = rec.consent;
+  let consentRest: Record<string, unknown> | undefined;
+  if (consent !== null && typeof consent === 'object' && !Array.isArray(consent)) {
+    const { evidenceRef, evidenceHash, ...rest } = consent as Record<string, unknown>;
+    consentRest = rest;
+    // By-ref witness rail: exempt ONLY a well-FORMED string pointer (`scheme:opaque`, REF_RE) — being a
+    // string is not enough (critic C1: a raw-PII string tunnels through the slot). A non-string is an
+    // inline-content channel; a string that is NOT a well-formed ref is treated as inline content and is
+    // scanned for a precise PII reason, else refused structurally. Fail-closed (I-9), symmetric to `meta`.
+    for (const slot of ['evidenceRef', 'evidenceHash'] as const) {
+      const val = slot === 'evidenceRef' ? evidenceRef : evidenceHash;
+      if (val === undefined) continue;
+      if (typeof val === 'string' && REF_RE.test(val)) continue; // well-formed pointer — not content
+      const r = scan(val, undefined, `consent.${slot}`, root);
+      return r ?? `inline PII channel: ${root}.consent.${slot} must be a well-formed string ref (scheme:opaque), not inline content`;
+    }
+  }
+  const scannable = consentRest !== undefined ? { ...rec, consent: consentRest } : { ...rec };
+  return scan(scannable, undefined, '', root);
 }
 
 // ── GAP 3 (c) — one-home barrier (S5) ────────────────────────────────────────────────────────────
@@ -140,10 +178,15 @@ export function admit(act: Act, schema?: ActSchema): Admission {
   // Edge meta is a payload too. A tenant may put confidence/provenance on identity/link edges, where a
   // phone/name can slip in — the same no-inline-PII rule applies, fail-closed, per-edge.
   for (let i = 0; i < (act.edges ?? []).length; i++) {
-    const meta = act.edges[i]?.meta;
-    if (meta === undefined) continue;
-    const reason = scan(meta, undefined, '', `edges[${i}].meta`);
-    if (reason) return refuse(reason);
+    const edge = act.edges[i];
+    const meta = edge?.meta;
+    if (meta !== undefined) {
+      const reason = scan(meta, undefined, '', `edges[${i}].meta`);
+      if (reason) return refuse(reason);
+    }
+    // R-G3.5 (F2-closure): an edge's `subjectRole` is a payload too — consent PII must be by-ref only.
+    const srReason = scanSubjectRole(edge?.subjectRole, `edges[${i}].subjectRole`);
+    if (srReason) return refuse(srReason);
   }
   return ok();
 }

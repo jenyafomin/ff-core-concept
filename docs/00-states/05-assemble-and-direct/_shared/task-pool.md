@@ -454,3 +454,25 @@ UNIT-SPEC. Растворяет F1-форк «платить сейчас/за �
 | T-policy-node-provenance | Форж policy-узла: акт с `source_ref='policy:constitution'` перезаписывает реальный узел last-write-wins; admission/projection не проверяют namespace/source_ref. Fix = write-PEP + namespace-gate на source_ref (distinct от T-write-pep-unwired: тот про capability-fields, этот про identity-namespace) | инженерный/security | kernel I-7/I-8 | 🔴 | todo (spawned итер.9, якоря: `packages/engine/src/core/loader.ts:8-11` + `store-durable-fs.ts:191-192` last-write-wins `[...base, ...projection]` · `admission.ts` не чекает namespace · `projection.ts` принимает любой source_ref) |
 | T-customer-lens-ungated | B4 · второй негейтованный deref-путь — `customer-lens.ts` = 0 вызовов `policy.resolve` во всём файле (read обходит PEP). cheap policy, но реальная дыра | инженерный/security | D2 / kernel I-7 | 🟠 | todo (spawned итер.9, якорь: `packages/ingest-rentacar/src/...customer-lens.ts` 0 `policy.resolve` — перепроверить точный путь grep-ом при взятии) |
 | T-durablerunner-raw-read | B7 · `DurableRunner.read()`/`acts()` минуют `resolve()` полностью, без viewer-параметра (spine-роль негейтована) | инженерный/security | D1.b / kernel I-7 | 🟠 | todo (spawned итер.9, якорь: `packages/engine/src/...durable-runner.ts:64-76` read/acts без resolve — перепроверить путь grep-ом) |
+
+---
+
+## Doc-sweep needs-home (2026-08-12, DESCRIBE-only)
+
+> **Источник/детали (не дублируем контент, law-3):**
+> `topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/DOC-SWEEP-relocation-plan.md`
+> — аудит дерева, 9 грязных пунктов, ранжир P1>P2>P3. Ниже — 6 `needs-home`-строк, засеянных планом (§«Seed в
+> `_shared/task-pool.md`»). Каждая = **обратимый git mv**, к исполнению ТОЛЬКО по явному «строй» владельца.
+> Контент-дом и законы каждой строки — в самом плане; здесь только живой индекс. Якорь всех = `needs-home`.
+
+| id | имя | план | приор | статус |
+|----|-----|------|-------|--------|
+| DS-council-raw-rehome | `needs-home` · 10 файлов `council/raw/2026-08-11-next-step-strategy/` → LOSE-NOTHING-мердж в `TOPIC/{design,analyses}`; поглощённые → `status: superseded`, `.impl/.review` → `_log/` (P1-A) | doc-sweep | 🟠 | todo |
+| DS-inbox-dissolution | `needs-home` · 108 tracked файлов в superseded `docs/_inbox/` → ОТДЕЛЬНЫЙ прогон партиями (риск линков), старт с `2026-08-04-assemble-and-direct` (прямой дубль живого состояния — самый ядовитый) (P1-B) | doc-sweep | 🟠 | todo |
+| DS-topic-index | `needs-home` · создать корневой навигатор `TOPIC/INDEX.md` (overview, статусы под-веток; закон 8) (P2-A) | doc-sweep | 🔧 | todo |
+| DS-m5-census-dup-merge | `needs-home` · свести дубли caller-reality/values-threat в `m5-surface-identity/census/` (более глубокий дом), ранние версии → `status: superseded` (не удалять; закон 10) (P2-B) | doc-sweep | 🔧 | todo |
+| DS-fd-sheets-ingest | `needs-home` · `F2-seed-fixtures.spec.md` (`.spec` в decisions/) → дом спек + пере-дом `TOPIC/ingest/` для F-D (P3-A/P2-C) | doc-sweep | 🔧 | todo |
+| DS-unregistered-suffixes | `registry-gap` · суффиксы critic/synthesis/spec/impl/advisory/review/census не в `.doc-types.json` → решение владельца через agent-builder R1 (регистрация ИЛИ маппинг) (P3-C) | doc-sweep | 🔧 | todo |
+
+> **НИЧЕГО не двигать без «строй».** Перед любым mv: `git status --porcelain <target>` ОТДЕЛЬНОЙ командой
+> (git-working-tree-safety). Порядок исполнения и обратимость — в execute-later чеклисте плана.

@@ -33,28 +33,40 @@ import type { Cardinality, Edge, PredicateRegistry, Problem } from './types.js';
 export const DEFAULT_PREDICATES: PredicateRegistry = {};
 
 /**
- * GAP 3 (b) — KERNEL-LOCKED structural-identity predicates, cardinality pinned to `'many'`, un-overridable
- * by ANY registry (default or caller-supplied). This is NOT tenant vocabulary (does not break G1): identity
- * resolution is a ROOT concern the engine holds for any content, so these predicates are named in the kernel.
+ * GAP 3 (b) + F2-closure (C3) — KERNEL-LOCKED predicates whose cardinality is pinned in the kernel,
+ * un-overridable by ANY registry (default or caller-supplied). This is NOT tenant vocabulary (does not
+ * break G1): each locked predicate is a ROOT concern the engine holds for any content, so it is named in
+ * the kernel. Generalized from a `'many'`-only set to a DIRECTED map (predicate → pinned cardinality) so a
+ * predicate can be locked to `'one'` (replace) as well as `'many'` (accumulate).
  *
- * `same-as` is the identity-merge predicate: `'many'` means "these candidate identities coexist". A registry
- * silently declaring it `'one'` would make `foldEdges` REPLACE-semantics every prior merge — un-merging
- * identity history on the next `rebuild-from-journal` (mine A-C2, the concrete instance of the general
- * append-only-forward hazard). The lock makes `'many'` an asserted CEILING, not an accident of the
- * unregistered-fallback default — and closes the (a·same-as) replay-collapse by construction.
+ *   - `same-as` → `'many'`: the identity-merge predicate. `'many'` means "these candidate identities
+ *     coexist". A registry declaring it `'one'` would make `foldEdges` REPLACE every prior merge —
+ *     un-merging identity history on the next `rebuild-from-journal` (mine A-C2). The lock makes `'many'`
+ *     an asserted CEILING, closing the (a·same-as) replay-collapse by construction.
+ *   - `owner` → `'one'` (F2-closure C3): a subject has EXACTLY ONE owner. Re-assigning `owner` REPLACES
+ *     the prior owner-edge (transfer of ownership), it does not accumulate. Without the lock a registry
+ *     silently defaulting `'many'` would turn a hand-over into a silent two-owner state (critic C3).
+ *   - `referent` → `'many'` (F2-closure C3): referents accumulate; locked AGAINST a registry narrowing it
+ *     to `'one'`, which would silently drop earlier referents on replay (the same A-C2 hazard).
  *
- * The lock is a CEILING applied at the cardinality lookup (like I-8's clamp-after-fold), never a stack
- * layer: it wins over caller data rather than being one merged input among many.
+ * The lock is a CEILING/FLOOR applied at the cardinality lookup (like I-8's clamp-after-fold), never a
+ * stack layer: it wins over caller data rather than being one merged input among many. Kernel-lock is a
+ * draft policy until owner-ratified as an ADR/invariants entry (F2-closure Non-goals).
  */
-export const LOCKED_MANY_PREDICATES: ReadonlySet<string> = new Set(['same-as']);
+export const LOCKED_PREDICATES: Readonly<Record<string, Cardinality>> = {
+  'same-as': 'many', // existing identity lock — semantics unchanged
+  owner: 'one', // single owner — reassignment REPLACES, never accumulates (C3)
+  referent: 'many', // referents accumulate; locked against narrow→'one' (C3)
+};
 
 /**
- * Cardinality of a predicate; unregistered ⇒ `many` (non-destructive default). A kernel-locked identity
- * predicate (`LOCKED_MANY_PREDICATES`) ALWAYS folds `many`, ignoring whatever the registry declares — the
- * lock is an identity ceiling, not policy-as-data.
+ * Cardinality of a predicate; unregistered ⇒ `many` (non-destructive default). A kernel-locked predicate
+ * (`LOCKED_PREDICATES`) ALWAYS folds at its pinned cardinality, ignoring whatever the registry declares —
+ * the lock is a kernel ceiling/floor, not policy-as-data. Consulted at the choke-point BEFORE the registry.
  */
 export function cardinalityOf(predicate: string, registry: PredicateRegistry = DEFAULT_PREDICATES): Cardinality {
-  if (LOCKED_MANY_PREDICATES.has(predicate)) return 'many'; // lock wins over any registry (identity ceiling)
+  const locked = LOCKED_PREDICATES[predicate];
+  if (locked !== undefined) return locked; // lock wins over any registry (kernel ceiling/floor)
   return registry[predicate] ?? 'many';
 }
 

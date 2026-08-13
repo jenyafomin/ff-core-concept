@@ -193,3 +193,26 @@ describe('F3 · T-write-pep-unwired — the write PEP is on the hot path; a self
     expect(store.acts()).toHaveLength(1);
   });
 });
+
+// ── T3 · forge-boundary-identity (M5 seam) — SPEC STUB, not yet enforceable ─────────────────────
+// Spec home: docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/
+//   T5-nongoal-and-forge-gate.decision.md §2A. This extends the ADR-0010 forge-gate
+//   (forge-actor / forge-grant / forge-policy — the F1/F2/F3 exploit suites above) UP one hop, to the
+//   M5 boundary. Those gates catch a mismatch INSIDE the act (G1 refuse-on-mismatch of `actor`); this
+//   one catches forgery of the resolver's INPUT — the boundary identity itself — where there is NO
+//   mismatch to detect and G1 stays silent (threat T5 / config-cascade self-edit vector, census
+//   03-threat-and-values.critic.md, Form γ.2).
+//
+// Assertion to implement once the M5 resolver/stamper are wired (post P-2 gateway-dup fix + a named
+// out-of-band root of trust — FORK-decision4-root-of-trust.decision.md): when the resolver's input
+// (`boundaryIdentity`) is attacker-influenced — e.g. derived from a path the resolved unit itself can
+// write (`.gateway/conversations/*/PROMPT.md` | `config.json` `cwd`, the T5 vector) —
+// `resolvePrincipal` MUST either REFUSE, or leave the resulting `trust` at `unverified`. It must NEVER
+// emit a silent `channel`/`verified` on an input the resolved unit could have touched.
+// Left as `it.todo` on purpose: the seam is paper-frozen (zero call-sites, no resolver exists yet to
+// exercise), so the suite stays green and this stays a spec anchor, not a behavioral test.
+describe('T3 · forge-boundary-identity — resolver-input forgery must refuse or stay unverified (M5, spec stub)', () => {
+  it.todo(
+    'attacker-influenced boundaryIdentity (T5 config-cascade self-edit vector) → resolvePrincipal REFUSES or trust stays `unverified` (never a silent `channel`)',
+  );
+});
