@@ -5,9 +5,9 @@ theme: Как мы собираем всю базу и доводим до «м�
 status: active
 owner: jenya.stasik@gmail.com
 opened: 2026-08-04
-updated: 2026-08-13
+updated: 2026-08-14
 agents: [orchestrator-fable]
-handoff: ../../_log/2026-08-13-metric-and-minimal-slice/HANDOFF.md
+handoff: ../../_log/2026-08-14-autonomous-staged-continuation/HANDOFF.md
 council_brief: ./council-brief.md
 inputs:
   - ../../_inbox/2026-08-04-assemble-and-direct/design/00-fact-base.synthesis.md
@@ -21,7 +21,74 @@ Related:
 
 # 📍 STATE-05 — Собрать и направить
 
-> **🟢 ТЕКУЩИЙ БАТТОН (2026-08-13 · МЕТРИКА + МИНИМАЛЬНЫЙ СРЕЗ → РАМКА ЗАКОММИЧЕНА, F2 ratify-ready, следующий ход = BUILD; 3 синхр. волны ~12 агентов, adversarial, file-first):**
+> **⚙️ СТОЯЧИЙ МЕТОД СЕССИИ (всегда, каждый прогон):** «рекурсивная оркестрация с помощником» —
+> якорь-правило `../../../.claude/rules/recursive-orchestration-method.md` (6 законов, всегда в контексте),
+> механика `../../01-organization/rules-and-skills/recursive-orchestration/METHOD.md`. Каждую сессию:
+> высота первым ходом → лид+ПОМОЩНИК(co-orchestrator + мандат-шаблон)+волны 3-6 синхронно → адверсариал ДО
+> «готово» → сжатый хендофф. Помощник задаёт вопросы к продукту по 7 ценностям. Заведён 2026-08-15 (agent-builder).
+> TODO (не в этой сессии): пульт требует отдельного slimming-прохода — 12 superseded-кнопок подряд, 415 строк.
+
+> **🟢 ТЕКУЩИЙ БАТТОН (2026-08-14 · АВТОНОМНАЯ НОЧЬ ИСПОЛНЕНА — S1-S4, синхронные волны ~11 агентов, 2 вектора проверки, file-first, 0 коммитов):**
+> Прогон по мандату `../../_log/2026-08-14-autonomous-staged-continuation/HANDOFF.md` (лид гнал цикл сам,
+> самоодобрял обратимое, стопорил на необратимом). **Утренний пакет решений: `../../_log/2026-08-14-autonomous-staged-continuation/S4-land-packet/OWNER-MORNING-PACKET.md` (читать первым).**
+> — **S1 ✅ ДВА ADR `proposed` (dual-verified):** `../../architecture/ADR/ADR-0012-egress-port-registry.md`
+>   (закрытый список egress-портов, fail-closed, intent-акт ДО — рамка как decision record) +
+>   `../../architecture/ADR/ADR-0013-bash-egress-accepted-risk.md` (Bash/curl = реальный порт к 3-му лицу,
+>   app-regex принципиально не закрывает → OS-уровень/accepted-risk с подписью владельца). Reviewer PASS,
+>   critic «not circling» (двигает ворото). Оба ждут ратификации владельца (гейты C-1…C-5 в ADR-0012).
+> — **S2 ✅ МЕТРИКА DEC-A: спека + КОД (ворото сдвинуто):** `faithfulness-at-forks` = 3 связанных числа
+>   (SC тихие-пересечения / F верность-по-порту / E экспозиция-анти-трап). Спека:
+>   `../../_log/2026-08-14-autonomous-staged-continuation/S2-metric/METRIC-DEC-A.spec.md`. Код заскаффолжен
+>   аддитивно: `packages/engine/src/metrics/faithfulness-at-forks.ts` + `test/faithfulness-at-forks.test.ts` —
+>   **engine 133 → 142 passed, tsc чист, reviewer PASS, НЕ коммичено.** Honest scaffold (живого источника нет; W-1 `silentlyIgnored` аддитивно).
+> — **🔑 НЕСУЩАЯ НАХОДКА (4 агента независимо):** премиса «живого egress к 3-му лицу нет» ОПРОВЕРГНУТА —
+>   у FF-сессии живые MCP-коннекторы **Gmail/Calendar/Drive** достают реальных третьих лиц (Calendar
+>   `create_event`→внешние участники и т.п.), вне любого реестра/гейта. Закрытый список портов — НЕ гипотеза.
+>   Занесено: ADR-0012 §OQ-6 (реестр обязан перечислить коннектор-поверхность) + метрика OF-4 (day-one RED).
+> — **S3 ✅ План переезда F2** (describe-only, doc-tree: без «строй» не двигаем):
+>   `../../_log/2026-08-14-autonomous-staged-continuation/S3-rehome/MIGRATION-PLAN.md` — 4 файла в
+>   `_shared/topics/03-actor-model/`, 7 входящих ссылок замаплено, откат 5 мин. Исполнение = кивок «строй».
+> **⏭ OWNER-PENDING (OF-0…OF-10 в утреннем пакете):** OF-0 подтвердить ASSUMED-PORTS-v1 (+порт коннекторов?) ·
+> OF-1/2 ратифицировать ADR-0012/0013 · OF-3…6 решения по метрике (стоп=успех? неклассиф=fail? W-1 silentlyIgnored) ·
+> OF-7 «строй» на переезд S3 · OF-8 коммит doc-sync · OF-9 land-пакет P-2+egress-Часть-A (рука владельца, чужой репо) ·
+> OF-10 ратифицировать I-16. Ночь НЕ коммичена, НЕ трогала `agents-manager`. Пред. баттон ↓ (superseded).
+>
+> **◻️ (superseded 2026-08-14) БАТТОН (2026-08-13-b · F2 ЗАКОММИЧЕНО + M0 ПЕРЕОСМЫСЛЕН, doc-sync ход, file-first):**
+> Продолжение баттона 2026-08-13 (↓, superseded) — код реально построен и слит, премиса M0 честно
+> опровергнута стройкой; этот ход синхронизирует доки/пульт с этим фактом (не строит новый код).
+> Хендофф-указатель: `../../_log/2026-08-13-metric-and-minimal-slice/HANDOFF-BUILD-F2-done-M0-reframed.md`
+> · осевая карта: `../../_log/2026-08-13-metric-and-minimal-slice/wave3-route/NEXT-movement-map.analysis.md`.
+> — **✅ F2 ЗАКОММИЧЕНО** (`0590843` "feat: F2 and M0", `refactor-tree`) — форма C1 (согласие by-ref,
+>   `ConsentAssurance` без `unknown`-слота, `admit()` сканирует `subjectRole` — R-G3.5) + C3 (`owner`/`referent`
+>   kernel-lock, `LOCKED_PREDICATES` в `predicates.ts`) — рабочий код, НЕ просто ratify-ready форма (коррекция
+>   к прошлому баттону, который писал «ждёт строй»). `packages/engine` suite: **133 passed | 2 todo** (свежий
+>   прогон этого хода; включает новый tripwire `consent-not-enforced.test.ts` — документирует, что enforcement
+>   согласия по-прежнему НЕ подключено, только форма). Спека: `../../_log/2026-08-13-metric-and-minimal-slice/wave3-route/ARCH-F2-closure.design.md`.
+> — **⏳ KERNEL-LOCK owner/referent — PROPOSED, НЕ ратифицирован** — `../../02-project/core/00-kernel/invariants.md` §I-16
+>   (новая Группа 8). Прежняя пометка «owner дал кивок» ОТОЗВАНА (2026-08-14): реального трейса одобрения нет
+>   (циклическая само-ратификация «код есть → одобрено»). Текст = почти copy-paste `ARCH-F2-closure.design.md` §3
+>   (INV-C3.1-3), proven-by `f2-closure.test.ts` C3. **owner-pending хвост ОСТАЁТСЯ открыт** — нужен явный «да».
+> — **🛑 M0 ОСТАНОВЛЕН, ПРЕМИСА ОПРОВЕРГНУТА** (не отменена — уточнена стройкой, см.
+>   `wave3-route/M0-reframe-decision.analysis.md` + форма `wave3-route/M0-guard-form.design.md`): worktree
+>   `agents-manager-egress-m0` / ветка `feat/egress-port-policy` нашла 3 факта по коду — (1) `intent`-поле
+>   недостижимо (нет в zod-схемах `send_message`/`send_to_topic` → вечный DENY, живой egress ломается);
+>   (2) `EgressPortPolicy` в `guard` бьёт ДО `SdkToolGate`, тихо гасит намеренную логику (F-E auto-allow,
+>   `send_to_topic`); (3) **`send_message` структурно НЕ достигает третьего лица** (шлёт только в текущий
+>   разговор) — сегодня живого MCP-порта к третьему лицу/деньгам/shred НЕТ; Bash-сеть (`classifyBash`,
+>   `adfaec6`) уже под отдельным гейтом, MCP-имена его не проходят. Рекомендация: **D** — ADR/спека
+>   «egress-guard как требование» СЕЙЧАС, код клапана — когда появится реальный тул к третьему лицу. Ветка
+>   `feat/egress-port-policy` остаётся reference, НЕ смёрджена в `agents-manager`.
+> — **P-2 (gateway-dup) = OPEN, фикс В ПРОЦЕССЕ (не смёрджен).** Ветка `fix/p2-voice-dedup-ingress` в
+>   `agents-manager`, worktree `/tmp/agents-manager-p2-fix` (база `4c9fab8`) — ingress-dedup ДО транскрипции,
+>   изменения **uncommitted** (5 правлено + 4 новых файла). Канон-расхождение с `gateway-dup/INDEX.md`
+>   («в основном закрыт») сведено — см. его `## Update 2026-08-13`. **Land = действие владельца** (merge +
+>   `pm2 restart`), FF read-only на `agents-manager`.
+> **⏭ OWNER-PENDING (осталось после этого хода):** (1) путь M0 — принять рек. **D** (ADR-спека сейчас) или
+> альтернативу B/B+C/отбросить (`M0-reframe-decision.analysis.md`); (2) land P-2 (владелец, вне агентов);
+> (3) судьба Стадии-1 (держу, историческое); (4) закрытие сессии/переезд `_log/` артефактов в дом дерева.
+> Пред. баттон ↓ (superseded).
+>
+> **◻️ (superseded 2026-08-13-b) БАТТОН (2026-08-13 · МЕТРИКА + МИНИМАЛЬНЫЙ СРЕЗ → РАМКА ЗАКОММИЧЕНА, F2 ratify-ready, следующий ход = BUILD; 3 синхр. волны ~12 агентов, adversarial, file-first):**
 > Оркестрация по 2 вопросам владельца (метрика прогресса · минимальный срез памяти под агента, путь B). Дом: `../../_log/2026-08-13-metric-and-minimal-slice/` (`NAVIGATOR.md` = карта). **Cold-start под стройку: `../../_log/2026-08-13-metric-and-minimal-slice/HANDOFF.md`.**
 > — **🧭 РАМКА ЗАКОММИЧЕНА (Fable, рефрейм-без-рефрейма):** необратимость входит только через ПЕРЕЧИСЛИМЫЕ порты; черта = ЗАКРЫТЫЙ СПИСОК портов, каждый fail-closed, intent-акт ДО срабатывания. **Черта живёт на egress (граница агент→мир), НЕ в памяти** (граф обратим by-construction, ADR-0008). Фальсификатор: необратимый эффект вне egress+shred → рамка ложна.
 > — **СЕКВЕНС СДВИНУТ:** M5/uid-split уходят с критпути ПОКА принципал один (триггер возврата = «второй принципал → M5 обратно»); enforcement ③ переезжает с движка на egress-guard.

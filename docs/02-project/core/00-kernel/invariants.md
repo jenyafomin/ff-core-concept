@@ -9,6 +9,7 @@ related:
   - ../../../_inbox/1-gpt-review/1-overview-rag-vs-system.md
   - ../../../00-states/00-global-build/realization-plan/phase-1-engine/README.md
   - ../../../_log/2026-07-25-phase-1-design/SYNTHESIS-phase-1-engine.md
+  - ../../../_log/2026-08-13-metric-and-minimal-slice/wave3-route/ARCH-F2-closure.design.md
 ---
 
 # Инварианты ядра (Kernel Invariants)
@@ -234,6 +235,38 @@ policy evaluation, и после расширения по связям прав
 
 ---
 
+## Группа 8 — Structural Predicates / Ownership (структурные предикаты и владение)
+
+### I-16 · Kernel-locked structural predicates: `owner`=one, `referent`=many
+**Proposed — status: review (owner-кивок ЗАПРОШЕН, ответа ещё нет — 2026-08-14).** ⚠️ Прежняя метка
+«Approved задним числом» ОТОЗВАНА: форма и enforcement уже в коде, но kernel-lock `owner`/`referent`
+как ROOT-инвариант — НОВОЕ kernel-policy решение (не наследует одобрение `same-as`), требует явного «да»
+владельца с трейсом ДО статуса Approved (см. ARCH-F2-closure.design.md §3 "Границы / owner-pending" п.1). Системные предикаты `owner` (единственный
+владелец единицы) и `referent` (множественные референты единицы) кардинально ЗАПЕРТЫ в ядре
+(`LOCKED_PREDICATES`, `core/predicates.ts`) — ни один тенантский реестр (default или caller-supplied) не
+может их переопределить. `owner` всегда `'one'` (переназначение владельца REPLACE-фолдит прежнее ребро —
+передача, не накопление); `referent` всегда `'many'` (референты накапливаются; реестр не может сузить до
+`'one'`).
+- *why:* `owner`/`referent` — не доменная лексика (не нарушают G1 «ядро не знает доменных существительных»),
+  а системные роли, несущие суверенность/множественность единицы (Ц-5 суверенность / Ц-7 согласие) — сам
+  субстрат доверяемой композиции. Если бы кардинальность была tenant-injected, забытая регистрация
+  `{owner:'one'}` в ОДНОМ из вызовов `foldInto`/`MemoryStore` тихо превратила бы передачу владения в
+  накопление (два «владельца» вместо замены) — необнаружимо (`admit()`/`foldEdges` не флагуют gap
+  реестра). Тот же класс мины, что уже закрыт для `same-as` (GAP 3(b)), воспроизведённый для роли с более
+  высокой ставкой.
+- *enforced at:* `core/predicates.ts::cardinalityOf` — `LOCKED_PREDICATES['owner']='one'` /
+  `LOCKED_PREDICATES['referent']='many'`, консультируется ПЕРЕД любым реестром (тот же choke-point,
+  обобщённый из прежнего `same-as`-only лока); `foldEdges` REPLACE-фолдит `owner`, ACCUMULATE-фолдит
+  `referent`, независимо от того, что декларирует вызывающий реестр. `assertForwardMonotone` отдельно
+  ловит попытку сузить смежные (незапертые) предикаты many→one.
+- *violated when:* тенантский реестр объявляет `owner:'many'` (co-ownership тихо становится
+  представимым состоянием) или `referent:'one'` (replay истории референтов дропает историю на
+  `rebuild-from-journal`); либо кто-то удаляет `owner`/`referent` из `LOCKED_PREDICATES` без owner-кивка
+  (имена зарезервированы как системная вокабуляра — INV-C3.3, ARCH-F2-closure.design.md §3.3).
+- `proven-by:` `packages/engine/test/f2-closure.test.ts` (описание C3 exploit-тесты) — hostile-реестр
+  (`{owner:'many', referent:'one'}`) не может переопределить lock; два owner-reassignment акта фолдятся
+  в РОВНО одно ребро (freshest wins); два referent-акта сосуществуют даже под `{referent:'one'}`.
+
 ## Быстрая карта: инвариант → тест ядра
 | Инвариант | Тест GPT (`proven-by`) |
 |---|---|
@@ -251,6 +284,7 @@ policy evaluation, и после расширения по связям прав
 | I-12 Plugin removal ≠ delete | plugin-upgrade |
 | I-13 Old data readable | add-type, plugin-upgrade |
 | I-14 Embeddings rebuildable | rebuild-index, semantic-as-plugin |
+| I-16 Kernel-locked owner/referent | f2-closure.test.ts (C3 exploit) |
 
 ## Что осталось нерешённым (кандидаты в open-questions)
 - **«Что считается удалением»** (tombstone-act vs скрытие проекцией vs физическое стирание) — I-12/I-4 это

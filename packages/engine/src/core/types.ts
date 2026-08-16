@@ -69,6 +69,17 @@ export interface SubjectRoleAssurance {
  * to inline raw consent PII, the shape is a STRUCTURAL gate (critic C1 — a `consent?: unknown` slot would
  * silently reopen the inline-PII hole G3 closed). The only PII-bearing surface is the reference+hash pair.
  * All fields optional ⇒ additive; absence of `status` means "consent NOT attested", never `granted`.
+ *
+ * ⚠️ SCHEMA-ONLY, NOT ENFORCED (critic Attack 2, 2026-08-13). This is a WRITE-TIME shape, not a runtime
+ * gate. `status` is a value you can SET on an edge; nothing today READS it to make an access/authorization
+ * decision. Concretely: `admit()` (core/admission.ts) only checks for inline PII (R-G3.1/R-G3.5) — it does
+ * NOT branch on `consent.status`. `resolve()` (core/resolve.ts) and `Engine.write()` (engine.ts) do not
+ * consult `consent` at all. An edge carrying `{ status: 'revoked' }` does NOT block reads, writes, or any
+ * act that targets/traverses it — the engine will happily act along a "revoked" edge today. Do NOT read
+ * the presence of this field as "consent is enforced"; it only means "consent CAN be recorded". Runtime
+ * enforcement (refusing an act unless `consent.status === 'granted'`) is deferred за швом — see F2-closure
+ * §1.4 ("за швом") — and is tracked by the tripwire test `packages/engine/test/consent-not-enforced.test.ts`,
+ * which is written to FAIL once such enforcement lands (a reminder to update this comment then).
  */
 export interface ConsentAssurance {
   /** Non-PII scalar: attested state of consent. Absence = not attested (never read as granted, G3). */

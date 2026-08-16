@@ -46,9 +46,31 @@ Related:
   `true` → тот же месседж = второй ход. Downstream-бэкстопа нет. Наблюдалось: **7 рестартов за 35ч**
   под pm2 (crash-adjacent `ECONNRESET`/`Connection closed mid-response`), прямой репро дубля не
   зафиксирован — открытый пункт репро-плана.
-- **Итог:** P-2 **в основном закрыт**; это **больше НЕ «длинный полюс»** критического пути (им стал
-  isolation uid-split). Остаётся закрыть fire-and-forget-окно (await persist ИЛИ duplicate-insert
+- **Итог (⤳ устар. 2026-08-13, см. Update ниже):** ~~P-2 в основном закрыт; это больше НЕ «длинный
+  полюс» критического пути~~. Остаётся закрыть fire-and-forget-окно (await persist ИЛИ duplicate-insert
   guard в `message.repo`) или доказать отсутствие рецидива.
 - **Полный бриф (не дублировать здесь — это указатель):**
   `docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/WORKORDER-gateway-dup-P2.decision.md`
   (симптом · file:line-улики A/B/C · fix-подход · репро/верификация · linkage к trust-line/decision-③).
+
+## Update 2026-08-13 — verified correction: P-2 RE-ESCALATED (OPEN), fix in progress (not landed)
+
+> **Коррекция к «Update 2026-08-12» выше (аддитивно, LOSE-NOTHING — текст выше не удалён, был честным
+> снимком на свой момент).** Адверсариал по ГОЛОСОВОМУ пути показал: остаточное crash-window §"Остаточный
+> узкий баг" выше — НЕ гипотетическое, а корень **живого симптома дубля**, который владелец наблюдает
+> (дедуп срабатывает лишь ПОСЛЕ ≤5-мин транскрипции, `telegram-channel.ts:449-470`; polling-offset grammY
+> в памяти, `bot.js:81,192,421`). **P-2 статус = OPEN**, снова длинный/named полюс на пути M0/M5 (не
+> "почти закрыт"). Разбор: `WORKORDER-gateway-dup-P2.decision.md` §"Verified correction 2026-08-12";
+> детальный how-to фикса: `docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/tracks/05-gateway-dup/01-how-to-implement.design.md`.
+
+- **Фикс ведётся, НЕ смёрджен.** Ветка `fix/p2-voice-dedup-ingress` в `agents-manager`, worktree
+  `/tmp/agents-manager-p2-fix` (база `4c9fab8`) — ingress-dedup ДО транскрипции (pre-transcription latch на
+  `update_id`, awaited, до `ackSeen`/`handleVoice`). Изменения **UNCOMMITTED** в рабочем дереве (5 файлов
+  правлено: `telegram-channel.ts`, `orchestrator.ts`, `build-app.ts`, `inbound-message.interface.ts`,
+  `data-source.ts` + 4 новых: `dedup-key.util.ts`, `ingress-dedup.interface.ts`,
+  `telegram-channel.voice-dedup.spec.ts`, `message-dedup-index.spec.ts`).
+- **Land = действие владельца** (не FF-агента — FF read-only на `agents-manager`): смёрджить ветку +
+  `pm2 restart` + подтверждающий репро-прогон (§4 how-to-implement.design.md). До land — P-2 остаётся OPEN.
+- **Канонический пульт FF, отражающий этот же статус:** `docs/00-states/05-assemble-and-direct/state.md`
+  (текущая кнопка баттона, строки "P-2 voice-dup — фикс на ветке `fix/p2-voice-dedup-ingress`… ждёт
+  land+restart владельцем").

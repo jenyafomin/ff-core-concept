@@ -23,3 +23,6 @@ Scope: project
   (карточки + `*.concept.json`), особенно если не через Telegram. Кандидат в глобальные. (расширено 2026-07-12)
 - [investigation-economics/RULE.md](investigation-economics/RULE.md) — экономика веера агентов.
 - [session-logging/SKILL.md](session-logging/SKILL.md) — логирование сессии как папки-темы.
+- [recursive-orchestration/METHOD.md](recursive-orchestration/METHOD.md) — **СТОЯЧИЙ метод сессии**
+  «рекурсивная оркестрация с помощником» (лид+ПОМОЩНИК+волны, адверсариал до «готово», вопросы по 7
+  ценностям). Якорь всегда-в-контексте: `.claude/rules/recursive-orchestration-method.md`. (2026-08-15)

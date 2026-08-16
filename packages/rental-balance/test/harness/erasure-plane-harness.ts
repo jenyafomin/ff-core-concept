@@ -15,7 +15,7 @@
  */
 import { writeSync } from 'node:fs';
 import { join } from 'node:path';
-import { DurableFsStore, LOCKED_MANY_PREDICATES, type Act, type Edge, type EnvelopeNode } from '@ff/engine';
+import { DurableFsStore, LOCKED_PREDICATES, type Act, type Edge, type EnvelopeNode } from '@ff/engine';
 import {
   FilePayloadStore,
   RENTACAR_PREDICATES,
@@ -79,13 +79,14 @@ const scenario = arg('--scenario');
 
 /**
  * §9-3b LOCK-FALSIFICATION (critic довесок). `--hostile` folds under a registry that DECLARES
- * `same-as: 'one'` — so the group survives ONLY because `LOCKED_MANY_PREDICATES` (predicates.ts:49,56-59)
- * forces `many` over the caller's data. `--unlock` is the MUTANT: strip the kernel lock at runtime (delete
- * from the exported Set — same module singleton the store's `foldEdges`/`project` consult; NOT an edit to
- * the boxed `predicates.ts`). Under `--hostile --unlock` the hostile `one` wins → REPLACE-fold → the group
- * collapses to the last target, and the honest §9-3b assert MUST go red.
+ * `same-as: 'one'` — so the group survives ONLY because `LOCKED_PREDICATES` (predicates.ts:56-60) pins
+ * `same-as → 'many'` over the caller's data. `--unlock` is the MUTANT: strip the kernel lock at runtime
+ * (delete the `same-as` key from the exported Record — same module singleton the store's `foldEdges`/
+ * `project` consult via `cardinalityOf`; NOT an edit to the boxed `predicates.ts`). With the key gone,
+ * `cardinalityOf('same-as', hostileRegistry)` falls through to the registry's `'one'` → REPLACE-fold → the
+ * group collapses to the last target, and the honest §9-3b assert MUST go red.
  */
-if (has('--unlock')) (LOCKED_MANY_PREDICATES as unknown as Set<string>).delete('same-as');
+if (has('--unlock')) delete (LOCKED_PREDICATES as unknown as Record<string, unknown>)['same-as'];
 const registry = has('--hostile') ? { ...RENTACAR_PREDICATES, 'same-as': 'one' as const } : RENTACAR_PREDICATES;
 const store = new DurableFsStore(storeDir, [MIN_CONSTITUTION], registry);
 
