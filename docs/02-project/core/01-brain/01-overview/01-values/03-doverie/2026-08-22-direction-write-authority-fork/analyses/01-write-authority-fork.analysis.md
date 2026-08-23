@@ -7,9 +7,9 @@ scope: project
 related:
   - ../README.md
   - ../questions/Q-D4-1-forcebind-vs-attest.question.md
-  - ../../../../architecture/ADR/ADR-0010-principal-authority-vs-attribution.md
-  - ../../../../architecture/ADR/ADR-0011-agent-isolation-model.md
-  - ../../../../00-states/05-assemble-and-direct/_shared/topics/03-actor-model/m5-surface-identity/
+  - ../../../../../../../../architecture/ADR/ADR-0010-principal-authority-vs-attribution.md
+  - ../../../../../../../../architecture/ADR/ADR-0011-agent-isolation-model.md
+  - ../../../../../../../../00-states/05-assemble-and-direct/_shared/topics/03-actor-model/m5-surface-identity/
 ---
 
 # D4 · Авторитет записи (FORK-U3) — картина сейчас и развилки

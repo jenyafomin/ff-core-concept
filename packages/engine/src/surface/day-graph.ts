@@ -41,6 +41,12 @@ export interface DayGraphNode {
   cold: boolean;
   /** F-B: whether the reserved (empty) salience slot is present on the node body. Never a value — always empty today. */
   salienceReserved: boolean;
+  /**
+   * Cheap structural salience: count of INCIDENT edges (out + in) within the day-graph. This is a graph-degree
+   * counter, NOT the weight/decay engine — `salienceReserved` stays empty. Deliberately kept separate so a
+   * high-degree node (e.g. the condition-thread's 4 `affects`) "lights up" without inventing a weight model.
+   */
+  degree: number;
   out: DayGraphEdge[];
 }
 
@@ -82,6 +88,7 @@ function toGraphNode(n: EnvelopeNode, labelOf: (id: string) => string): DayGraph
     summary: asString(body.summary),
     cold: COLD_STATUSES.has(status),
     salienceReserved: 'salience' in body, // F-B: slot present (empty), never surfaces a value
+    degree: 0, // filled by dayGraphView once inbound edges are counted across the day-graph
     out: (n.edges ?? []).map((e) => ({
       predicate: e.predicate,
       target: e.target,
@@ -107,10 +114,60 @@ export function dayGraphView(nodes: readonly EnvelopeNode[]): DayGraphView {
 
   const graphNodes = dayNodes.map((n) => toGraphNode(n, labelOf));
   const people = personNodes.map((n) => toGraphNode(n, labelOf));
+
+  // Cheap salience-by-degree (structural, no weight engine): each node's degree = its outgoing edges plus the
+  // edges that point AT it. Inbound is counted over the day-graph's own edges (day + person nodes).
+  const inbound = new Map<string, number>();
+  for (const n of [...graphNodes, ...people]) {
+    for (const e of n.out) inbound.set(e.target, (inbound.get(e.target) ?? 0) + 1);
+  }
+  for (const n of [...graphNodes, ...people]) n.degree = n.out.length + (inbound.get(n.id) ?? 0);
+
   const edgeCount = graphNodes.reduce((s, n) => s + n.out.length, 0);
   const date = dayNodes.map((n) => dateOf(n.id)).find(Boolean) ?? '';
 
   return { date, nodes: graphNodes, people, edgeCount };
+}
+
+/**
+ * Rank all nodes (day-threads + people) by cheap structural salience — incident-edge degree, high → low.
+ * Ties break on `id` for a stable order. This surfaces the day's most-connected node (the condition-thread)
+ * at the top WITHOUT a weight/decay engine: it is pure graph structure, not `body.salience` (still empty).
+ */
+export function rankByDegree(view: DayGraphView): DayGraphNode[] {
+  return [...view.nodes, ...view.people].sort((a, b) => b.degree - a.degree || a.id.localeCompare(b.id));
+}
+
+/** Sub-selection of the day-graph by node status and/or edge predicate. Omit a field to leave it unfiltered. */
+export interface DayGraphFilter {
+  /** Keep only nodes whose `status` is one of these (e.g. 'active' | ['active','draft']). */
+  status?: string | readonly string[];
+  /** Keep only edges whose `predicate` is one of these (e.g. 'involves' | ['affects','organizes']). */
+  predicate?: string | readonly string[];
+}
+
+function asSet(v: string | readonly string[] | undefined): Set<string> | null {
+  if (v === undefined) return null;
+  return new Set(Array.isArray(v) ? v : [v as string]);
+}
+
+/**
+ * Filter the day-graph to a sub-selection by "status × predicate": keep nodes/people matching `status`, and
+ * within the kept nodes narrow each node's `out` to matching `predicate`. Nodes are kept even if the predicate
+ * filter empties their edges (e.g. "active threads and their involves"). `degree` is left as computed over the
+ * FULL day-graph (salience is a whole-graph property); only `edgeCount` is recomputed for the filtered view.
+ */
+export function filterDayGraph(view: DayGraphView, filter: DayGraphFilter): DayGraphView {
+  const statuses = asSet(filter.status);
+  const predicates = asSet(filter.predicate);
+  const byStatus = (n: DayGraphNode) => (statuses ? statuses.has(n.status) : true);
+  const narrowEdges = (n: DayGraphNode): DayGraphNode =>
+    predicates ? { ...n, out: n.out.filter((e) => predicates.has(e.predicate)) } : n;
+
+  const nodes = view.nodes.filter(byStatus).map(narrowEdges);
+  const people = view.people.filter(byStatus).map(narrowEdges);
+  const edgeCount = nodes.reduce((s, n) => s + n.out.length, 0);
+  return { date: view.date, nodes, people, edgeCount };
 }
 
 /** Render the day-graph as a plain string: points + typed edges + people. */

@@ -8,11 +8,11 @@ title: D3 · Векторы развития salience/decay — картина, 
 Related:
   - ../README.md
   - ../questions/Q-D3-1-vectors.question.md
-  - ../../../../02-project/core/01-brain/01-overview/01-values/04-vitalnost/README.md          # канон Ц4
-  - ../../../../02-project/core/01-brain/01-overview/01-values/04-vitalnost/01-salience-weight/README.md
-  - ../../../../02-project/core/01-brain/01-overview/01-values/04-vitalnost/03-forgetting-lifecycle/README.md
-  - ../../../../02-project/core/01-brain/01-overview/01-values/04-vitalnost/06-metabolism-governance/README.md
-  - ../../../../_log/2026-08-21-first-real-grain-day-mirror/HANDOFF.md
+  - ../../README.md                          # канон Ц4 (родитель-дом)
+  - ../../01-salience-weight/README.md
+  - ../../03-forgetting-lifecycle/README.md
+  - ../../06-metabolism-governance/README.md
+  - ../../../../../../../../_log/2026-08-21-first-real-grain-day-mirror/HANDOFF.md
 ---
 
 # D3 · Векторы развития salience/decay — анализ

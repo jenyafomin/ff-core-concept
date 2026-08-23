@@ -10,7 +10,7 @@ tags: [direction, D2, microsystems, needs-home, open-question]
 Related:
   - ../README.md
   - ../questions/Q-D2-1-how-to-build.question.md
-  - ../../../02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/README.md
+  - ../../../../02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/README.md
   - ../../01-memory-as-universal-substrate/README.md
 engine_anchors:
   - packages/engine/src/core/types.ts:122   # EnvelopeNode

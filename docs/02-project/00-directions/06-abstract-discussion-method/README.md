@@ -8,7 +8,7 @@ tags: [direction, needs-home, global, method]
 title: D6 — Метод «абстрактного обсуждения» (линза над волнами)
 Related:
   - ../../../_log/2026-08-22-owner-answers-and-directions/01-voice-capture.md   # N-001…N-004
-  - ../../../.claude/rules/recursive-orchestration-method.md                    # родственный метод
+  - ../../../../.claude/rules/recursive-orchestration-method.md                 # родственный метод (репо-корень)
 ---
 
 # D6 · Метод «абстрактного обсуждения» (линза над результатами волн)

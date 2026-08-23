@@ -1,58 +1,32 @@
 ---
-Status: draft
+Status: superseded
 Owner: jenya.stasik@gmail.com
 Date: 2026-08-22
 Scope: project
 node_type: overview
-tags: [needs-home, directions, portfolio, staging]
-title: Портфель направлений из ответов владельца (2026-08-22) — стейджинг под рост
+supersededBy: ../../02-project/00-directions/INDEX.md
+tags: [redirect, superseded, directions, staging-emptied]
+title: (ПЕРЕЕХАЛО) Портфель направлений 2026-08-22 → docs/02-project/00-directions/
 Related:
-  - ../../_log/2026-08-22-owner-answers-and-directions/01-voice-capture.md   # сырьё голоса (trace)
-  - ../../02-project/core/01-brain/INDEX.md                                   # канон brain
-  - ../../.doc-types.json                                                     # типы→дома
+  - ../../02-project/00-directions/INDEX.md   # НОВЫЙ ПОСТОЯННЫЙ ДОМ (истина)
 ---
 
-# Портфель направлений — ответы владельца 2026-08-22 (STAGING · needs-home)
+# ➡️ ПЕРЕЕХАЛО — редирект-заглушка (не удалять, чтобы ссылки не побились)
 
-> **Что это:** узел-стейджинг под рост. Здесь captured 6 направлений, выведенных из голосового владельца
-> (сырьё-вербатим → `_log/2026-08-22-owner-answers-and-directions/01-voice-capture.md`). Каждое
-> направление = ПАПКА с маркером + под-контейнерами (`ideas/ questions/ analyses/`), готовыми к наполнению.
->
-> **⚠️ needs-home.** Это НЕ постоянный дом. Часть направлений (D3/D4/D5) уже имеет канонический дом в
-> дереве ценностей — сюда вынесен только owner-answer + мандат «копать», а вливать надо ТУДА (LOSE-NOTHING,
-> закон одного дома). Постоянные дома предложены в таблице; переезд — по явному «строй» владельца.
+> Эта погрузочная (`_inbox`) БОЛЬШЕ НЕ дом направлений. По «строй» владельца (2026-08-22) 6 направлений
+> переехали в **постоянный дом дерева** — `git mv` с сохранением истории (LOSE-NOTHING).
 
-## Конвенции наполнения (метаинструкции владельца N-001…N-004)
-- **Микрозадачно, командами** — не упуская нюансов (N-001).
-- **FILE-FIRST, узел = ПАПКА под рост** с маркером «что это (глобально/локально) · зависимости · идея/вопрос/начало» (N-002).
-- **~10 шагов вперёд, но экономно** — волнами, потом абстрактный уровень, обсуждение (N-003). Скелет 10 шагов → trace INDEX.
-- **D6 «абстрактное обсуждение»** — стоячая линза над результатами волн, выбирает куда двигаться (N-004).
+## Куда всё уехало
+**Постоянный дом (портфель):** [`docs/02-project/00-directions/INDEX.md`](../../02-project/00-directions/INDEX.md)
 
-## 6 направлений (карта → дом)
+| Было (здесь) | Стало (постоянный дом) |
+|---|---|
+| `01-memory-as-universal-substrate/` | `02-project/00-directions/01-memory-as-universal-substrate/` |
+| `02-microsystems-node-groups/` | `02-project/00-directions/02-microsystems-node-groups/` |
+| `03-vitality-salience-decay/` | ➡️ канон Ц4: `02-project/core/01-brain/01-overview/01-values/04-vitalnost/2026-08-22-direction-salience-decay-vectors/` (в `00-directions/03-…` — указатель) |
+| `04-write-authority/` | ➡️ канон Ц3: `02-project/core/01-brain/01-overview/01-values/03-doverie/2026-08-22-direction-write-authority-fork/` (в `00-directions/04-…` — указатель) |
+| `05-spaces-roles-access/` | ➡️ канон Ц7: `02-project/core/01-brain/01-overview/01-values/07-soglasie/2026-08-22-direction-spaces-roles-access/` (в `00-directions/05-…` — указатель) |
+| `06-abstract-discussion-method/` | `02-project/00-directions/06-abstract-discussion-method/` |
 
-| # | Направление | Тип | Scope | Зависит от | Предлагаемый ПОСТОЯННЫЙ дом | Дом уже есть? |
-|---|-------------|-----|-------|-----------|----------------------------|---------------|
-| **D1** | Память-как-универсальный-субстрат + policy-as-data | начало (answer+insight) | global | — (фундамент) | `02-project/core/01-brain/` (спин policy-as-data, ур.2 Хребта) + `02-infrastructure/04-modules/M-G3-type-registry-policy/` | частично (спин + M-G3) |
-| **D2** | Микросистемы / переиспользуемые группы узлов | open-question | global | D1 | НОВЫЙ узел; якорь `01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/` (типы→группы) | нет (grep пусто) → needs-home |
-| **D3** | Витальность / salience-decay (векторы развития) | idea (explore) | global (Ц4) | — | **EXISTS** `01-brain/01-overview/01-values/04-vitalnost/` | ДА → консолидировать туда |
-| **D4** | Авторитет записи (FORK-U3) | decision-pending | global (Ц3/kernel) | D1 policy | **EXISTS** `01-brain/01-overview/01-values/03-doverie/` + kernel decisions; FORK-U3 в `decisions.INDEX.md` | ДА → вливать туда |
-| **D5** | Пространства / роли / доступы (скрестить, шире rentacar) | начало | global (Ц7 + кросс-проект) | D1 + D4 + Ц7 | кросс: `01-values/07-soglasie/` (согласие/видимость) + `03-projects/` (пространства) + `02-agents/.../04-space-team-role/` | частично, мульти → needs-home решение |
-| **D6** | Метод «абстрактного обсуждения» (линза над волнами) | method-idea | global (метод) | над всеми | `01-organization/` (расширить `recursive-orchestration-method` ИЛИ новый метод-узел) | частично → needs-home |
-
-## Зависимости (граф)
-```
-D1 (фундамент) ──> D2 (группы узлов внутри субстрата)
-   └─ policy ────> D4 (авторитет записи) ──┐
-   └─ policy ────> D5 (пространства/роли) <─┘ + Ц7 согласие
-D3 (витальность) — самостоятельно (Ц4)
-D6 (метод) — метá над всеми, читает выходы волн
-```
-
-## Что кладём в под-контейнеры (готовы к наполнению)
-- `ideas/` — единичные `.idea.md` кандидаты-концепты (созревают → кристаллизуются в решение/механизм).
-- `questions/` — открытые `.question.md` (уже засеяны реальные open-questions владельца, см. каждый direction).
-- `analyses/` — разборы `.analysis.md` от команд (вход/призмы/критерии/вердикт/форки).
-
-## Открытые вопросы уровня портфеля
-- Где ПОСТОЯННЫЙ дом «направлений» как класса? (в проекте его НЕТ — прошлые DIRECTIONS жили в ныне-архивном `topics/30-plan/`; live-практика = `_inbox/<date-slug>/`). Кандидат: узаконить `_inbox/` ЛИБО завести `docs/02-project/00-directions/`. → решение владельца.
-- D5 многодомна — нужен один ПЕРВИЧНЫЙ дом + `_shared/` или отдельный кросс-узел?
+Для 03/04/05 истина живёт в каноническом доме соответствующей ценности (закон 2 «один дом»); в портфеле
+`00-directions/` они представлены редирект-узлами.

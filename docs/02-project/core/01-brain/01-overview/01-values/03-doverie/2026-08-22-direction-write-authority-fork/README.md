@@ -7,10 +7,11 @@ node_type: overview
 tags: [direction, has-home, global, decision-pending]
 title: D4 — Авторитет записи (FORK-U3)
 Related:
-  - ../../../_log/2026-08-22-owner-answers-and-directions/01-voice-capture.md   # N-030
-  - ../../../_log/2026-08-21-first-real-grain-day-mirror/HANDOFF.md             # §7 FORK-U3 не решён
-  - ../../../02-project/core/01-brain/01-overview/01-values/03-doverie/         # Ц3 дом-кандидат
-  - ../../../02-project/core/01-brain/decisions.INDEX.md                        # FORK-U3 упомянут
+  - ../../../../../../../_log/2026-08-22-owner-answers-and-directions/01-voice-capture.md   # N-030 (сырьё голоса, trace)
+  - ../../../../../../../_log/2026-08-21-first-real-grain-day-mirror/HANDOFF.md             # §7 FORK-U3 не решён
+  - ../                                                                                     # КАНОНИЧЕСКИЙ ДОМ Ц3 Доверие (родитель)
+  - ../../../../decisions.INDEX.md                                                          # FORK-U3 упомянут
+  - ../../../../../../00-directions/04-write-authority/README.md                            # редирект-узел портфеля направлений
 ---
 
 # D4 · Авторитет записи (FORK-U3)
@@ -21,9 +22,11 @@ Related:
 - **Тип:** решение-в-ожидании / развилка.
 - **Зависимости:** зависит от **D1** (policy). Блокирует корректный write-провод к чему-либо, кроме
   данных владельца (handoff 08-21 §7).
-- **Статус:** draft · needs-home.
-- **Предлагаемый постоянный дом:** `01-brain/01-overview/01-values/03-doverie/` (провенанс/доверие) ИЛИ
-  kernel decisions; FORK-U3 уже фигурирует в `decisions.INDEX.md`. Вливать туда.
+- **Статус:** draft.
+- **✅ ПЕРЕЕХАЛ В КАНОН-ДОМ (2026-08-22, «строй»):** со-размещён В доме ценности Ц3 Доверие `03-doverie/`
+  (родитель `../`) датированным входным узлом (LOSE-NOTHING, закон 10). Портфель `00-directions/04-write-authority/`
+  держит только УКАЗАТЕЛЬ сюда. FORK-U3 фигурирует в `../../../../decisions.INDEX.md`. Следующий шаг (по
+  «строй») — синтез в разбор Ц3 / kernel-decision (агент+критик), не механически.
 
 ## Ответ владельца (вербатим-по-смыслу, N-030)
 - Очень правильное направление, рассматривать внимательно.
