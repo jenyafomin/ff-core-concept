@@ -1,0 +1,25 @@
+{
+  "type": "decision-tree",
+  "id": "what-memory-is-branching-menu-2026-09-06",
+  "title": "🧠 Память-первична: меню развилок (дверь A/B + ветвление/версии/доступ/паттерны)",
+  "summary": "Визард-меню поверх узла 03-what-memory-is. F1 = сама односторонняя дверь A/B (память-субстрат vs новый верхний слой). F2-F6 = downstream-развилки видения владельца (2026-09-06), КАЖДАЯ ведёт в СВОЙ существующий дом (fan-out, не дублировать контент). Разворачивать по одной; не строить инструмент до выбора A/B.",
+  "relatesTo": "docs/02-project/core/01-brain/01-overview/03-what-memory-is/owner-vision-branching-2026-09-06.idea.md",
+  "pool": "what-memory-is",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/02-project/core/01-brain/01-overview/03-what-memory-is/owner-vision-branching-2026-09-06.idea.md",
+    "docs/02-project/core/01-brain/01-overview/03-what-memory-is/what-memory-is-2026-09-01.analysis.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/01-overview/03-what-memory-is/what-memory-is-2026-09-01.analysis.md", "role": "start", "pool": "F1·дверь A/B", "note": "🚪 F1 — сама односторонняя дверь: (A) признание существующего субстрата (память=лог+граф, файл=размещение) vs (B) новый верхний слой «GitHub-над-всем». Пункты владельца 1-2-8. Решение → Q-obs-vector в OWNER-QUEUE. ВСЁ ниже предполагает B." },
+    { "path": "docs/02-project/core/01-brain/01-overview/01-values/02-tozhdestvo/03-vetvleniye-i-varianty/README.md", "role": "key", "pool": "F2·ветки/версии/merge", "note": "🌿 F2 — ветвление/версии/сравнение-слияние (пункты 3,5,7). Дом уже есть: variant-of, активная ветка, судьба ветки=merge. Развилка «инструмент глубже git» = questions-карточка ЗДЕСЬ, не новый узел." },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/README.md", "role": "key", "pool": "F3·паттерны данных", "note": "🧩 F3 — ветвимое знание vs одно-версионная запись (клиент=одна версия навсегда, пункт 6). Дом: M-G3 type-registry — VariantGroup/policy-as-data; тип объявляет свой паттерн идентичности (V2), не хардкод сбоку." },
+    { "path": "docs/02-project/core/01-brain/01-overview/01-values/07-soglasie/02-visibility/README.md", "role": "key", "pool": "F4·чат=зона доступа", "note": "🔐 F4 — чат/топик как самоопределяемая зона доступа (пункт 4). Дом: Ц7 visibility «свой мир»/tenant/capability. ⚠️ НАПРЯЖЕНИЕ V7: кто «они», решающие доступ? Потолок 07.C — visibility референта неоверрайдабельна владельцем чата. Не проглатывать." },
+    { "path": "docs/02-project/core/01-brain/01-overview/01-values/05-suverennost/README.md", "role": "key", "pool": "F5·git-привязка/переносимость", "note": "🧳 F5 — привязка/дублирование git, «не делать работу git» (пункт 3). Дом: Ц5 суверенность — foreign-data-wrapper, materialization: live/cache/copy. ⚠️ git-дубликат обязан быть cache/copy, иначе git = второй источник истины (ломает «один дом»)." },
+    { "path": "docs/02-project/core/01-brain/01-overview/01-values/06-relyacionnost/README.md", "role": "key", "pool": "F6·слой связей", "note": "🕸️ F6 — «отдельный слой связей: что актуально/где» (пункт 2). Дом: Ц6 реляционность — edge-as-citizen со своим confidence/stale; актуальность цепляется к salience/decay (Ц4), не параллельным полем." },
+    { "path": "docs/00-states/05-assemble-and-direct/_shared/OWNER-QUEUE.md", "role": "doc", "pool": "форки", "note": "📮 Q-obs-vector (дверь A/B) — дом решения владельца. Ответ владельца по A/B открывает/закрывает F2-F6." }
+  ],
+  "children": [],
+  "childrenNote": "Меню заведено 2026-09-06 по видению владельца (goloс). Дисциплина: контент под-вопросов НЕ дублируется здесь — живёт в целевых домах (fan-out). Фаза = «не строим»: пункт 7 (инструмент merge) держим как развилку, не спеку, до выбора A/B."
+}

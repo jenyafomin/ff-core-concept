@@ -1,0 +1,25 @@
+{
+  "type": "decision-tree",
+  "id": "path-forward-2026-09-06",
+  "title": "🧭 ПУТЬ ВПЕРЁД — единый срез решения (вектор наблюдателя + память-первична + форки)",
+  "summary": "ОДИН чистый навигатор поверх прозаичного пульта state.md (415 строк). Показывает: ГДЕ МЫ (вектор перепроверен, оба гейта построены — держит на полу, ломается на потолке) и КУДА ДАЛЬШЕ. 🔑 Несущая развилка = дверь A/B (Q-obs-vector): она ГЕЙТИТ всё downstream меню памяти-первична. Рекомендуемый порядок: (1) ответить A/B → (2) если B, разворачивать меню F1-F6 по одной грани → (3) параллельно решить read_expr-примитив (ADR). Это НЕ замена пульту/OWNER-QUEUE — чистый view пути свежей ветки.",
+  "relatesTo": "docs/00-states/05-assemble-and-direct/state.md",
+  "pool": "path-forward",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/00-states/05-assemble-and-direct/_shared/OWNER-QUEUE.md",
+    "docs/02-project/core/01-brain/04-observer-mvp/adversarial-checkpoint-2026-09-04.analysis.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/04-observer-mvp/adversarial-checkpoint-2026-09-04.analysis.md", "role": "start", "pool": "①ГДЕ МЫ", "note": "📍 Вектор «единица носит свой закон» перепроверен 4 линзами + оба гейта ПОСТРОЕНЫ (reviewer PASS). Честный итог: F3 зелёный ⇒ держит на ПОЛУ (простой readable_by переносим чужому читателю); F2 зелёный ⇒ НЕ держит на ПОТОЛКЕ (движок игнорит composite-закон). Это твёрдая точка опоры, не самообман." },
+    { "path": "docs/00-states/05-assemble-and-direct/_shared/OWNER-QUEUE.md", "role": "key", "pool": "②РАЗВИЛКА (твой ход)", "note": "🔑 3 форка ждут тебя. ГЛАВНЫЙ = Q-obs-vector (дверь A/B: A=признать существующий субстрат / B=новый верхний слой «GitHub-над-всем»). Выбор B открывает всё меню памяти-первична. + Q-obs-F2 (делать ли read_expr реальным примитивом движка → кандидат в ADR). + Q-obs-F3 (сеять ли реальный readable_by в боевой .data)." },
+    { "path": "docs/02-project/core/01-brain/01-overview/03-what-memory-is/what-memory-is.concept.json", "role": "key", "pool": "③ЕСЛИ B → меню", "note": "🌿 Меню развилок памяти-первична: F1 дверь A/B · F2 ветки/версии/merge · F3 паттерны данных (клиент=одна версия vs ветвимое) · F4 чат=зона доступа · F5 git-привязка · F6 слой связей. Каждая ведёт в СВОЙ существующий дом (fan-out). Разворачивать ПО ОДНОЙ, не всё сразу." },
+    { "path": "docs/02-project/core/01-brain/01-overview/03-what-memory-is/owner-vision-branching-2026-09-06.idea.md", "role": "doc", "pool": "③вход", "note": "🎙️ Твоё сырое видение (8 пунктов вербатим): память-первична как слой знаний, ветки/версии/доступ по чатам-топикам-проектам, инструмент merge глубже git, разные паттерны данных." },
+    { "path": "docs/02-project/core/01-brain/04-observer-mvp/observer-mvp.plan.md", "role": "doc", "pool": "①деталь", "note": "🛠️ План наблюдателя: U4/U5 честно переименованы (regression + сериализуемость, НЕ доказательство вектора). Гейты-с-зубами F2/F3 — в чекпойнте §3." },
+    { "path": "docs/00-states/05-assemble-and-direct/state.md", "role": "doc", "pool": "контекст", "note": "🗂️ Живой пульт (проза, вся история движения: trust-plane/M5/egress/ADR-0010-0014). Этот навигатор — чистый срез СВЕЖЕЙ ветки поверх него, не дубль. Большой секвенс живёт там." },
+    { "path": "docs/_log/2026-09-06-build-gates-and-memory-first-concept/HANDOFF.md", "role": "doc", "pool": "хендофф", "note": "📎 Хендофф последней сессии: что построено + напряжения по ценностям (V7 «кто решает доступ», V5 git=cache/copy, V2 клиент через M-G3)." }
+  ],
+  "children": [],
+  "childrenNote": "Заведён 2026-09-06 по просьбе владельца: ОДИН concept.json, чтобы целостно разобрать картину и выбрать путь. Рекомендуемый следующий ход = ответить на дверь A/B (Q-obs-vector) — она разблокирует или закроет весь downstream. Дисциплина: pointers-only, контент живёт в целевых домах (не свалка, не второй пульт)."
+}

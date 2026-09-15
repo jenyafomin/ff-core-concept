@@ -58,7 +58,8 @@ docs/
 │   ├── core/                🟢 ядро продукта
 │   │   ├── 01-brain/            🟢 БАЗА — единица памяти / субстрат-граф (активно проектируется)
 │   │   │                          вход: 01-brain/INDEX.md → brain.concept.json
-│   │   │                          01-overview/{01-values, 02-domains} · 02-infrastructure/{modules M-G*, stack}
+│   │   │                          01-overview/{01-values, 02-domains, 03-what-memory-is(draft)} · 02-infrastructure/{modules M-G*, stack}
+│   │   │                          03-unit(UNIT-SPEC-v1) · 04-observer-mvp/ 🟡 план-как-тесты первого арендатора (draft, observer-mvp.plan.md)
 │   │   │                          _archived/decomposition-pre-dissolve-2026-07-20/ (восстановленный оригинал единиц)
 │   │   ├── 02-agents/           🟡 слой агентов над памятью (частью в external TOOLS/agents-manager)
 │   │   │                          01-orchestration/{state, plan, task, loop}
