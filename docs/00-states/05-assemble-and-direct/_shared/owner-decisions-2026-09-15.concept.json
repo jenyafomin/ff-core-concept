@@ -1,0 +1,28 @@
+{
+  "type": "decision-tree",
+  "id": "owner-decisions-2026-09-15",
+  "title": "🌙 Ночь 2026-09-15 — что построено, где живёт, что решить владельцу",
+  "summary": "Навигатор-визард по автономной ночи 2026-09-15: (1) построено и ратифицировано (edge-identity, харденинг D1, фикс утечки PII); (2) новые дома-темы в дереве знаний (D3, truth, form-agnosticism, width-census, направление schema-constructors); (3) 6 старых форков очереди получили дома; (4) решения, ждущие владельца. Каждый path ведёт в СВОЙ дом (fan-out, контент не дублируется здесь). Первоисточник-сырьё (trace): docs/_log/2026-09-15-autonomous-spine-night/.",
+  "createdBy": "agent",
+  "viewModes": ["preset", "all-files"],
+  "keyFiles": [
+    "docs/_log/2026-09-15-autonomous-spine-night/HANDOFF.md",
+    "docs/_log/2026-09-15-autonomous-spine-night/OWNER-DECISIONS.md",
+    "docs/00-states/05-assemble-and-direct/_shared/OWNER-QUEUE.md"
+  ],
+  "paths": [
+    { "path": "docs/02-project/core/01-brain/decisions/edge-identity-owner-overview.overview.md", "role": "start", "pool": "✅ построено+ратифицировано", "note": "🟢 EDGE-IDENTITY (D4) — у связей памяти теперь своё «имя» (id/canonical_id). Единственное retrofit-невозможное; форма ратифицирована владельцем, поведение отложено (Reserved-Form). Прогнали architect→critic→builder→2×reviewer, тесты 222→238. Детали: docs/architecture/ADR/ADR-0015-edge-identity.md" },
+    { "path": "docs/02-project/core/01-brain/02-infrastructure/04-modules/agent-event-ingest/OVERVIEW.md", "role": "key", "pool": "🔴 ждёт решения (D3)", "note": "🔴 D3 — приём РЕАЛЬНЫХ событий агентов в граф блокирован PII (gateway.db содержит личное). 3 вопроса в questions/: какие поля не-PII · судьба summary · песочница/read-only. Ответ разблокирует «живую трубу». Односторонняя дверь." },
+    { "path": "docs/02-project/00-directions/08-schema-constructors/OVERVIEW.md", "role": "key", "pool": "🧪 новое направление (эксплорация)", "note": "🟡 SCHEMA-CONSTRUCTORS — «схема как живой настраиваемый конструктор; единица помогает сама себе; loop-агент улучшает схему». 4 идеи + 3 вопроса, помечено experimental/Reserved-Form. Следующий шаг = отдельная глубокая волна (value-decomposition + критик)." },
+    { "path": "docs/02-project/core/01-brain/06-truth-and-epistemic-status/OVERVIEW.md", "role": "key", "pool": "форк получил дом", "note": "🔴 Q-truth-fork — спорный/протухший claim: движок ОТКАЗЫВАЕТ (fail-closed) или ВЫДАЁТ С МЕТКОЙ? Под-вопрос: правда = 3-я нога субстрата или read-time-лицо (нужен ли ADR). Ц3. Односторонняя дверь. Был бездомным (жил в state-плане)." },
+    { "path": "docs/02-project/core/01-brain/07-form-agnosticism/OVERVIEW.md", "role": "key", "pool": "форк получил дом", "note": "🟢 Q-F6-grain-A — строить ли ВТОРОЙ полноценный домен-кейс («второй кит») для более сильного доказательства формы-агностичности, или serialization-доказательства хватает. Ц2. Обратимая." },
+    { "path": "docs/02-project/core/01-brain/08-width-census/OVERVIEW.md", "role": "key", "pool": "форк получил дом", "note": "🟡 Q-critical-faces-f3f4 — census сам себе противоречит (матрица метит F2/F3/F4 БЛОК, рекомендация «отложить»); осознанна ли промоция в критические 20% граней перед S4+. Ц3/Ц4." },
+    { "path": "docs/02-project/core/01-brain/01-overview/03-what-memory-is/crossbranch-consent-2026-09-07.question.md", "role": "key", "pool": "форк получил дом", "note": "🔴 Q-crossbranch-consent — при merge веток памяти чьё согласие (visibility/referent) главенствует: исходное или per-branch. Ц7. Односторонняя дверь. Дом-контейнер уже был (03-what-memory-is)." },
+    { "path": "docs/02-project/core/00-kernel/l1dom-placement.question.md", "role": "key", "pool": "форк получил дом", "note": "🔴 Q-L1dom — где физически живут Закон-1/2: A ядро invariants.md · B локально UNIT-SPEC · C гибрид · D отсрочка. Ц1/Ц2. Ждёт owner. Не тема, а размещение канон-файла." },
+    { "path": "docs/architecture/ADR/ADR-0015-edge-identity.md", "role": "doc", "pool": "решение", "note": "📜 ADR edge-identity. Форма = approved (владелец 2026-09-15), поведение = deferred. Стоит на ADR-0014 (proposed) — формы не касается. Развилка: ратифицировать ли и ADR-0014." },
+    { "path": ".claude/rules/theme-homes-not-logs.md", "role": "doc", "pool": "процесс-поправка", "note": "🧭 Новое правило (по просьбе владельца): каждая тема РАЗВИВАЕТСЯ в доме дерева, а не гниёт в _log/state-планах. + конвенция OVERVIEW «для владельца». Эталон дома: 03-what-memory-is/." },
+    { "path": "docs/00-states/05-assemble-and-direct/_shared/OWNER-QUEUE.md", "role": "doc", "pool": "очередь", "note": "📮 6 старых форков — теперь у каждого строка home: <путь>. Предложение: следующую живую сессию закрыть 1-2 старых, не открывать новый трек." }
+  ],
+  "children": [],
+  "childrenNote": "Заведено автономной ночью 2026-09-15. Fan-out: контент под-тем живёт в целевых домах, здесь только навигация. Trace-сырьё (append-only): docs/_log/2026-09-15-autonomous-spine-night/."
+}

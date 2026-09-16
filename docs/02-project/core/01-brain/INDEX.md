@@ -25,10 +25,13 @@ Related:
     01-values/         7 ценностей (карточки V* + декомпозиция 0N-* + _cross-cutting + _archived/gen1)
     02-domains/        домены-ДАННЫХ (01-knowledge-graph = эталон фасет-шаблона)
   03-unit/             единица КАК КОНТРАКТ — СПЕКА ЕДИНИЦЫ v1 (ядро+грани+один путь записи)
+  06-truth-and-epistemic-status/  форк: refuse vs serve-with-label (дом заведён 2026-09-15)
+  07-form-agnosticism/            форк: нужен ли «второй кит» (дом заведён 2026-09-15)
+  08-width-census/                форк: критичны ли грани F2/F3/F4 (дом заведён 2026-09-15)
   02-infrastructure/   «как строим»
     01-overview/       архитектура-index + db-понимание + stack + scenarios
     02-backend/        движок исполнения + доступ
-    04-modules/        M-G1..G5 · M-P3 · ideas/
+    04-modules/        M-G1..G5 · M-P3 · agent-event-ingest (D3, дом 2026-09-15) · ideas/
     _shared/           сквозное (reification…)
   questions/           FQ01-24 + VQ1-4
   analyses/            снапшоты Fable по дате (07-05, 07-12)

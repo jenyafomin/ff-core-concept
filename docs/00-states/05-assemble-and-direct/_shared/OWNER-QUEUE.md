@@ -96,6 +96,7 @@ run: autonomous-question-closure
   потребовать второй проецируемый кит (дороже, но сильнее доказательство).
 - **Рычаг:** НЕ provisional, НЕзависима от S3 — можно закрыть независимо от Q-L2op/S3-исхода.
 - **Нода:** `../plans/03-S3-prove-stake/questions/02-f6confirm/` (грань A).
+- **home:** `docs/02-project/core/01-brain/07-form-agnosticism/`
 - **status:** open
 
 ### Q-F6-grain-B · F6 форма ребра: reify-default vs opaque-edgeId-fallback · срочность: 🟠 (provisional до S3)
@@ -138,6 +139,7 @@ run: autonomous-question-closure
 - **Нода:** `../plans/01-S1-ratify-two-laws/questions/03-l1dom-home/` (бриф 4 опций A/B/C/D + рычаг —
   `l1dom-home.question.md` + `analyses/01-placement-options.analysis.md`); исходная развилка
   `../plans/01-S1-ratify-two-laws/work/two-laws.invariant-candidate.md` §0 :27-35.
+- **home:** `docs/02-project/core/00-kernel/l1dom-placement.question.md`
 - **status:** open (⚠️ переклассифицирован из автономной очереди на owner-fork, 2026-08-09 — кросс-чек PlanB;
   бриф-нода закрыта итер.3, 4 опции готовы, ждёт взгляда владельца)
 
@@ -167,6 +169,7 @@ run: autonomous-question-closure
   подтверждение/правку одним проходом, не сбор с нуля.
 - **Нода:** `../plans/04-S4plus-breadth/questions/01-critical-faces/synthesis/critical-faces.synthesis.md`
   (полный разбор — `../analyses/01-critical-faces.analysis.md`).
+- **home:** `docs/02-project/core/01-brain/08-width-census/`
 - **status:** open
 
 ### Q-truth-fork · Спорный/протухший claim: refuse vs serve-with-label (fail-open/closed) · срочность: 🟠
@@ -185,6 +188,7 @@ run: autonomous-question-closure
   сущность). Это решает ГДЕ живёт дом: свой ADR (если нога) vs раздел внутри assertion-механизма (если лицо).
   Не путать с самим Q-truth-fork (default admission) — это соседний, но отдельный вопрос дома.
 - **Нода:** `./topics/02-truth-keystone/` (итер.6, RESOLVED-по-6-осям, форк НЕ решён).
+- **home:** `docs/02-project/core/01-brain/06-truth-and-epistemic-status/`
 - **status:** open
 
 ### Q-G1-scope-gaps · Прежде чем подписать Q-Law1: 2 находки red-team о самом ТЕКСТЕ ратификации · срочность: 🔴
@@ -288,6 +292,7 @@ run: autonomous-question-closure
   (Блок 1, открытая дверь A/B); **меню развилок = `../03-what-memory-is/what-memory-is.concept.json`** (F1 дверь +
   F2-F6 downstream: ветки·паттерны·доступ·суверенность·связи); сырое видение = `owner-vision-branching-2026-09-06.idea.md`;
   кандидат в ADR.
+- **home:** `docs/02-project/core/01-brain/01-overview/03-what-memory-is/`
 - **status:** open — **РАСШИРЕН 2026-09-06** видением владельца (память-первична, ветвление/версии/доступ/паттерны).
   Развилки разложены в concept.json-меню с fan-out в существующие дома. ⚠️ Выбор B открывает F2-F6; не вшивать до ответа.
   **ПЕРЕОСМЫСЛЕН 2026-09-07 (обсуждение A⊕B, 3 линзы+помощник):** это НЕ выбор A/B — владелец хочет ОБЪЕДИНИТЬ, и
@@ -303,6 +308,7 @@ run: autonomous-question-closure
   утечки при merge) / гибрид (референт-потолок неоверрайдабелен, остальное per-branch). Не решать молча.
 - **Рычаг:** блокирует дизайн merge-семантики (F2 меню) и «чат=зона доступа» (F4); без ответа merge может утечь согласие.
 - **Нода:** `../../../02-project/core/01-brain/01-overview/03-what-memory-is/ab-unification-2026-09-07.analysis.md` (§Открытые форки) + карточки Ц7 `01-values/07-soglasie/`.
+- **home:** `docs/02-project/core/01-brain/01-overview/03-what-memory-is/crossbranch-consent-2026-09-07.question.md`
 - **status:** open
 
 ## Правило роста
