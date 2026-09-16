@@ -67,9 +67,8 @@ describe('day-mirror — write real day-nodes to durable memory, read them back 
       expect(mirror).toContain('⚑ Условие (эмоц-ресурс):'); // the condition-line, shown not gated
       // эмоц-ресурс is NOT in the ranked list (it is the standalone condition-line).
       expect(mirror).not.toMatch(/● Эмоциональный ресурс —/);
-
-      // eslint-disable-next-line no-console
-      console.log('\n' + mirror + '\n');
+      // NB: do NOT print `mirror` — it carries the owner's real day (referent names, эмоц-ресурс).
+      // V7/PII: keep real-graph content out of stdout/CI logs. Assertions above cover what mattered.
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

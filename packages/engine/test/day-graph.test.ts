@@ -107,9 +107,8 @@ describe('day-graph — the owner day-1 is a real graph (nodes + typed edges), s
       expect(rendered).toContain('→ affects: Движ'); // typed edge rendered by target label
       expect(rendered).toContain('⚑ Условие (Эмоциональный ресурс):');
       expect(rendered).toContain('Люди:');
-
-      // eslint-disable-next-line no-console
-      console.log('\n' + rendered + '\n');
+      // NB: do NOT print `rendered` — it carries the owner's real day (people, эмоц-ресурс).
+      // V7/PII: keep real-graph content out of stdout/CI logs. Assertions above cover what mattered.
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

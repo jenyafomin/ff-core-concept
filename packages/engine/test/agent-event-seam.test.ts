@@ -58,7 +58,7 @@ describe('agent-event-seam — runtime event → agent_trace node, read back, NO
       const engine = new Engine(writer, FIXED_POLICY);
       const dayAck = engine.write(dayNodeAct());
       expect(dayAck.ok).toBe(true);
-      const ingest = ingestAgentEvents(engine, events);
+      const ingest = ingestAgentEvents(engine, events, writer.acts());
       expect(ingest.written.length).toBe(4);
       expect(ingest.skipped).toBe(0);
       writer.close();
@@ -95,8 +95,8 @@ describe('agent-event-seam — runtime event → agent_trace node, read back, NO
       const rendered = renderProcessView(acts);
       expect(rendered).toContain('Процесс-вид — флот  (4 событий)');
       expect(rendered).toContain('🔴 [loop_hang] loop:ga-rentacar-main');
-      // eslint-disable-next-line no-console
-      console.log('\n' + rendered + '\n');
+      // NB: do NOT print `rendered` — keep real-graph content out of stdout/CI logs (V7/PII).
+      // Assertions above cover what mattered.
 
       // (c) NONE of the traces reach the day-graph projection. `isProjectable` filters them structurally:
       //     the projected node list contains the day-node and ZERO agent-event nodes.
@@ -128,6 +128,53 @@ describe('agent-event-seam — runtime event → agent_trace node, read back, NO
       expect(second.written.length).toBe(0);
       expect(second.skipped).toBe(4);
       expect(writer.acts().length).toBe(afterFirst); // append-only log did NOT grow
+      writer.close();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  // ── Boundary hardening (REVIEW-D1 findings 1 & 2) — the file-drop is the one untrusted boundary. ──
+
+  it('fail-closed FORM: a malformed-JSON drop line throws with its line number', () => {
+    expect(() => parseEventDrop('{"eventId":"e1"')).toThrow(/malformed JSON on drop line 1/);
+    // A well-formed line before a broken one reports the RIGHT line number.
+    const good = '{"eventId":"e1","unitId":"loop:x","scope":"agents-manager","kind":"decision","severity":"ok","summary":"s"}';
+    expect(() => parseEventDrop(`${good}\nnot json`)).toThrow(/malformed JSON on drop line 2/);
+  });
+
+  it('fail-closed FORM: a valid-JSON line missing a required field throws (no silent act:agent-event:undefined)', () => {
+    // Reproduces REVIEW-D1 finding 1: `{"eventId":"e2"}` is valid JSON but has no unitId/scope/kind/… —
+    // it must be REFUSED at the boundary, not minted into a ghost node with undefined payload fields.
+    expect(() => parseEventDrop('{"eventId":"e2"}')).toThrow(/required field 'unitId' must be a non-empty string/);
+    // An empty-string required field is refused too (not just absent).
+    const emptySummary = '{"eventId":"e3","unitId":"loop:x","scope":"agents-manager","kind":"decision","severity":"ok","summary":""}';
+    expect(() => parseEventDrop(emptySummary)).toThrow(/required field 'summary' must be a non-empty string/);
+    // A bare `null` / non-object line is refused (no crash, fail-closed).
+    expect(() => parseEventDrop('null')).toThrow(/required field 'eventId' must be a non-empty string/);
+  });
+
+  it('contract: duplicate eventId with a DIFFERENT body appends BOTH (append-only history, not current-state)', () => {
+    // REVIEW-D1 finding 2 — documents CURRENT behaviour as a contract, does NOT change it: agent_trace never
+    // collapses by source_ref; two events sharing an eventId but differing in body have different content
+    // hashes, so both append and both carry the identical act id (the journal is history, not latest-state).
+    const dir = mkdtempSync(join(tmpdir(), 'ff-agent-event-dup-'));
+    try {
+      const base = { eventId: 'dup1', unitId: 'loop:ga-rentacar-main', scope: 'agents-manager' };
+      const e1 = { ...base, kind: 'loop_hang', severity: 'critical', summary: 'stuck' };
+      const e2 = { ...base, kind: 'loop_hang', severity: 'ok', summary: 'recovered' };
+
+      const writer = new DurableFsStore(dir, CONSTITUTION_BASE as any);
+      const engine = new Engine(writer, FIXED_POLICY);
+      const res = ingestAgentEvents(engine, [e1, e2], writer.acts());
+
+      expect(res.written.length).toBe(2); // different content hash → both append
+      expect(res.skipped).toBe(0);
+      const dupIds = writer
+        .acts()
+        .filter((a: Act) => a.actKind === 'agent_trace')
+        .map((a: Act) => a.id);
+      expect(dupIds).toEqual([`act:${AGENT_EVENT_PREFIX}dup1`, `act:${AGENT_EVENT_PREFIX}dup1`]); // same id, both kept
       writer.close();
     } finally {
       rmSync(dir, { recursive: true, force: true });

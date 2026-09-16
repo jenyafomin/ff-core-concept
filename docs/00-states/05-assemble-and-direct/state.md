@@ -5,9 +5,9 @@ theme: Как мы собираем всю базу и доводим до «м�
 status: active
 owner: jenya.stasik@gmail.com
 opened: 2026-08-04
-updated: 2026-08-14
+updated: 2026-09-15
 agents: [orchestrator-fable]
-handoff: ../../_log/2026-08-14-autonomous-staged-continuation/HANDOFF.md
+handoff: ../../_log/2026-09-15-autonomous-spine-night/HANDOFF.md
 council_brief: ./council-brief.md
 inputs:
   - ../../_inbox/2026-08-04-assemble-and-direct/design/00-fact-base.synthesis.md

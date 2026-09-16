@@ -56,18 +56,38 @@ export interface AgentEvent {
   direction?: string;
 }
 
-/** Parse an append-only JSONL file-drop into events. Blank lines are skipped; a malformed line throws with its number. */
+/** The required non-empty string fields of an AgentEvent — the fail-closed form contract at the drop boundary. */
+const REQUIRED_STRING_FIELDS = ['eventId', 'unitId', 'scope', 'kind', 'severity', 'summary'] as const;
+
+/**
+ * Parse an append-only JSONL file-drop into events. Blank lines are skipped; a malformed line throws with its
+ * number. The file-drop is the ONE untrusted boundary of this seam (see docstring), so this is FAIL-CLOSED on
+ * FORM, not just syntax: a syntactically valid JSON line with a missing/empty required field would otherwise
+ * mint an `act:agent-event:undefined` ghost node — silent garbage in process-view with no error, no log. Such
+ * a line is refused here with the SAME throw pattern as malformed JSON (REQ: no silent undefined-id acts).
+ */
 export function parseEventDrop(text: string): AgentEvent[] {
   const events: AgentEvent[] = [];
   const lines = text.split('\n');
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!.trim();
     if (!line) continue;
+    let parsed: unknown;
     try {
-      events.push(JSON.parse(line) as AgentEvent);
+      parsed = JSON.parse(line);
     } catch (e) {
       throw new Error(`agent-event-ingest: malformed JSON on drop line ${i + 1}: ${(e as Error).message}`);
     }
+    const rec = parsed as Record<string, unknown> | null;
+    for (const field of REQUIRED_STRING_FIELDS) {
+      const v = rec == null ? undefined : rec[field];
+      if (typeof v !== 'string' || v.trim() === '') {
+        throw new Error(
+          `agent-event-ingest: invalid event on drop line ${i + 1}: required field '${field}' must be a non-empty string`,
+        );
+      }
+    }
+    events.push(parsed as AgentEvent);
   }
   return events;
 }
@@ -131,14 +151,21 @@ export interface IngestResult {
 }
 
 /**
- * Ingest runtime events into the engine as `agent_trace` acts, content-addressed idempotent. Pass
- * `existingActs` (e.g. `store.acts()`) so a re-read of the same file-drop is a no-op even though the kernel
- * does not dedup non-projectable acts. Throws (fail-closed) if the admission gate refuses any act.
+ * Ingest runtime events into the engine as `agent_trace` acts, content-addressed idempotent. `existingActs`
+ * (e.g. `store.acts()`) is REQUIRED — no default — so a re-read of the same file-drop is a no-op even though
+ * the kernel does not dedup non-projectable acts; a `= []` default would let a forgetful caller silently
+ * DISABLE idempotency and grow the journal on every re-read. Throws (fail-closed) if the admission gate
+ * refuses any act.
+ *
+ * PII: `engine.write` runs the fail-closed `admit()` gate (core/admission.ts) UNCONDITIONALLY on every act
+ * payload here — email/phone heuristics + no-inline-PII schema apply to `agent_trace` too. The residual risk
+ * is free-text `summary` prose (names/addresses the heuristic can't catch); that is deferred to the source's
+ * consent/PII contract, ADR-0014 C3 (owner decision), NOT retrofitted in this port — see TODO(consent/PII).
  */
 export function ingestAgentEvents(
   engine: ActWriter,
   events: readonly AgentEvent[],
-  existingActs: readonly Act[] = [],
+  existingActs: readonly Act[],
 ): IngestResult {
   const seen = new Set<string>();
   for (const a of existingActs) if (a.actKind === 'agent_trace') seen.add(idempotencyHash(a));

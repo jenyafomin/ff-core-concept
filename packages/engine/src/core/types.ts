@@ -48,6 +48,30 @@ export interface Edge {
    * (`evidenceRef`/`evidenceHash`); the admission-gate scans this slot for inline PII (R-G3.5).
    */
   subjectRole?: SubjectRoleAssurance;
+  /**
+   * RESERVED FORM (ADR-0015, edge-identity D4) — a DERIVED content-addressed ADDRESS key for the edge:
+   * `edge:sha256:v1:<hex>` over the canonical identity-triple { source, predicate, target }. ADDITIVE +
+   * optional: an existing edge with no `id` typechecks unchanged (0 migrations). NOT materialized today —
+   * it is computed by the pure `edgeIdOf()` (core/edge-identity.ts), never stamped into the journal or the
+   * projection. DELIBERATELY independent of meta/provenance/subjectRole AND of validFrom/validTo: `foldEdges`
+   * refreshes meta in place and matches its `many` slot by (predicate, target) with NO time component
+   * (predicates.ts:110-131), so the fingerprint MUST survive refresh AND coincide with `foldEdges`'s dedup
+   * key — otherwise a refresh-in-place would drop an edge whose id "looked" valid (critic patch, proven by
+   * second-form-spine.test.ts:54-56). The scheme is self-describing in the prefix (like `sha256:`/`djb2:`),
+   * so there is NO separate `idScheme` field. A retarget (new `target`) yields a DIFFERENT id — by
+   * cardinality that is a REPLACE, semantically a new edge. NO enforcement / NO materialization today
+   * (tripwire: packages/engine/test/edge-identity-not-enforced.test.ts).
+   */
+  id?: string;
+  /**
+   * RESERVED FORM (ADR-0015) — the edge's THROUGH-LINE identity (Ц2 "change without losing self"): stable
+   * ACROSS a content change (retarget / merge / split). Convention when absent: `canonical_id ?? id` (see
+   * edgeCanonicalIdOf). ADDITIVE + optional (0 migrations). Historical edges do not carry it → their canon =
+   * their derived `id` fingerprint (honest: their moves-through-change were never journaled). NO assignment/
+   * transfer behavior today — merge/split/cascade and canonical_id inheritance on retarget are deferred за
+   * швом (ADR-0015 §Reserved-Form; retarget-inheritance would require touching foldEdges' REPLACE-splice).
+   */
+  canonical_id?: string;
 }
 
 /**

@@ -137,9 +137,8 @@ describe('agent-run — the session orchestration is a real graph (nodes + typed
       expect(rendered).toContain('→ verified: PASS, 145 тестов'); // typed edge rendered by target label
       expect(rendered).toContain('→ refuted: D1: анализ policy-as-data');
       expect(rendered).toContain('Агенты:');
-
-      // eslint-disable-next-line no-console
-      console.log('\n' + rendered + '\n');
+      // NB: do NOT print `rendered` — keep real-graph content out of stdout/CI logs (V7/PII).
+      // Assertions above cover what mattered.
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
