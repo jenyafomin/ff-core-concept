@@ -17,6 +17,18 @@ export interface ActSchema {
   actKind: ActKind;
   /** dotted paths inside `payload` that are PII and may not be inlined. */
   piiFields: string[];
+  /**
+   * R-9 (SPEC-brain-v0.6): keys that are NOT PII-bearing BY NAME for this act-kind (e.g. `name` of a
+   * person-unit visible only to its owner). The key check is lifted; the VALUE is still scanned
+   * (a phone/email inside an allowed key is refused).
+   */
+  allowKeys?: string[];
+  /**
+   * R-9: keys whose string value is an opaque id (e.g. `ORD-123456789012`). A value matching
+   * OPAQUE_VALUE_RE skips ONLY the phone heuristic (email is still refused); any other value is scanned
+   * normally.
+   */
+  opaqueValueKeys?: string[];
 }
 
 /**
@@ -44,17 +56,25 @@ const DEFAULT_PII_KEYS = [
 
 // Defense-in-depth heuristics (NOT the primary gate).
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
-const PHONE_RE = /(?:\+?\d[\s-]?){9,15}/;
+// ≥9 digits joined by up to two phone separators (space, dash, parentheses) between digits — catches
+// `(415) 555-0134`, `+7(916)123-45-67`, `8 (916) 123-45-67` as well as `+1 415 555 0134` (F-3). The dot is
+// deliberately NOT a separator: `09.10.2026 14:30` / IP-like refs must not trip it. `T`/`:` break the run,
+// so an ISO datetime (`2026-10-09T14:30`, 8 digits before `T`) passes.
+const PHONE_RE = /\+?\d(?:[\s()-]{0,2}\d){8,14}/;
 // A well-formed opaque pointer: `scheme:opaque` (e.g. `blob:abc-123`, `sha256:deadbeef`). By construction
 // it cannot hold an email (`@` is excluded) and a purely numeric opaque part is a legitimate id — so this
 // FORM, not the mere fact of being a string, is what exempts a ref slot from the content scan.
 const REF_RE = /^[a-z][a-z0-9]*:[A-Za-z0-9._-]+$/;
+// R-9: the FORM of an opaque business id (uppercase alnum + dash, ≤20) that MUST contain at least one
+// latin letter — a pure-digit (phone-like) string is NOT an opaque id. Cannot hold an email (`@`).
+const OPAQUE_VALUE_RE = /^(?=[A-Z0-9-]*[A-Z])[A-Z0-9-]{1,20}$/;
 
 const ok = (): Admission => ({ ok: true });
 const refuse = (reason: string): Admission => ({ ok: false, reason });
 
 function isPiiKey(key: string, schema?: ActSchema): boolean {
   const k = key.toLowerCase();
+  if (schema?.allowKeys?.some((a) => a.toLowerCase() === k)) return false;
   if (schema?.piiFields.some((f) => f.toLowerCase() === k || f.toLowerCase().endsWith('.' + k))) return true;
   return DEFAULT_PII_KEYS.includes(k);
 }
@@ -63,11 +83,23 @@ function isPiiKey(key: string, schema?: ActSchema): boolean {
  * Walk an inline value; return a reason if it structurally carries PII (a PII key) or looks like PII.
  * `root` labels the location in the refusal reason (default 'payload'; edge meta uses 'edges[i].meta').
  */
-function scan(value: unknown, schema: ActSchema | undefined, path: string, root = 'payload'): string | null {
+function isOpaqueValue(key: string | undefined, value: string, schema?: ActSchema): boolean {
+  if (key === undefined || !schema?.opaqueValueKeys) return false;
+  const k = key.toLowerCase();
+  return schema.opaqueValueKeys.some((o) => o.toLowerCase() === k) && OPAQUE_VALUE_RE.test(value);
+}
+
+function scan(
+  value: unknown,
+  schema: ActSchema | undefined,
+  path: string,
+  root = 'payload',
+  key?: string,
+): string | null {
   if (value == null) return null;
   if (typeof value === 'string') {
     if (EMAIL_RE.test(value)) return `inline PII (email-like value) at ${root}.${path || '<root>'}`;
-    if (PHONE_RE.test(value)) return `inline PII (phone-like value) at ${root}.${path || '<root>'}`;
+    if (!isOpaqueValue(key, value, schema) && PHONE_RE.test(value)) return `inline PII (phone-like value) at ${root}.${path || '<root>'}`;
     return null;
   }
   if (typeof value !== 'object') return null;
@@ -80,7 +112,7 @@ function scan(value: unknown, schema: ActSchema | undefined, path: string, root 
   }
   for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
     if (isPiiKey(k, schema)) return `inline PII field '${k}' at ${root}.${path ? path + '.' : ''}${k} — must use payloadRef+payloadHash`;
-    const r = scan(v, schema, path ? `${path}.${k}` : k, root);
+    const r = scan(v, schema, path ? `${path}.${k}` : k, root, k);
     if (r) return r;
   }
   return null;

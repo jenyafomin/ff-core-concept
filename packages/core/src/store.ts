@@ -1,9 +1,9 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
-import type { FFNode, NodeInput, NodeKind, Link } from './node';
-import { newId, prefixFor } from './id';
-import { frontmatterSchema, type Frontmatter } from './schema';
+import type { FFNode, NodeInput, NodeKind, Link } from './node.js';
+import { newId, prefixFor } from './id.js';
+import { frontmatterSchema, type Frontmatter } from './schema.js';
 
 export interface QueryFilter {
   kind?: NodeKind | NodeKind[];

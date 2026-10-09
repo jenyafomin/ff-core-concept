@@ -24,6 +24,8 @@ Related:
     OVERVIEW.md · L0-memory-unit.md · portrait/ · scenarios/
     01-values/         7 ценностей (карточки V* + декомпозиция 0N-* + _cross-cutting + _archived/gen1)
     02-domains/        домены-ДАННЫХ (01-knowledge-graph = эталон фасет-шаблона)
+    03-what-memory-is/ концепт «что память ЕСТЬ»
+    04-engine-reality-and-evolution/  что движок РЕАЛЬНО умеет (T1–T7 capability-map) + лестница L0→L4 (свод _log 2026-09-17 → канон, 2026-09-23; ГЕЙТ: перепись реальных эпизодов ещё НЕ сделана)
   03-unit/             единица КАК КОНТРАКТ — СПЕКА ЕДИНИЦЫ v1 (ядро+грани+один путь записи)
   06-truth-and-epistemic-status/  форк: refuse vs serve-with-label (дом заведён 2026-09-15)
   07-form-agnosticism/            форк: нужен ли «второй кит» (дом заведён 2026-09-15)

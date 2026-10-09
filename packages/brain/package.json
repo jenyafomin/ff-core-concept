@@ -1,0 +1,29 @@
+{
+  "name": "@ff/brain",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Cross-project brain (ADR-0016): the single writer service over the @ff/engine journal — scopes-as-nodes, registry-as-acts, per-act validation, allowlisted readers. Verbs record · find · read · link over HTTP on a unix socket.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ff/engine": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1"
+  }
+}

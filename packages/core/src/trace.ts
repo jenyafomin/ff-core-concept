@@ -1,5 +1,5 @@
-import type { FileNodeStore } from './store';
-import type { FFNode, Importance } from './node';
+import type { FileNodeStore } from './store.js';
+import type { FFNode, Importance } from './node.js';
 
 /**
  * Every agent action writes a trace node back into the graph. This is the mechanism

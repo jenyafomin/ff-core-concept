@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { NODE_KINDS, IMPORTANCE, TASK_STATUS } from './node';
+import { NODE_KINDS, IMPORTANCE, TASK_STATUS } from './node.js';
 
 export const linkSchema = z.object({
   to: z.string().min(1),

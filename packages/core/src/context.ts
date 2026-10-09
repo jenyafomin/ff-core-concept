@@ -1,4 +1,4 @@
-import type { FileNodeStore } from './store';
+import type { FileNodeStore } from './store.js';
 
 /**
  * Configured-context cascade — the CLAUDE.md-style layering applied to the node tree.

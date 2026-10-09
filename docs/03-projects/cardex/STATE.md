@@ -10,10 +10,11 @@ Related: README.md, INDEX.md, cardex-ecosystem.concept.json, work-org/INDEX.md, 
 
 Одна точка истины по концепту Cardex: где всё лежит, что решено, что открыто, что дальше. Обновляется каждый ход. Telegram-топик: **ff_future**.
 
-## Картина (2 трека)
+## Картина (2 трека + реализация)
 
 1. **Продукт — граф идей экосистемы Cardex.** Крипто-обмен: сделки, счета, клиенты, кошельки. Корень — противоречие **N0** «вести всё в одном месте vs своя логика у каждого». 23 идеи в 7 бизнес-темах.
-2. **Организация моей работы (work-org).** Роль — главный программист. 4 интерфейса (PM · DevOps · команда-пользователи · сам), ритм Пн/Чт, ядро — мост **capture→дерево**.
+2. **Организация моей работы (work-org).** Роль — главный программист. 4 интерфейса (PM Никола · DevOps · команда-пользователи · бухгалтер Павел), ритм Пн/Чт, ядро — мост **capture→дерево**.
+3. **🆕 Реализация (deal-flow) + новое ТЗ (tz).** Переведён на дубайскую команду; переносим инфру на их серверы (Bitrix/сделки/клиенты мигрированы). Продукт **DealFlow** = 2 крыла: CRM (`crm-nest-telegram`) + Excel-инструмент (`Forms-Sidebar`, модуль Павла). Договорённость с Николой — пересобрать концепт по-новому → новое ТЗ (ядро Cardex). DevOps: **ноль уязвимостей**. См. `deal-flow/README.md` + `tz/README.md`.
 
 ## Где что лежит (карта)
 
@@ -23,7 +24,9 @@ Related: README.md, INDEX.md, cardex-ecosystem.concept.json, work-org/INDEX.md, 
 - `ideas/` — 🌳 дерево идей, 7 тем: `core · deals-process · clients · team-control · money · experience · infra-automation`
 - `graph.md` — карта связей (рёбра) · `priorities.md` — приоритет-оверлей T1–T4 · `how-to-grow.md`
 - `work-org/` — трек организации: `INDEX.md` · `alternatives.md` · `capture-and-view.md` · `work-org.concept.json`
-- Проект-код: `cardex:crm-nest-telegram` (реестр)
+- `deal-flow/` — 🆕 РЕАЛЬНЫЙ продукт (2 крыла: `crm-deal-flow/` + `excel-deal-flow/`), в отличие от идей-графа
+- `tz/` — 🆕 НОВОЕ техническое задание (с Николой), `_inbox/` под ТЗ Павла + вопрос DevOps
+- Проект-код: `cardex:crm-nest-telegram` (CRM) · `Forms-Sidebar` (Excel-инструмент, PROJETS/Excel-Sidebar)
 
 ## Решения (все, хронологически)
 

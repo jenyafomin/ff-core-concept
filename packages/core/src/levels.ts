@@ -1,4 +1,4 @@
-import type { FFNode } from './node';
+import type { FFNode } from './node.js';
 
 /**
  * Levels are computed "zoom" over a single node, never stored separately

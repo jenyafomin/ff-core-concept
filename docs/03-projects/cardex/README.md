@@ -31,3 +31,12 @@ Scope: project
 - [`work-org/capture-and-view.md`](work-org/capture-and-view.md) — сбор идей + визуализация поверх Telegram (reuse кнопок + wizard шлюза)
 
 Ядро: мост capture→дерево, ритм Пн/Чт. Начато 2026-07-31.
+
+## Трек 3 — Реализация продукта + новое ТЗ (что реально строим/переносим)
+
+🆕 Вход: [`deal-flow/README.md`](deal-flow/README.md) — РЕАЛЬНЫЙ продукт **DealFlow** (в отличие от идей-графа).
+- [`deal-flow/crm-deal-flow/`](deal-flow/crm-deal-flow/README.md) — CRM-сторона (`cardex:crm-nest-telegram`)
+- [`deal-flow/excel-deal-flow/`](deal-flow/excel-deal-flow/README.md) — Excel-инструмент Павла (`Forms-Sidebar`)
+- [`tz/README.md`](tz/README.md) — НОВОЕ техническое задание с Николой (полная пересборка концепта); `tz/_inbox/` ждёт ТЗ Павла + вопрос DevOps.
+
+Контекст: переведён на дубайскую команду, переносим инфру на их серверы; DevOps-требование — ноль уязвимостей. Начато 2026-09-28.

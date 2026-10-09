@@ -63,6 +63,24 @@ function pidAlive(pid: number): boolean {
   }
 }
 
+/** R-4 / AC-15: one unreadable journal line, reported (never silently swallowed) during hydrate. */
+export interface BadLineInfo {
+  /** 1-based line number within journal.jsonl. */
+  lineNo: number;
+  /** Parse error message (or 'torn-tail' for an unterminated final chunk). */
+  reason: string;
+  /** Byte offset of the line's first byte within journal.jsonl. */
+  byteOffset: number;
+}
+
+/** Optional knobs (4th ctor arg) — all optional, so existing call sites are unchanged. */
+export interface DurableFsStoreOptions {
+  /** Called once per skipped corrupt (complete, `\n`-terminated) line during hydrate. */
+  onBadLine?: (info: BadLineInfo) => void;
+  /** Called when the journal ends with an unterminated chunk (crash mid-append); the chunk is skipped. */
+  onTornTail?: (info: BadLineInfo) => void;
+}
+
 export class DurableFsStore implements StorePort {
   /** The non-projected substrate (seed nodes) — supplied each boot, never persisted here. */
   private readonly base: EnvelopeNode[];
@@ -77,8 +95,19 @@ export class DurableFsStore implements StorePort {
   private lockHeld = false;
   /** GAP 2 / G1: the TENANT predicate registry (see MemoryStore). Defaults to `{}` — kernel-neutral. */
   private readonly registry: PredicateRegistry;
+  private readonly opts: DurableFsStoreOptions;
+  /** R-4: number of complete-but-unparseable lines skipped by the last hydrate (torn tail NOT counted). */
+  private badLines = 0;
+  /** R-4: the last hydrate found an unterminated tail chunk (skipped; file NOT truncated by the engine). */
+  private torn: BadLineInfo | null = null;
 
-  constructor(storeDir: string, base: EnvelopeNode[] = [], registry: PredicateRegistry = {}) {
+  constructor(
+    storeDir: string,
+    base: EnvelopeNode[] = [],
+    registry: PredicateRegistry = {},
+    opts: DurableFsStoreOptions = {},
+  ) {
+    this.opts = opts;
     mkdirSync(storeDir, { recursive: true });
     this.journalPath = join(storeDir, 'journal.jsonl');
     this.lockPath = `${this.journalPath}.lock`;
@@ -167,24 +196,58 @@ export class DurableFsStore implements StorePort {
     return parsed as unknown as Act; // legacy inline line (payload already at top level)
   }
 
-  /** C2/C3 — read the whole append-only journal off disk and re-fold it into the read-model. */
+  /**
+   * C2/C3 — read the whole append-only journal off disk and re-fold it into the read-model.
+   *
+   * R-4 / AC-15: a corrupt line is SKIPPED (continue), never a `break` — acts after it stay alive. Each skip
+   * is reported via `onBadLine` and counted in `badLineCount`. An unterminated final chunk (no trailing
+   * `\n` = crash mid-append) is skipped too and surfaced as `tornTail`/`onTornTail`. The engine NEVER
+   * truncates the file here — repair (after backup) is the hosting service's job.
+   */
   private hydrateFromDisk(): void {
     this.journal = [];
+    this.badLines = 0;
+    this.torn = null;
     if (!existsSync(this.journalPath)) {
       this.projection = new Map();
       return;
     }
-    const raw = readFileSync(this.journalPath, 'utf8');
-    for (const line of raw.split('\n')) {
+    const buf = readFileSync(this.journalPath);
+    let start = 0;
+    let lineNo = 0;
+    while (start < buf.length) {
+      lineNo += 1;
+      const nl = buf.indexOf(0x0a, start);
+      const terminated = nl !== -1;
+      const end = terminated ? nl : buf.length;
+      const line = buf.toString('utf8', start, end);
+      const byteOffset = start;
+      start = end + 1;
       if (line.trim() === '') continue;
+      if (!terminated) {
+        // C3: torn final chunk — writeAct always emits a full `...\n`, so an unterminated tail is incomplete.
+        this.torn = { lineNo, reason: 'torn-tail', byteOffset };
+        this.opts.onTornTail?.(this.torn);
+        break;
+      }
       try {
         this.journal.push(this.lineToAct(line));
-      } catch {
-        // C3: a torn final line (process killed mid-append) — stop here; earlier lines are intact.
-        break;
+      } catch (e) {
+        this.badLines += 1;
+        this.opts.onBadLine?.({ lineNo, reason: (e as Error).message, byteOffset });
       }
     }
     this.projection = project(this.journal, this.registry);
+  }
+
+  /** R-4: complete-but-unparseable lines skipped by the last hydrate. */
+  get badLineCount(): number {
+    return this.badLines;
+  }
+
+  /** R-4: the unterminated tail chunk found by the last hydrate, or null. */
+  get tornTail(): BadLineInfo | null {
+    return this.torn;
   }
 
   /** The current graph (read-model): substrate nodes plus the log-projected nodes. */
@@ -198,7 +261,10 @@ export class DurableFsStore implements StorePort {
 
   /** C1 — durably append the act (fsync before return), then fold it into the read-model incrementally. */
   writeAct(act: Act): Act {
-    const line = this.actToLine(act); // S10/§9-2: split immutable meta ⟂ erasable payload zone on disk
+    let line = this.actToLine(act); // S10/§9-2: split immutable meta ⟂ erasable payload zone on disk
+    // R-4: if hydrate found an unterminated tail, start on a fresh line so this act is not glued onto the
+    // torn chunk (append-only — the torn bytes stay for the service to back up/repair).
+    if (this.torn) line = `\n${line}`;
     const fd = openSync(this.journalPath, 'a');
     try {
       writeSync(fd, line);
@@ -206,6 +272,7 @@ export class DurableFsStore implements StorePort {
     } finally {
       closeSync(fd);
     }
+    this.torn = null; // the torn chunk is now a terminated (bad) line, the file ends on `\n` again
     this.journal.push(act);
     foldInto(this.projection, act, this.registry);
     return act;
