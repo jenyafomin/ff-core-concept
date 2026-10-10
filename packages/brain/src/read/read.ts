@@ -16,6 +16,7 @@ import {
   type ReadResponse,
   type Reader,
 } from '../contract.js';
+import { predicateKey, samePredicate } from '../domain/names.js';
 import {
   brainError,
   decodeNode,
@@ -88,7 +89,7 @@ export function toNodeView(rec: DomainRecord, deps: Pick<ReadDeps, 'store'>): No
 export function edgeViewsOf(rec: DomainRecord, gate: ReadGate, deps: ReadDeps, preds?: readonly string[]): EdgeView[] {
   const out: EdgeView[] = [];
   for (const e of rec.edges) {
-    if (preds && !preds.includes(e.predicate)) continue;
+    if (preds && !preds.some((p) => samePredicate(p, e.predicate))) continue;
     const target = deps.store.readNode(e.target);
     // F-2: a record target the reader cannot see reads EXACTLY like a missing one (dangling) — dropping it
     // instead would let a reader tell «foreign» from «non-existent» by linking an id and reading back.
@@ -96,7 +97,7 @@ export function edgeViewsOf(rec: DomainRecord, gate: ReadGate, deps: ReadDeps, p
     const meta = (e.meta ?? {}) as Record<string, unknown>;
     const v: EdgeView = {
       id: e.id ?? edgeIdOf(rec.id, e),
-      pred: e.predicate,
+      pred: predicateKey(e.predicate), // canonical spelling on the wire (R-1.8); the id keeps the journaled one
       to: e.target,
       status: edgeStatus(e),
     };

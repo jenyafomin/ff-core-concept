@@ -6,3 +6,4 @@ export * from './presets.js';
 export * from './find.js';
 export * from './traverse.js';
 export * from './read.js';
+export * from './lens.js';

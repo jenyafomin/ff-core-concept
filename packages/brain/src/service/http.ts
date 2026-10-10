@@ -45,7 +45,7 @@ function header(req: IncomingMessage, name: string): string | undefined {
 /** Caller identity from headers — the ONLY source of identity (R-7). */
 export function callerFromHeaders(req: IncomingMessage): CallerContext {
   const c: CallerContext = {};
-  const map: Array<[keyof CallerContext, string]> = [
+  const map: Array<[Exclude<keyof CallerContext, 'credential'>, string]> = [
     ['conversation_id', BRAIN_HEADERS.conversationId],
     ['message_id', BRAIN_HEADERS.messageId],
     ['sender_id', BRAIN_HEADERS.senderId],
@@ -138,12 +138,15 @@ function routes(service: BrainService): Map<string, Handler> {
   m.set(key(BRAIN_ROUTES.health), () => service.health());
   m.set(key(BRAIN_ROUTES.stats), (c) => service.stats(c));
   m.set(key(BRAIN_ROUTES.export), (c, b) => service.export(c, b as never));
+  m.set(key(BRAIN_ROUTES.lens), (c, b) => service.lens(c, b as never));
   return m;
 }
 
 export interface BrainHttpOptions {
   socketPath: string;
   token: string;
+  /** SPEC-R1 R-03: the gateway mandate; a match → caller.credential `gateway` (principal from the mandate, not headers). */
+  gatewayToken?: string;
   maxBodyBytes?: number;
   log?: (line: string) => void;
 }
@@ -160,7 +163,13 @@ export function createBrainHttpServer(service: BrainService, opts: BrainHttpOpti
   return createServer((req, res) => {
     void (async () => {
       try {
-        if (!checkBearer(header(req, BRAIN_HEADERS.authorization), opts.token)) {
+        const auth = header(req, BRAIN_HEADERS.authorization);
+        const credential = checkBearer(auth, opts.token)
+          ? 'main'
+          : opts.gatewayToken !== undefined && checkBearer(auth, opts.gatewayToken)
+            ? 'gateway'
+            : null;
+        if (credential === null) {
           req.resume();
           return send(res, brainError('UNAUTHORIZED', 'bad or missing bearer token'));
         }
@@ -187,7 +196,8 @@ export function createBrainHttpServer(service: BrainService, opts: BrainHttpOpti
             return send(res, e);
           }
         }
-        send(res, await handler(callerFromHeaders(req), body as Record<string, unknown>));
+        // the credential comes from the token match ONLY — never from a header or the body (R-03)
+        send(res, await handler({ ...callerFromHeaders(req), credential }, body as Record<string, unknown>));
       } catch (e) {
         if (e instanceof HttpRefusal) return e.error.code === 'PAYLOAD_TOO_LARGE' ? sendAndClose(req, res, e.error) : send(res, e.error);
         opts.log?.(`http: ${(e as Error).message}`);

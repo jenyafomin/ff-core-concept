@@ -11,6 +11,8 @@ export interface BrainHomePaths {
   home: string;
   socket: string;
   token: string;
+  /** SPEC-R1 R-03: the gateway mandate token (0600) → reader `sys:gateway`. */
+  gatewayToken: string;
   /** HMAC key for body-less hashes (friction, idem body tag — W3): 32 random bytes hex, 0600. */
   secret: string;
   storeDir: string;
@@ -35,6 +37,7 @@ export function homePaths(home: string): BrainHomePaths {
     home,
     socket: p('socket'),
     token: p('token'),
+    gatewayToken: p('gatewayToken'),
     secret: join(home, 'secret'),
     storeDir: p('storeDir'),
     journal,

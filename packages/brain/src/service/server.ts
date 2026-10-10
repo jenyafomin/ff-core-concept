@@ -9,6 +9,8 @@ export interface RunningBrain {
   service: BrainService;
   http: BrainHttpServer;
   token: string;
+  /** SPEC-R1 R-03: `gateway.token` (0600) — the gateway's service mandate. */
+  gatewayToken: string;
   socketPath: string;
   /** Close HTTP, drain the queue, release the lock, remove the socket. */
   stop(): Promise<void>;
@@ -18,15 +20,17 @@ export async function startBrain(opts: BrainServiceOptions & { socketPath?: stri
   const paths = homePaths(opts.home);
   ensureHome(paths);
   const token = ensureToken(paths.token);
+  const gatewayToken = ensureToken(paths.gatewayToken);
   const service = BrainService.open(opts);
   try {
     await service.ready;
     const socketPath = opts.socketPath ?? paths.socket;
-    const http = await listenBrain(service, { socketPath, token, ...(opts.log ? { log: opts.log } : {}) });
+    const http = await listenBrain(service, { socketPath, token, gatewayToken, ...(opts.log ? { log: opts.log } : {}) });
     return {
       service,
       http,
       token,
+      gatewayToken,
       socketPath,
       async stop() {
         await http.close();

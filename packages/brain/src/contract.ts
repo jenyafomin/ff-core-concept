@@ -72,11 +72,12 @@ export const ERROR_HTTP_STATUS: Readonly<Record<BrainErrorCode, number>> = {
  * IDEM_BODY_MISMATCH: a replayed idem whose body differs from the original — the ORIGINAL answer comes back
  * (nothing new written) and the agent must not tell the owner the new content was saved (critic F-5).
  */
-export const WARNING_CODES = ['UNKNOWN_TYPE_AS_RAW', 'DEDUP_CANDIDATES', 'TYPE_V_UNKNOWN', 'IDEM_BODY_MISMATCH'] as const;
+export const WARNING_CODES = ['UNKNOWN_TYPE_AS_RAW', 'DEDUP_CANDIDATES', 'TYPE_V_UNKNOWN', 'IDEM_BODY_MISMATCH', 'LENS_KIND_OUTSIDE_ORDER'] as const;
 export type BrainWarningCode = (typeof WARNING_CODES)[number];
 
 /** Friction reasons written as `friction` records — code + hash only, never the body (V7, R-4, R-7). */
-export const FRICTION_CODES = ['BAD_LINE', 'UNKNOWN_TYPE', 'OUTBOX_IDENTITY_REJECTED', ...ERROR_CODES] as const;
+/** DEF_REJECTED: a type-def/predicate-def act in the journal from a writer that may not define that name (ADR-0017 D1). */
+export const FRICTION_CODES = ['BAD_LINE', 'UNKNOWN_TYPE', 'OUTBOX_IDENTITY_REJECTED', 'DEF_REJECTED', ...ERROR_CODES] as const;
 export type FrictionCode = (typeof FRICTION_CODES)[number];
 
 export interface BrainError {
@@ -119,6 +120,11 @@ export const LIMITS = {
   labelMaxChars: 120,
   fieldsMaxBytes: 8 * 1024,
   textMaxBytes: 4 * 1024,
+  /**
+   * SPEC-R1 R-01: aggregate ceiling of ALL fields of one act, including fields whose type-def grants their own
+   * `max_bytes` (those are outside the 8 KB budget, never outside this one).
+   */
+  actFieldsMaxBytes: 64 * 1024,
   recordsPerMinutePerConversation: 60,
   recordScopesMax: 10,
   recordEdgesMax: 20,
@@ -181,6 +187,8 @@ export const BRAIN_ROUTES = {
   health: { method: 'GET', path: '/v1/health' },
   stats: { method: 'GET', path: '/v1/stats' },
   export: { method: 'POST', path: '/v1/export' },
+  /** SPEC-R1 R-05: read-only lens interpreter (gateway mandate only in R1). */
+  lens: { method: 'POST', path: '/v1/lens' },
 } as const;
 export type BrainVerb = 'record' | 'find' | 'read' | 'link';
 export const BRAIN_VERBS: readonly BrainVerb[] = ['record', 'find', 'read', 'link'];
@@ -189,6 +197,8 @@ export const BRAIN_VERBS: readonly BrainVerb[] = ['record', 'find', 'read', 'lin
 export const BRAIN_HOME_LAYOUT = {
   socket: 'brain.sock',
   token: 'token',
+  /** SPEC-R1 R-03: the gateway mandate (0600) → reader `sys:gateway` with owner authority. */
+  gatewayToken: 'gateway.token',
   journal: 'store/journal.jsonl',
   storeDir: 'store',
   readers: 'readers.json',
@@ -430,6 +440,49 @@ export interface ExportResponse {
   count: number;
 }
 
+// ─── lens (SPEC-R1 R-05) ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * The context a lens is applied to. Each present key is one target `(kind, key)`: `bot`/`chat`/`user`/`project`/
+ * `agent` as given; `topic` is the RAW thread id — the server forms the topic key `<chat>:<topic>` (a topic is
+ * unique only inside its chat).
+ */
+export interface LensContext {
+  bot?: string;
+  chat?: string;
+  topic?: string;
+  user?: string;
+  project?: string;
+  agent?: string;
+}
+
+export interface LensRequest {
+  /** `<lens_id>@<version>`, e.g. `prompt-compose@1`. */
+  lens: string;
+  context: LensContext;
+}
+
+export interface LensManifestEntry {
+  /** Layer record id. */
+  id: string;
+  rev: number;
+  /** Target kinds of the layer (sorted). */
+  kinds: string[];
+  /** `source.hash` of the layer (importer: sha256 of the file text it came from). */
+  source_hash?: string;
+}
+
+export interface LensResponse {
+  ok: true;
+  text: string;
+  /** Layers that made it into `text`, in composition order. */
+  manifest: LensManifestEntry[];
+  lens: { id: string; rev: number };
+  /** sha256 hex of `text` (utf8). */
+  hash: string;
+  warnings: BrainWarning[];
+}
+
 // ─── Receipt ────────────────────────────────────────────────────────────────────────────────────────
 
 /** Server-built, passed by the agent verbatim (D12, AC-28). */
@@ -453,13 +506,18 @@ export function formatReceipt(p: ReceiptParts): Receipt {
 
 // ─── Readers (readers.json, R-7) ────────────────────────────────────────────────────────────────────
 
-/** One allowlist entry keyed by `chatId` or `chatId:threadId` (narrower key wins). */
+/**
+ * One allowlist entry keyed by `chatId` or `chatId:threadId` (narrower key wins). `principal` must be
+ * `user:` / `agent:` / `cli:` (ADR-0017 D1); `pack: 'pack:<id>'` = this binding writes ON BEHALF of a pack
+ * (stamped into `provenance.pack`, `actor` stays the principal). Malformed → DEFAULT_DENY.
+ */
 export interface ChatBinding {
   principal?: string;
   scopes?: string[];
   default_scope?: string;
   write?: boolean;
   personal?: boolean;
+  pack?: string;
 }
 
 /** CLI (Claude Code outside the gateway) entry keyed by absolute cwd; principal `cli:<cwd>`. */
@@ -469,7 +527,16 @@ export interface CliBinding {
   default_scope?: string;
   write?: boolean;
   personal?: boolean;
+  pack?: string;
 }
+
+/**
+ * Who may approve (SPEC-brain-data-doors R-5): derived ONLY from the credential, never from the request.
+ * `agent` — the main token (chat via brain-mcp, CLI), ALWAYS, even for principal `user:owner` (the owner's own
+ * Telegram message reaches the brain through an agent). `owner` — only a service mandate (`gateway.token` →
+ * `sys:gateway`, SPEC-R1 R-03) or the in-process `sys:brain`.
+ */
+export type Authority = 'owner' | 'agent';
 
 /** `~/.ff-brain/readers.json` — edited by the owner only. */
 export interface ReadersFile {
@@ -480,7 +547,8 @@ export interface ReadersFile {
 
 /** The reader the service derives (never self-declared): chat:thread merged over chat, or cli[cwd]. */
 export interface Reader {
-  kind: 'chat' | 'cli';
+  /** `service` = a service mandate (SPEC-R1 R-03: `gateway.token` → `sys:gateway`), never from readers.json. */
+  kind: 'chat' | 'cli' | 'service';
   /** The readers.json key that matched (`chat:thread`, `chat`, or the cwd). */
   key: string;
   principal: string;
@@ -490,6 +558,10 @@ export interface Reader {
   personal: boolean;
   /** False for CLI (no message_id → no idem, AC-26). */
   idem: boolean;
+  /** Set only by the reader resolver from the credential (R-5.1). Absent ≡ 'agent' (fail-closed). */
+  authority?: Authority;
+  /** `pack:<id>` this binding delegates for (R-2.3). */
+  pack?: string;
 }
 
 // ─── Caller identity (headers → service) ────────────────────────────────────────────────────────────
@@ -504,6 +576,11 @@ export interface CallerContext {
   cwd?: string;
   /** sha256(conversationId + message_id + verb + ordinal), computed by brain-mcp (R-8). */
   idem?: string;
+  /**
+   * Which bearer token authenticated the call (SPEC-R1 R-03). Set ONLY by the HTTP layer from the token match —
+   * never from a header or a body. Absent ≡ `main`.
+   */
+  credential?: 'main' | 'gateway';
 }
 
 // ─── Outbox (brain-mcp side, R-8) ───────────────────────────────────────────────────────────────────

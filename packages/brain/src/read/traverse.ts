@@ -5,6 +5,7 @@
 // invisible / retracted / non-record targets (scopes, registry, principals) are skipped silently, dangling
 // targets too. Hitting maxNodes while more visible neighbours remain → `truncated: true`.
 import type { NeighborView } from '../contract.js';
+import { predicateKey } from '../domain/names.js';
 import { decodeNode, edgeStatus } from '../domain/to-act.js';
 
 import type { ReadDeps, ReadGate } from './access.js';
@@ -24,7 +25,7 @@ export interface TraverseResult {
 export function traverse(rootId: string, gate: ReadGate, deps: ReadDeps, opts: TraverseOptions): TraverseResult {
   const visited = new Set<string>([rootId]);
   const neighbors: NeighborView[] = [];
-  const predSet = opts.preds ? new Set(opts.preds) : null;
+  const predSet = opts.preds ? new Set(opts.preds.map(predicateKey)) : null; // either spelling (R-1.7)
   let truncated = false;
   let frontier = [rootId];
 
@@ -35,7 +36,7 @@ export function traverse(rootId: string, gate: ReadGate, deps: ReadDeps, opts: T
       const node = deps.store.readNode(id);
       for (const e of node?.edges ?? []) {
         if (edgeStatus(e) !== 'active') continue;
-        if (predSet && !predSet.has(e.predicate)) continue;
+        if (predSet && !predSet.has(predicateKey(e.predicate))) continue;
         const target = e.target;
         if (visited.has(target)) continue;
         visited.add(target);

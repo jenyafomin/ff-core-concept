@@ -5,6 +5,7 @@
 //   ensureHome → preflightLock (live foreign writer → BrainLockError, file untouched) → repairTornTail
 //   (backup copy → truncate to last `\n`) → bootBrain (two-pass; bad lines skipped + collected) →
 //   idem index from the journal → [queue] one BAD_LINE friction per distinct bad line (deterministic id)
+//   → [queue] one DEF_REJECTED friction per refused def act (deterministic id)
 //   → [queue] start backup → timers (15-min-if-changed, nightly).
 //
 // Every write (record, link, friction, backup) runs inside ONE WriteQueue. `ok:true` is returned only after
@@ -30,6 +31,8 @@ import {
   type FindRequest,
   type FindResponse,
   type HealthResponse,
+  type LensRequest,
+  type LensResponse,
   type LinkRequest,
   type LinkResponse,
   type RandomPort,
@@ -47,6 +50,8 @@ import { brainError, commitRecord, engineRefusalToError } from '../domain/to-act
 import { planLink, planRecord, targetMissingFor, type DomainContext } from '../domain/validate-act.js';
 import { createReadGate, createReaderResolver, isRecordNode, type ReadDeps } from '../read/access.js';
 import { find as findVerb } from '../read/find.js';
+import { lens as lensVerb } from '../read/lens.js';
+import { SYS_GATEWAY } from '../domain/sys-types.js';
 import { read as readVerb } from '../read/read.js';
 
 import { ensureSecret } from './auth.js';
@@ -174,6 +179,11 @@ export class BrainService implements BrainPort {
     this.ready = this.queue
       .run(() => {
         for (const b of bad) this.friction.write({ code: 'BAD_LINE', hash: b.hash, verb: 'replay' }, 'once');
+        // R-1.5: a def act the registry refused (bypass of planDefinition) → ONE friction per act, ever
+        // (deterministic id frictionId('DEF_REJECTED', act.id); 'once' → restarts add nothing)
+        for (const r of this.domain.registry.rejected) {
+          this.friction.write({ code: 'DEF_REJECTED', hash: keyedLetterHash(this.secret, r.actId), idKey: r.actId, verb: 'replay' }, 'once');
+        }
         this.runBackup();
       })
       .catch((e) => this.log(`boot tasks failed: ${(e as Error).message}`));
@@ -240,6 +250,21 @@ export class BrainService implements BrainPort {
     const reader = await this.reader(caller, 'read', req);
     if (isError(reader)) return reader;
     return this.readPath('read', req, () => readVerb(reader, req, this.readDeps()));
+  }
+
+  /**
+   * SPEC-R1 R-05: interpret a lens (read-only, outside the write queue). R1: the gateway mandate only — any other
+   * credential → DEFAULT_DENY (403).
+   */
+  async lens(caller: CallerContext, req: LensRequest): Promise<BrainResult<LensResponse>> {
+    const reader = await this.reader(caller, 'read', req);
+    if (isError(reader)) return reader;
+    if (reader.principal !== SYS_GATEWAY || reader.kind !== 'service') {
+      const e = brainError('DEFAULT_DENY', '/v1/lens is open only to the gateway mandate (sys:gateway) in R1');
+      await this.reportRefusal(e.code, 'read', req).catch(() => undefined);
+      return e;
+    }
+    return this.readPath('read', req, () => lensVerb(reader, req, this.readDeps()));
   }
 
   async stats(caller: CallerContext): Promise<BrainResult<StatsResponse>> {

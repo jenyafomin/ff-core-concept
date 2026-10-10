@@ -29,6 +29,24 @@ export interface ActSchema {
    * normally.
    */
   opaqueValueKeys?: string[];
+  /**
+   * R1 R-01 (SPEC-brain-r1-prompt-layers): per-TYPE policies of TOP-LEVEL payload keys, set only by a schema
+   * author (the brain derives them from type-defs of genesis/`sys:`/`pack:`). Bound to `payload.type`, so the
+   * same key name on another type is scanned normally.
+   *  - `opaquePattern`: a value fully matching this ANCHORED regex (`^…$`) is an opaque id → the phone heuristic
+   *    is skipped (the email check still runs). Fixes Telegram ids (`-1004351636302`), which OPAQUE_VALUE_RE
+   *    rejects because it demands a letter. An invalid / unanchored pattern exempts nothing (fail-closed).
+   *  - `verbatim`: the value is stored byte-for-byte (the brain does not normalize it); the phone heuristic runs
+   *    over a datetime-normalized VIEW (`YYYY-MM-DD HH:MM` → `…THH:MM`) so a literal datetime is not a phone.
+   */
+  fieldPolicies?: FieldPolicy[];
+}
+
+export interface FieldPolicy {
+  payloadType: string;
+  key: string;
+  opaquePattern?: string;
+  verbatim?: boolean;
 }
 
 /**
@@ -69,6 +87,10 @@ const REF_RE = /^[a-z][a-z0-9]*:[A-Za-z0-9._-]+$/;
 // latin letter — a pure-digit (phone-like) string is NOT an opaque id. Cannot hold an email (`@`).
 const OPAQUE_VALUE_RE = /^(?=[A-Z0-9-]*[A-Z])[A-Z0-9-]{1,20}$/;
 
+// The scan VIEW of a verbatim value: a `YYYY-MM-DD HH:MM` datetime reads as `YYYY-MM-DDTHH:MM` (the `T`
+// breaks the digit run). Only the view is normalized — the stored value is untouched.
+const DATETIME_WITH_SPACE = /(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/g;
+
 const ok = (): Admission => ({ ok: true });
 const refuse = (reason: string): Admission => ({ ok: false, reason });
 
@@ -89,17 +111,53 @@ function isOpaqueValue(key: string | undefined, value: string, schema?: ActSchem
   return schema.opaqueValueKeys.some((o) => o.toLowerCase() === k) && OPAQUE_VALUE_RE.test(value);
 }
 
+/** Compiled R-01 policy for one top-level key of the current payload. */
+interface KeyPolicy {
+  opaque?: RegExp;
+  verbatim?: boolean;
+}
+
+function compileAnchored(pattern: string | undefined): RegExp | undefined {
+  if (typeof pattern !== 'string' || !pattern.startsWith('^') || !pattern.endsWith('$')) return undefined;
+  try {
+    return new RegExp(pattern);
+  } catch {
+    return undefined; // an invalid pattern exempts nothing (fail-closed)
+  }
+}
+
+/** Policies of the top-level keys of this payload (by `payload.type`). */
+function keyPoliciesFor(payload: unknown, schema?: ActSchema): Map<string, KeyPolicy> {
+  const out = new Map<string, KeyPolicy>();
+  if (!schema?.fieldPolicies?.length || !payload || typeof payload !== 'object' || Array.isArray(payload)) return out;
+  const type = (payload as { type?: unknown }).type;
+  if (typeof type !== 'string') return out;
+  for (const p of schema.fieldPolicies) {
+    if (p.payloadType !== type) continue;
+    const kp: KeyPolicy = {};
+    const re = compileAnchored(p.opaquePattern);
+    if (re) kp.opaque = re;
+    if (p.verbatim === true) kp.verbatim = true;
+    out.set(p.key, kp);
+  }
+  return out;
+}
+
 function scan(
   value: unknown,
   schema: ActSchema | undefined,
   path: string,
   root = 'payload',
   key?: string,
+  policy?: KeyPolicy,
+  topLevel?: Map<string, KeyPolicy>,
 ): string | null {
   if (value == null) return null;
   if (typeof value === 'string') {
     if (EMAIL_RE.test(value)) return `inline PII (email-like value) at ${root}.${path || '<root>'}`;
-    if (!isOpaqueValue(key, value, schema) && PHONE_RE.test(value)) return `inline PII (phone-like value) at ${root}.${path || '<root>'}`;
+    if (policy?.opaque && policy.opaque.test(value)) return null; // R-01: opaque id by its type's pattern
+    const view = policy?.verbatim ? value.replace(DATETIME_WITH_SPACE, '$1T$2') : value;
+    if (!isOpaqueValue(key, value, schema) && PHONE_RE.test(view)) return `inline PII (phone-like value) at ${root}.${path || '<root>'}`;
     return null;
   }
   if (typeof value !== 'object') return null;
@@ -112,7 +170,9 @@ function scan(
   }
   for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
     if (isPiiKey(k, schema)) return `inline PII field '${k}' at ${root}.${path ? path + '.' : ''}${k} — must use payloadRef+payloadHash`;
-    const r = scan(v, schema, path ? `${path}.${k}` : k, root, k);
+    // R-01 policies apply ONLY to a top-level string value of the payload (never nested, never in arrays)
+    const kp = topLevel && path === '' && typeof v === 'string' ? topLevel.get(k) : undefined;
+    const r = scan(v, schema, path ? `${path}.${k}` : k, root, k, kp);
     if (r) return r;
   }
   return null;
@@ -204,7 +264,7 @@ export function admit(act: Act, schema?: ActSchema): Admission {
   }
   // Structural + heuristic: no inline PII anywhere in the act body.
   if (act.payload !== undefined) {
-    const reason = scan(act.payload, schema, '');
+    const reason = scan(act.payload, schema, '', 'payload', undefined, undefined, keyPoliciesFor(act.payload, schema));
     if (reason) return refuse(reason);
   }
   // Edge meta is a payload too. A tenant may put confidence/provenance on identity/link edges, where a

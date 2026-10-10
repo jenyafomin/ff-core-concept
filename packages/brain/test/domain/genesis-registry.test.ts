@@ -8,6 +8,7 @@ import {
   GENESIS_TYPES,
   buildPredicateDefAct,
   buildTypeDefAct,
+  samePredicate,
   scanJournalRegistry,
 } from '../../src/domain/index.js';
 import { FIXED_NOW } from '../support/brain-fixture.js';
@@ -25,16 +26,20 @@ describe('genesis (AC-12)', () => {
   it('empty journal → genesis acts written; second start → 0 new acts, file unchanged', () => {
     b = openBrain();
     const expected = GENESIS_TYPES.length + GENESIS_PREDICATES.length + SEED_SCOPES.length;
+    // SPEC-R1 R-02 / AC-R01: the `sys:` seed follows genesis (3 types + 1 predicate + scope + lens = 6)
+    const SYS_SEED = 6;
     expect(b.d.genesisWritten).toBe(expected);
-    expect(lines(b.journal())).toHaveLength(expected);
+    expect(b.d.sysSeedWritten).toBe(SYS_SEED);
+    expect(lines(b.journal())).toHaveLength(expected + SYS_SEED);
     const before = b.journal();
 
     b.restart();
     expect(b.d.genesisWritten).toBe(0);
+    expect(b.d.sysSeedWritten).toBe(0);
     expect(b.journal()).toBe(before);
     b.restart();
     expect(b.d.genesisWritten).toBe(0);
-    expect(b.acts()).toHaveLength(expected);
+    expect(b.acts()).toHaveLength(expected + SYS_SEED);
   });
 
   it('registry after genesis is read from the journal (all genesis names, cardinalities)', () => {
@@ -71,26 +76,31 @@ describe('two-pass registry (AC-13)', () => {
     expect(b.d.registry.predicate('lives-in')?.cardinality).toBe('one');
     expect(b.d.registry.activeType('idea')?.version).toBe(1);
     const idea = ok(b.record({ type: 'idea', label: 'Идея после рестарта', fields: { text: 'x' } }));
-    expect(idea.type).toBe('idea');
+    // SPEC-brain-data-doors R-1.8 (option A, was 'idea'): the answer carries the canonical name
+    expect(idea.type).toBe('u:idea');
     expect(idea.warnings).toEqual([]);
 
     // cardinality `one` applied by the store: a second target REPLACES the first
     ok(b.link({ from: task.id, pred: 'lives-in', to: 'scope:brain' }));
     ok(b.link({ from: task.id, pred: 'lives-in', to: 'scope:agents' }));
-    const livesIn = b.get(task.id).edges.filter((e) => e.predicate === 'lives-in');
+    // SPEC-brain-data-doors R-1.7 (option A, was predicate === 'lives-in'): new links write the canonical
+    // spelling u:lives-in; compare spellings with samePredicate
+    const livesIn = b.get(task.id).edges.filter((e) => samePredicate(e.predicate, 'lives-in'));
     expect(livesIn.map((e) => e.target)).toEqual(['scope:agents']);
 
     // and it survives yet another restart (store re-folds with the journal's cardinalities)
     b.restart();
-    expect(b.get(task.id).edges.filter((e) => e.predicate === 'lives-in').map((e) => e.target)).toEqual(['scope:agents']);
+    expect(b.get(task.id).edges.filter((e) => samePredicate(e.predicate, 'lives-in')).map((e) => e.target)).toEqual(['scope:agents']);
   });
 
   it('pass 1 skips corrupt lines and the torn tail', () => {
     b = openBrain();
     b.appendRaw('{not json');
+    // fixture INPUT (not an assertion) adjusted for SPEC-brain-data-doors R-1.3: the default actor is
+    // system:genesis, which may define only core names — a u: name needs a user/agent/cli writer
     b.appendRaw(JSON.stringify(buildPredicateDefAct(
       { name: 'after-bad', cardinality: 'many', from_hint: [], to_hint: [], meaning: '', status: 'active' },
-      { now: FIXED_NOW },
+      { now: FIXED_NOW, actor: 'user:owner' },
     )));
     const scan = scanJournalRegistry(b.d.journalPath);
     expect(scan.badLines).toBe(1);

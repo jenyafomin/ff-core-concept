@@ -1,6 +1,6 @@
 ---
 Title: ADR-0016 — Мозг между проектами (один сервис-писатель, области-узлы, типы-данные)
-Status: proposed
+Status: approved (владелец, 2026-10-09 — вкл. отступление от ADR-0006: файловый журнал сейчас)
 Revision: 2 (2026-10-09) — после critic-review (B-1..B-3, M-1..M-8) и reviewer-gate (C1..C10); решения лида 1–12
 Owner: jenya.stasik@gmail.com
 Date: 2026-10-09
@@ -16,6 +16,7 @@ Related:
   - packages/engine/src/core/{resolve.ts:61,253 · envelope-validator.ts:58-83 · predicates.ts:33-90 · admission.ts:16,47,56,66-70,175,184,188 · idempotency.ts} · packages/engine/src/adapters/store-durable-fs.ts:99-128,171-188,199-206
   - /Users/mac16/Documents/IT/Apps/TOOLS/agents-manager/src/channel-telegram/ingress/normalize-inbound.util.ts:41,56 · src/core/agent/agent-task.interface.ts:17
   - docs/02-project/core/01-brain/03-unit/UNIT-SPEC-v1.design.md §9 · docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/README.md:38-41
+  - docs/architecture/ADR/ADR-0017-type-layers-packs-storage-seam.md (proposed; закрывает открытое D10, развивает D11)
 ---
 
 # ADR-0016 — Мозг между проектами
@@ -67,7 +68,7 @@ Related:
 - `provenance` скан не покрывает → сервис валидирует формат: `source.ref` — путь/url/`act:` (`^[A-Za-z0-9._/:#-]+$`, ≤200, без `@`, без цифровых серий ≥9), `source.kind` — enum, `derived_from` — `^[ua]_[a-z0-9]+@\d+$`.
 - Зарезервированные ключи тела (`tenant`, `space`, `capability`) отклоняются (движок читает их как политику).
 
-**D10 Идемпотентность.** Ключ = `sha256(conversationId + message_id + verb + ordinal-вызова-в-ходе)` — **без args** (дубль шлюза при перегенерации даёт иные args). Проверка ключа, слияние тела, `Engine.write`, обновление индекса и триггер бэкапа выполняются **атомарно внутри очереди записи**. Нет `message_id` (CLI) → без idem. Открыто: в G1 подтвердить, что шлюз отдаёт id **входящего** сообщения (а не `replyToMessageId`), иначе дубль с новым message_id не схлопнется.
+**D10 Идемпотентность.** Ключ = `sha256(conversationId + message_id + verb + ordinal-вызова-в-ходе)` — **без args** (дубль шлюза при перегенерации даёт иные args). Проверка ключа, слияние тела, `Engine.write`, обновление индекса и триггер бэкапа выполняются **атомарно внутри очереди записи**. Нет `message_id` (CLI) → без idem. Открыто: в G1 подтвердить, что шлюз отдаёт id **входящего** сообщения (а не `replyToMessageId`), иначе дубль с новым message_id не схлопнется. **Закрыто ADR-0017 D4 + SPEC-brain-data-doors R-3 (2026-10-09):** idem v1 заморожен константами (`packages/brain/src/service/idem.ts` `IDEM_V1`), иные штампы пропускаются и считаются (`skippedStamps`, «сначала читатель» для `i2:`); шлюз отдаёт id входящего (agents-manager `brain-mcp.spec.ts:79` @9a12bda); тест `packages/brain/test/service/idem-v1.test.ts`. Остаточный риск: фолбэк шлюза на `replyToMessageId` после его рестарта (turn-executor.ts:298) — проверить на живом логе.
 
 **D11 Поправка UNIT-SPEC §9.** Агент МОЖЕТ заводить `candidate`-типы; активировать, сужать, сливать, расщеплять — не может. **В v0.5 — только форма** (D5); исполнение — 1c. Остальной CANNOT-list §9 не меняется.
 
@@ -125,3 +126,5 @@ Related:
 12. **Чтение/инициатива:** пресеты и потолок дайджеста; запись по инициативе агента = `proposed`. → **AC-44, AC-45**
 13. **Регресс и бенч:** тесты `packages/engine` = записанная база + новые, 0 падений; старт 10k ≤2 с, find p95 ≤100 мс, write p95 в `/health`. → **AC-46, AC-47**
 14. **G3 польза (7 дней v0.5):** реальные дела записаны → найдены → закрыты через мозг; ≥5 чтений по инициативе владельца; ≥1 решение владельца по найденному в мозге. → **AC-48** (не автомат, отчёт владельцу)
+
+**Аддендум 2026-10-09 (статус не меняется):** открытое в D10 (id **входящего** сообщения / пространство idem) закрывается в ADR-0017 D4; тропа (`candidate`-тип, D11) = тип `u:` со `status: candidate` (ADR-0017 D1).

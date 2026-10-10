@@ -9,6 +9,10 @@
 //       IDEM_BODY_MISMATCH warning (never a silent «Записано: <old label>»).
 //   Journal form of `provenance.idem`: `<64-hex key>.<body tag a–p>`. Stamps in any other (pre-W2) form are
 //   not indexed: their key cannot be bound to a dialog.
+//
+// IDEM v1 is FROZEN (ADR-0017 D4, SPEC-brain-data-doors R-3.2) — see IDEM_V1. A future scheme is written with
+// the prefix `i2:` and follows "READER FIRST": this reader already skips (and counts in `skippedStamps`) any
+// stamp that is not v1, so `i2:` can be taught to readers before any writer emits it — no migration.
 import { createHash } from 'node:crypto';
 
 import { isProjectable, sourceRefOf, type Act, type StorePort } from '@ff/engine';
@@ -31,15 +35,32 @@ export type IdemAnswer = ({ verb: 'record'; res: RecordResponse } | { verb: 'lin
   target?: string;
 };
 
+/**
+ * The frozen v1 idem scheme (ADR-0017 D4). Changing any of these = a new scheme (`i2:`), never an edit.
+ *   client (brain-mcp ordinal.ts computeIdem): sha256( conversationId ␀ message_id ␀ verb ␀ ordinal ), hex
+ *     — message_id = the gateway's id of the INBOUND message (FF_BRAIN_MESSAGE_ID; ADR-0016 D10)
+ *   server (idemKey):                          sha256( dialog \n clientIdem ), hex — dialog = conversation id
+ *                                              (CLI: `cli:<binding key>`)
+ *   stamp  (provenance.idem):                  `<64 hex server key>.<body tag, letters a–p>`
+ */
+export const IDEM_V1 = {
+  clientSeparator: '\u0000',
+  serverSeparator: '\n',
+  stamp: /^([0-9a-f]{64})\.([a-p]{1,64})$/,
+} as const;
+
+/** Prefix reserved for the next idem scheme (written only after every reader understands it). */
+export const IDEM_NEXT_PREFIX = 'i2:' as const;
+
 /** Server-side idem key (W2): the client idem bound to the caller's dialog. */
 export function idemKey(dialog: string, clientIdem: string): string {
-  return createHash('sha256').update(`${dialog}\n${clientIdem}`).digest('hex');
+  return createHash('sha256').update(`${dialog}${IDEM_V1.serverSeparator}${clientIdem}`).digest('hex');
 }
 
 /** What is stamped into `provenance.idem`. */
 export const idemStamp = (key: string, bodyTag: string): string => `${key}.${bodyTag}`;
 
-const STAMP_RE = /^([0-9a-f]{64})\.([a-p]{1,64})$/;
+const STAMP_RE = IDEM_V1.stamp;
 
 export function parseIdemStamp(s: unknown): { key: string; body: string } | null {
   if (typeof s !== 'string') return null;
@@ -54,6 +75,8 @@ export const idemBodyMismatch = (): BrainWarning => ({
 
 export class IdemIndex {
   private readonly answers = new Map<string, IdemAnswer>();
+  /** Acts whose `provenance.idem` is present but not a v1 stamp (`i2:…`, pre-W2 forms) — skipped, not indexed. */
+  skippedStamps = 0;
 
   get size(): number {
     return this.answers.size;
@@ -76,8 +99,13 @@ export class IdemIndex {
       if (typeof ref !== 'string') continue;
       const rev = (revs.get(ref) ?? 0) + 1;
       revs.set(ref, rev);
-      const stamp = parseIdemStamp((act.provenance as { idem?: unknown } | undefined)?.idem);
-      if (!stamp) continue;
+      const raw = (act.provenance as { idem?: unknown } | undefined)?.idem;
+      if (raw === undefined) continue;
+      const stamp = parseIdemStamp(raw);
+      if (!stamp) {
+        idx.skippedStamps += 1;
+        continue;
+      }
       const answer = answerFromAct(act, ref, rev, store);
       if (answer) idx.set(stamp.key, { ...answer, body: stamp.body });
     }

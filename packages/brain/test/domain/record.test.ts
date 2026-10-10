@@ -181,7 +181,12 @@ describe('initiative (AC-45)', () => {
     expect(r.status).toBe('proposed');
     expect(r.receipt).toMatch(/^Записано: Предложение агента → brain · task\/proposed · #[a-z0-9]{6}$/);
     expect(b.get(r.id).initiative).toBe('agent');
-    expect(ok(b.record({ id: r.id, type: 'task', label: 'Предложение агента', initiative: 'owner' })).status).toBe('active');
+    // SPEC-brain-data-doors R-5 (option A, was: main-token reader activates): the main token is agent authority
+    // → self-approval is refused; only an owner-authority reader (gateway mandate) activates.
+    expect(err(b.record({ id: r.id, type: 'task', label: 'Предложение агента', initiative: 'owner' })).code).toBe('WRITE_DENIED');
+    expect(b.get(r.id).status).toBe('proposed');
+    const owner = topicReader({ principal: 'sys:gateway', authority: 'owner' });
+    expect(ok(b.record({ id: r.id, type: 'task', label: 'Предложение агента', initiative: 'owner' }, owner)).status).toBe('active');
     expect(ok(b.record({ type: 'task', label: 'По просьбе' })).status).toBe('active');
   });
 });

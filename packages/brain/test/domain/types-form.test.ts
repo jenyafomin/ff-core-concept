@@ -4,7 +4,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { GENESIS_PREDICATES, GENESIS_TYPES, buildTypeDefAct, type TypeDef } from '../../src/domain/index.js';
+import { GENESIS_ACTOR, GENESIS_PREDICATES, GENESIS_TYPES, buildTypeDefAct, planDefinition, type TypeDef } from '../../src/domain/index.js';
 import { ok, openBrain, type Brain } from './harness.js';
 
 let b: Brain | undefined;
@@ -29,7 +29,8 @@ describe('type-def form (AC-36)', () => {
     const ack = b.d.engine.write(buildTypeDefAct(def, { now: new Date(), actor: 'user:owner' }));
     expect(ack.ok).toBe(true);
     b.restart();
-    expect(b.d.registry.type('meeting')).toEqual(def);
+    // SPEC-brain-data-doors R-1.2 (option A, was name 'meeting'): a bare non-core name is the alias of u:meeting
+    expect(b.d.registry.type('meeting')).toEqual({ ...def, name: 'u:meeting' });
     expect(b.d.registry.activeType('meeting')).toBeUndefined();
     // a record of a candidate type is NOT activated: raw + warning
     const r = ok(b.record({ type: 'meeting', label: 'Созвон' }));
@@ -49,7 +50,11 @@ describe('type versions (AC-37)', () => {
 
     const v1 = b.d.registry.type('task')!;
     const v2: TypeDef = { ...v1, version: 2, fields: { ...v1.fields, effort: { kind: 'number' } } };
-    expect(b.d.engine.write(buildTypeDefAct(v2, { now: new Date(), actor: 'user:owner' })).ok).toBe(true);
+    // SPEC-brain-data-doors R-1.3/R-1.4 (option A, was actor 'user:owner' via engine.write): a core type is
+    // (re)defined only by system:genesis, through planDefinition
+    const plan = planDefinition({ kind: 'type', def: v2 }, GENESIS_ACTOR, b.d.registry, { now: new Date() });
+    if ('ok' in plan) throw new Error(plan.message);
+    expect(b.d.engine.write(plan.act).ok).toBe(true);
     b.restart();
 
     expect(b.d.registry.type('task', 1)).toEqual(v1);

@@ -26,6 +26,7 @@ import {
   type BrainError,
   type BrainErrorCode,
   type BrainResult,
+  type Authority,
   type BrainWarning,
   type EdgeStatus,
   type Initiative,
@@ -51,6 +52,7 @@ import {
   type TypeDef,
 } from './genesis.js';
 import { seededActId } from './ids.js';
+import { typeKey } from './names.js';
 import { READABLE_SCOPED } from './pii-scope.js';
 
 /** Bumped when the act/body layout changes (AC-11: every act carries it). */
@@ -123,6 +125,10 @@ export function makeEdge(from: string, predicate: string, target: string, meta: 
 export interface ProvenanceExtras {
   idem?: string;
   initiative?: Initiative;
+  /** Credential-derived authority of the writer (R-5.4): the audit trail of who could approve. */
+  authority?: Authority;
+  /** Pack the binding delegates for (R-2.3); `actor` stays the binding principal. */
+  pack?: string;
   derived_from?: string[];
   source?: SourceRef;
   layer?: number;
@@ -146,7 +152,7 @@ export interface RecordActInput {
 
 function provenanceFor(id: string, type: string, type_v: number, extras: ProvenanceExtras = {}): Provenance {
   const p: Provenance = { source_ref: id, schema_v: SCHEMA_V, type, type_v };
-  for (const k of ['idem', 'initiative', 'derived_from', 'source', 'layer'] as const) {
+  for (const k of ['idem', 'initiative', 'authority', 'pack', 'derived_from', 'source', 'layer'] as const) {
     if (extras[k] !== undefined) (p as Record<string, unknown>)[k] = extras[k];
   }
   return p;
@@ -175,13 +181,14 @@ export function buildEdgeAct(i: {
   edges: Edge[];
   now: Date;
   idem?: string;
+  extras?: Pick<ProvenanceExtras, 'authority' | 'pack'>;
 }): Act {
   return {
     id: i.actId,
     actor: i.actor,
     actKind: 'domain_event',
     recordedAt: i.now.toISOString(),
-    provenance: provenanceFor(i.from, i.type, i.type_v, i.idem ? { idem: i.idem } : {}),
+    provenance: provenanceFor(i.from, i.type, i.type_v, { ...(i.idem ? { idem: i.idem } : {}), ...(i.extras ?? {}) }),
     edges: i.edges,
   };
 }
@@ -204,9 +211,13 @@ function seedMeta(now: Date, type_v: number): StoredMeta {
 
 const defTypeVersion = (name: string): number => GENESIS_TYPES.find((d) => d.name === name)?.version ?? 1;
 
-/** A type-def act (genesis, fixtures, and — later — the type gardener). Body = the def, unchanged (AC-36). */
-export function buildTypeDefAct(def: TypeDef, opts: { now: Date; actor?: string; actId?: string }): Act {
-  const id = typeDefId(def.name);
+/**
+ * A type-def act (genesis, fixtures, and — later — the type gardener). Body = the def, unchanged (AC-36).
+ * `nodeId` (R-1.6): the def node of the FIRST accepted def of this name — a new version of an alias-spelled
+ * type (`u:idea@2` over legacy `idea`) stays in `typedef:idea`. Regular writers go through `planDefinition`.
+ */
+export function buildTypeDefAct(def: TypeDef, opts: { now: Date; actor?: string; actId?: string; nodeId?: string }): Act {
+  const id = opts.nodeId ?? typeDefId(def.name);
   const tv = defTypeVersion(K.types.typeDef);
   return buildRecordAct({
     id,
@@ -223,8 +234,8 @@ export function buildTypeDefAct(def: TypeDef, opts: { now: Date; actor?: string;
   });
 }
 
-export function buildPredicateDefAct(def: PredicateDef, opts: { now: Date; actor?: string; actId?: string }): Act {
-  const id = predicateDefId(def.name);
+export function buildPredicateDefAct(def: PredicateDef, opts: { now: Date; actor?: string; actId?: string; nodeId?: string }): Act {
+  const id = opts.nodeId ?? predicateDefId(def.name);
   const tv = defTypeVersion(K.types.predicateDef);
   return buildRecordAct({
     id,
@@ -242,6 +253,10 @@ export function buildPredicateDefAct(def: PredicateDef, opts: { now: Date; actor
 }
 
 export function buildScopeAct(seed: ScopeSeed, opts: { now: Date; actor?: string; actId?: string }): Act {
+  // R-1.9 / ADR-0017 D1: a scope slug never contains ':' (any string with ':' reads as a ready id/name)
+  if (typeof seed.slug !== 'string' || seed.slug === '' || seed.slug.includes(':')) {
+    throw new Error(`scope slug '${String(seed.slug)}' must be non-empty and contain no ':'`);
+  }
   const id = scopeId(seed.slug);
   const tv = defTypeVersion(K.types.scope);
   const actor = opts.actor ?? GENESIS_ACTOR;
@@ -329,12 +344,12 @@ export function decodeNode(node: EnvelopeNode): DomainRecord {
     if (!scopes.includes(tenant)) scopes = [tenant, ...scopes];
   }
 
+  // types read back in their CANONICAL spelling (ADR-0017 D1): a legacy `idea` record reads as `u:idea`,
+  // an `instance-of → typedef:idea` reclassification too (R-1.8); the journal keeps its bytes
   const reclass = [...active].reverse().find((e) => e.predicate === K.preds.instanceOf);
-  const declared = node.type;
+  const declared = typeKey(node.type);
   const effective = reclass
-    ? reclass.target.startsWith(ID_PREFIX.typeDef)
-      ? reclass.target.slice(ID_PREFIX.typeDef.length)
-      : reclass.target
+    ? typeKey(reclass.target.startsWith(ID_PREFIX.typeDef) ? reclass.target.slice(ID_PREFIX.typeDef.length) : reclass.target)
     : declared;
 
   const owner = active.find((e) => e.predicate === K.preds.owner)?.target;

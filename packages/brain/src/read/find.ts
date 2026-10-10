@@ -13,6 +13,7 @@ import {
   type FindResponse,
   type Reader,
 } from '../contract.js';
+import { samePredicate, typeKey } from '../domain/names.js';
 import { brainError, edgeStatus } from '../domain/to-act.js';
 
 import { createReadGate, visibleRecords, type ReadDeps, type VisibleRecord } from './access.js';
@@ -100,9 +101,11 @@ export function find(reader: Reader, req: FindRequest, deps: ReadDeps): BrainRes
 
   const needle = req.text?.trim().toLowerCase();
   const edgeTo = req.edge?.to;
+  // R-1.8: names in either spelling (`core:task` ≡ `task`, `meeting` ≡ `u:meeting`); records read canonical
+  const wantType = req.type ? typeKey(req.type) : undefined;
   let pool = visibleRecords(gate, deps).filter((v) => {
     if (scopeFilter && !gate.closure(v.rec.scopes).has(scopeFilter)) return false;
-    if (req.type && v.rec.type !== req.type) return false;
+    if (wantType && v.rec.type !== wantType) return false;
     if (req.status && statusFieldOf(v) !== req.status && v.rec.status !== req.status) return false;
     if (needle && !textMatches(v, needle)) return false;
     if (req.due_before) {
@@ -111,7 +114,7 @@ export function find(reader: Reader, req: FindRequest, deps: ReadDeps): BrainRes
     }
     if (req.edge) {
       const hit = v.rec.edges.some(
-        (e) => e.predicate === req.edge!.pred && edgeStatus(e) === 'active' && (edgeTo === undefined || e.target === edgeTo),
+        (e) => samePredicate(e.predicate, req.edge!.pred) && edgeStatus(e) === 'active' && (edgeTo === undefined || e.target === edgeTo),
       );
       if (!hit) return false;
     }

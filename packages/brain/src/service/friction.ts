@@ -17,8 +17,11 @@ import { READABLE_OWNER } from '../domain/pii-scope.js';
 import type { Registry } from '../domain/registry.js';
 import { buildRecordAct, decodeNode, type StoredMeta } from '../domain/to-act.js';
 
-/** Principal stamped on service-written acts (friction). */
-export const SERVICE_ACTOR = 'system:brain';
+/**
+ * Principal stamped on service-written acts (friction) — the in-process brain, `sys:brain` (ADR-0017 D1 frozen
+ * principal format: `system:` is reserved for `system:genesis` alone; SPEC-brain-data-doors R-2.1).
+ */
+export const SERVICE_ACTOR = 'sys:brain';
 
 const LETTERS = 'abcdefghijklmnop';
 
@@ -49,6 +52,8 @@ export interface FrictionSignalIn {
   code: FrictionCode;
   /** Already a letter hash (see letterHash). */
   hash: string;
+  /** Dedup key of the record id when it differs from `hash` (DEF_REJECTED: the refused act id, R-1.5). */
+  idKey?: string;
   verb?: BrainVerb | 'replay' | 'outbox' | 'http';
 }
 
@@ -78,7 +83,7 @@ export class FrictionWriter {
         this.day = day;
         this.writtenToday = 0;
       }
-      const id = frictionId(sig.code, sig.hash);
+      const id = frictionId(sig.code, sig.idKey ?? sig.hash);
       const existing = this.deps.store.readNode(id);
       if (existing && mode === 'once') return false;
       if (this.writtenToday >= (this.deps.perDay ?? LIMITS.frictionPerDay)) {

@@ -107,7 +107,8 @@ describe('find', () => {
     });
     const all = ok(find(R(), {}, deps(b)));
     expect(all.items.map((i) => i.id).sort()).toEqual([t.id, n.id].sort());
-    expect(all.items.find((i) => i.id === n.id)!.type).toBe('alien-kind');
+    // SPEC-brain-data-doors R-1.8 (option A, was 'alien-kind'): a bare non-core type reads in its canonical u: spelling
+    expect(all.items.find((i) => i.id === n.id)!.type).toBe('u:alien-kind');
     const r = ok(read(R(), { id: t.id }, deps(b)));
     expect(r.node.type_v).toBe(99);
     for (const preset of ['morning', 'evening', 'open', 'scope'] as const) {

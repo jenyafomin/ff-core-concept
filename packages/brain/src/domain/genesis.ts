@@ -16,9 +16,22 @@ export interface FieldSpec {
   required?: boolean;
   values?: string[];
   default?: string | number | boolean;
-  /** Opaque business id (e.g. `ORD-123456789012`) → engine `opaqueValueKeys` (R-9). */
+  /** Opaque business id (e.g. `ORD-123456789012`) → engine `opaqueValueKeys` (R-9). With `pattern` → see below. */
   opaque?: boolean;
+  // ── SPEC-R1 R-01: schema-author-only flags (genesis / `sys:` / `pack:` defs; stripped from `u:` defs) ──
+  /** Own byte ceiling of a text field: outside the 8 KB fields budget and the 4 KB text limit, inside the 64 KB act cap. */
+  max_bytes?: number;
+  /** Stored byte-for-byte: no datetime normalization (the PII scan still runs, over a datetime-normalized view). */
+  verbatim?: boolean;
+  /**
+   * Anchored regex (`^…$`) the value must match (else BAD_REQUEST). With `opaque: true` a matching value is an
+   * opaque id for THIS type's field → the engine skips the phone heuristic for it (Telegram ids).
+   */
+  pattern?: string;
 }
+
+/** FieldSpec flags only a schema author (not a `u:` def) may set (SPEC-R1 R-01). */
+export const SCHEMA_AUTHOR_FIELD_FLAGS = ['max_bytes', 'verbatim', 'pattern'] as const;
 
 export type TypeDefStatus = 'active' | 'candidate' | 'cold';
 
@@ -33,7 +46,25 @@ export interface TypeDef {
   /** `name@v` — the single inheritance source (D5). Not resolved in v0.5. */
   extends?: string;
   pii?: 'none' | typeof PII_PERSON;
+  /**
+   * Status policy-as-data (SPEC-brain-data-doors R-5.5): `owner` → a record created by an agent-authority
+   * reader starts `proposed` (an owner must activate it); absent ≡ `none` → created `active` (v0.6 behaviour).
+   */
+  approval?: 'owner' | 'none';
+  /**
+   * Write policy-as-data (SPEC-R1 R-04): `owner` → only an owner-authority reader (a service mandate `sys:gateway`
+   * or `sys:brain`) may create/update records of this type (or reclassify into it); absent ≡ `any`.
+   */
+  write?: 'owner' | 'any';
+  /**
+   * SPEC-R1 (reviewer #3): records of this type are APPEND-ONLY versioned system nodes `<prefix><id_field>@<version_field>`
+   * (e.g. `lens:prompt-compose@2`) — a new version is data, an existing one is immutable. `prefix` ∈ VERSIONED_NODE_PREFIXES.
+   */
+  versioned_node?: { prefix: string; id_field: string; version_field: string };
 }
+
+/** Node prefixes a `versioned_node` type may use (non-record system nodes only). */
+export const VERSIONED_NODE_PREFIXES: readonly string[] = ['lens:'];
 
 export type PredicateDefStatus = 'active' | 'candidate';
 
@@ -85,6 +116,8 @@ export const ID_PREFIX = {
   typeDef: 'typedef:',
   predicateDef: 'pred:',
   scope: 'scope:',
+  /** SPEC-R1 R-02: a seeded lens node `lens:<lens_id>@<version>` — system data, not a user record. */
+  lens: 'lens:',
 } as const;
 
 export const typeDefId = (name: string): string => `${ID_PREFIX.typeDef}${name}`;
@@ -192,3 +225,10 @@ export const GENESIS_PREDICATES: readonly PredicateDef[] = [
   p('owner', 'one', 'владелец записи (ставит сервер)', { locked: true }),
   p('referent', 'many', 'о ком запись (третье лицо)', { locked: true, to_hint: ['person'] }),
 ];
+
+// ─── Core name sets (ADR-0017 D1, SPEC-brain-data-doors R-1.1) ──────────────────────────────────────
+// DERIVED from the genesis lists above — never a second hand-kept list. A bare name is `core:` only if it is
+// here; any other bare name reads as `u:<name>` (alias, the journal is never rewritten).
+
+export const CORE_TYPE_NAMES: ReadonlySet<string> = new Set(GENESIS_TYPES.map((d) => d.name));
+export const CORE_PREDICATE_NAMES: ReadonlySet<string> = new Set(GENESIS_PREDICATES.map((d) => d.name));

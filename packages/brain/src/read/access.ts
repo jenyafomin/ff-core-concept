@@ -23,6 +23,8 @@ import type {
 } from '../contract.js';
 import { K } from '../domain/genesis.js';
 import { OWNER_PRINCIPAL, READABLE_OWNER } from '../domain/pii-scope.js';
+import { isBindingPrincipal, isPackPrincipal } from '../domain/principal.js';
+import { SYS_GATEWAY, serviceReader } from '../domain/sys-types.js';
 import { brainError, decodeNode, edgeStatus, type DomainRecord } from '../domain/to-act.js';
 import { MEMBER_OF_HOPS, isRecordNode, readerScopeIds, resolveScopeRef, viewerOf } from '../domain/validate-act.js';
 
@@ -49,8 +51,15 @@ export function bindingKeysOf(conversationId: string): { thread?: string; chat: 
  * Derive the Reader from the caller (R-7). Order: gateway caller (conversation id) → allowlist key
  * (`chat:thread` merged over `chat`) else DEFAULT_DENY → sender must equal `owner_id` else SENDER_DENIED.
  * No conversation id → CLI: `cli[cwd]` else DEFAULT_DENY.
+ *
+ * SPEC-brain-data-doors: the binding's `principal` must be `user:`/`agent:`/`cli:` and its `pack` a valid
+ * `pack:<id>` — otherwise DEFAULT_DENY (R-2.2; `system:*`/`sys:*` never come from readers.json). Authority is
+ * ALWAYS `agent` on this path — the main token, even for `user:owner` (R-5.1): owner authority comes only from
+ * a service mandate (SPEC-R1 R-03), never from a header or a body field.
  */
 export function resolveReader(readers: ReadersFile, caller: CallerContext): Reader | BrainError {
+  // SPEC-R1 R-03: the gateway mandate — principal and authority from the CREDENTIAL, never from headers/readers.json
+  if (caller.credential === 'gateway') return serviceReader(SYS_GATEWAY);
   const conv = caller.conversation_id?.trim();
   if (conv) {
     const keys = bindingKeysOf(conv);
@@ -62,21 +71,28 @@ export function resolveReader(readers: ReadersFile, caller: CallerContext): Read
       return deny('SENDER_DENIED', 'sender is not the owner');
     }
     const merged: ChatBinding = { ...(chatB ?? {}), ...(threadB ?? {}) };
+    const principal = merged.principal ?? OWNER_PRINCIPAL;
+    const bad = bindingIssue(principal, merged.pack);
+    if (bad) return deny('DEFAULT_DENY', bad);
     const reader: Reader = {
       kind: 'chat',
       key: threadB && keys.thread ? keys.thread : keys.chat,
-      principal: merged.principal ?? OWNER_PRINCIPAL,
+      principal,
       scopes: [...(merged.scopes ?? [])],
       write: merged.write === true,
       personal: merged.personal === true,
       idem: typeof caller.message_id === 'string' && caller.message_id !== '',
+      authority: 'agent',
     };
     if (merged.default_scope) reader.default_scope = merged.default_scope;
+    if (merged.pack !== undefined) reader.pack = merged.pack;
     return reader;
   }
   const cwd = caller.cwd?.trim();
   const cli = cwd ? cliBindingFor(readers, cwd) : undefined;
   if (!cwd || !cli) return deny('DEFAULT_DENY', 'no conversation id and the cwd is not in the CLI allowlist');
+  const bad = bindingIssue(cli.principal, cli.pack);
+  if (bad) return deny('DEFAULT_DENY', bad);
   const reader: Reader = {
     kind: 'cli',
     key: cwd,
@@ -85,9 +101,18 @@ export function resolveReader(readers: ReadersFile, caller: CallerContext): Read
     write: cli.write === true,
     personal: cli.personal === true,
     idem: false,
+    authority: 'agent',
   };
   if (cli.default_scope) reader.default_scope = cli.default_scope;
+  if (cli.pack !== undefined) reader.pack = cli.pack;
   return reader;
+}
+
+/** Why a readers.json binding is unusable (R-2.2), or null. Never echoes the value (it may be a typo of a secret). */
+function bindingIssue(principal: unknown, pack: unknown): string | null {
+  if (!isBindingPrincipal(principal)) return 'binding principal is not a user:/agent:/cli: principal';
+  if (pack !== undefined && !isPackPrincipal(pack)) return "binding pack is not 'pack:<id>'";
+  return null;
 }
 
 /** Canonical form of a path: realpath (macOS `/tmp` → `/private/tmp`), else the resolved path (F-10). */

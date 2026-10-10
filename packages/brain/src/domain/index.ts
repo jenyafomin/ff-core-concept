@@ -2,6 +2,9 @@
 // pii-scope · to-act · ids · constitution · schemas. Type/predicate NAMES appear only in genesis.ts (AC-14).
 
 export * from './genesis.js';
+export * from './names.js';
+export * from './principal.js';
+export * from './definitions.js';
 export * from './ids.js';
 export * from './constitution.js';
 export * from './registry.js';
@@ -9,3 +12,4 @@ export * from './pii-scope.js';
 export * from './to-act.js';
 export * from './validate-act.js';
 export * from './schemas.js';
+export * from './sys-types.js';

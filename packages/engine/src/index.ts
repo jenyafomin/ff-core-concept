@@ -24,6 +24,8 @@ export * from './ports/principal-stamper.js';
 export * from './adapters/store-memory.js';
 export * from './adapters/store-md.js';
 export * from './adapters/store-durable-fs.js';
+export * from './adapters/journal-codec.js';
+export * from './adapters/replay.js';
 
 export * from './engine.js';
 export * from './runner/durable-runner.js';

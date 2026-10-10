@@ -18,6 +18,7 @@ import {
   type EdgeStatus,
   type FieldValue,
   type LinkRequest,
+  type Authority,
   type RandomPort,
   type Reader,
   type RecordRequest,
@@ -26,7 +27,7 @@ import {
 } from '../contract.js';
 
 import { brainBase } from './constitution.js';
-import { ID_PREFIX, K, PII_PERSON, scopeId, typeDefId, type FieldSpec, type TypeDef } from './genesis.js';
+import { ID_PREFIX, K, PII_PERSON, scopeId, typeDefId, type FieldSpec, type PredicateDef, type TypeDef } from './genesis.js';
 import { isUnitId, newActId, newUnitId, sha256Hex } from './ids.js';
 import {
   OWNER_PRINCIPAL,
@@ -38,6 +39,7 @@ import {
   validateSource,
   type PiiScopeIssue,
 } from './pii-scope.js';
+import { isNameLikeRef, predicateKey, samePredicate, sameType } from './names.js';
 import type { Registry } from './registry.js';
 import {
   BRAIN_BODY_KEYS,
@@ -76,6 +78,8 @@ const RECORD_KEYS = new Set([
 ]);
 
 const RESERVED_FIELD_NAMES = new Set<string>([...RESERVED_BODY_KEYS, ...BRAIN_BODY_KEYS]);
+/** Set by the server from the binding/credential (R-2.3, R-5.1); in a link body → BAD_REQUEST. */
+const SERVER_ONLY_LINK_KEYS = new Set(['pack', 'authority']);
 const IDENTITY = new Set<string>(IDENTITY_KEYS);
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?)?$/;
@@ -115,7 +119,12 @@ const NON_RECORD_TYPES = new Set<string>([K.types.typeDef, K.types.predicateDef,
 export function isRecordNode(node: EnvelopeNode): boolean {
   if (BASE_IDS.has(node.id)) return false;
   if (NON_RECORD_TYPES.has(node.type)) return false;
-  return !(node.id.startsWith(ID_PREFIX.typeDef) || node.id.startsWith(ID_PREFIX.predicateDef) || node.id.startsWith(ID_PREFIX.scope));
+  return !(
+    node.id.startsWith(ID_PREFIX.typeDef) ||
+    node.id.startsWith(ID_PREFIX.predicateDef) ||
+    node.id.startsWith(ID_PREFIX.scope) ||
+    node.id.startsWith(ID_PREFIX.lens)
+  );
 }
 
 /**
@@ -194,8 +203,10 @@ function scopeLabelOf(id: string, lookup: DomainContext['lookup']): string {
 
 function checkFieldValue(name: string, v: unknown, spec: FieldSpec | undefined): BrainError | null {
   if (v === null) return null; // null = clear the field on update
-  if (typeof v === 'string' && byteLen(v) > LIMITS.textMaxBytes) {
-    return brainError('PAYLOAD_TOO_LARGE', `field '${name}' exceeds ${LIMITS.textMaxBytes} bytes`);
+  // SPEC-R1 R-01: a field with its own `max_bytes` (schema-author flag) is bounded by it, not by the 4 KB text limit
+  const maxText = spec?.max_bytes ?? LIMITS.textMaxBytes;
+  if (typeof v === 'string' && byteLen(v) > maxText) {
+    return brainError('PAYLOAD_TOO_LARGE', `field '${name}' exceeds ${maxText} bytes`);
   }
   const isStr = typeof v === 'string';
   const isStrList = Array.isArray(v) && v.every((x) => typeof x === 'string');
@@ -203,6 +214,9 @@ function checkFieldValue(name: string, v: unknown, spec: FieldSpec | undefined):
     return brainError('BAD_REQUEST', `field '${name}' must be string | number | boolean | null | string[]`);
   }
   if (!spec) return null; // fields not in the type-def are kept as-is (AC-18 tolerance)
+  if (spec.pattern !== undefined && isStr && !new RegExp(spec.pattern).test(v as string)) {
+    return brainError('BAD_REQUEST', `field '${name}' must match ${spec.pattern}`);
+  }
   switch (spec.kind) {
     case 'text':
     case 'ref':
@@ -222,6 +236,61 @@ function checkFieldValue(name: string, v: unknown, spec: FieldSpec | undefined):
     case 'bool':
       return typeof v === 'boolean' ? null : brainError('BAD_REQUEST', `field '${name}' must be a boolean`);
   }
+}
+
+// ─── Names in ref positions, authority, predicate spellings (SPEC-brain-data-doors R-1, R-5) ──────────
+
+/** R-1.9: a layer NAME (`u:x`, `pack:bt/issue`, `core:task`, `sys:…`) is never a node id in a ref position. */
+function nameInRefError(where: string, values: readonly unknown[]): BrainError | null {
+  const bad = values.find((v) => isNameLikeRef(v));
+  return bad === undefined
+    ? null
+    : brainError('BAD_REQUEST', `${where}: '${String(bad)}' is a type/predicate name, not a record/scope id`);
+}
+
+/** The reader's credential-derived authority (R-5.1). Absent ≡ 'agent' (fail-closed). */
+export const authorityOf = (reader: Reader): Authority => (reader.authority === 'owner' ? 'owner' : 'agent');
+
+/**
+ * Edges to write for `pred → target` over a record's existing edges, across predicate SPELLINGS (R-1.7):
+ *  - an existing edge to the same target under ANY spelling (legacy `lives-in` ≡ `u:lives-in`) is reused with
+ *    ITS spelling → same edge id, no second edge for one fact;
+ *  - otherwise the canonical spelling is written;
+ *  - cardinality `one`: active edges of the same predicate under ANOTHER spelling with another target are
+ *    retracted (the engine's fold only replaces within one spelling).
+ */
+function spellingAwareEdges(
+  fromId: string,
+  existing: readonly Edge[],
+  pred: PredicateDef,
+  target: string,
+  meta: (prev: Edge | undefined) => EdgeMeta,
+): { main: Edge; retractions: Edge[] } {
+  const prev = [...existing].reverse().find((e) => samePredicate(e.predicate, pred.name) && e.target === target);
+  const spelling = prev?.predicate ?? pred.name;
+  const main = makeEdge(fromId, spelling, target, meta(prev));
+  const retractions: Edge[] = [];
+  if (pred.cardinality === 'one' && edgeStatus(main) === 'active') {
+    for (const e of existing) {
+      if (edgeStatus(e) !== 'active' || e.target === target || e.predicate === spelling) continue;
+      if (!samePredicate(e.predicate, pred.name)) continue;
+      retractions.push(makeEdge(fromId, e.predicate, e.target, { ...(e.meta as unknown as EdgeMeta), status: 'retracted' }));
+    }
+  }
+  return { main, retractions };
+}
+
+/**
+ * SPEC-R1 R-04: who may change an EXISTING record of an `approval: owner` type. Owner authority — always; an
+ * agent-authority writer — only its own still-proposed record (edit / retract; activation is refused elsewhere).
+ */
+function approvalOwnerChangeError(rec: DomainRecord, def: TypeDef | undefined, authority: Authority, actor: string): BrainError | null {
+  if (def?.approval !== 'owner' || authority === 'owner') return null;
+  if (rec.status === 'proposed' && rec.meta.author === actor) return null;
+  return brainError(
+    'WRITE_DENIED',
+    `${rec.id} (type ${def.name}, ${rec.status}) changes only with owner authority — propose a new record instead`,
+  );
 }
 
 // ─── record ─────────────────────────────────────────────────────────────────────────────────────────
@@ -253,13 +322,15 @@ export function planRecord(
     if (IDENTITY.has(k)) return brainError('IDENTITY_FIELD', `identity field '${k}' is not accepted in fields`);
     if (RESERVED_FIELD_NAMES.has(k)) return brainError('RESERVED_FIELD', `field '${k}' is reserved (server-owned)`);
   }
-  if (byteLen(JSON.stringify(rawFields)) > LIMITS.fieldsMaxBytes) {
-    return brainError('PAYLOAD_TOO_LARGE', `fields exceed ${LIMITS.fieldsMaxBytes} bytes`);
+  // SPEC-R1 R-01: the 64 KB per-act aggregate first (cheap, before the type is known); the 8 KB budget of
+  // ordinary fields is checked once the type-def says which fields carry their own `max_bytes` (step 6c)
+  if (byteLen(JSON.stringify(rawFields)) > LIMITS.actFieldsMaxBytes) {
+    return brainError('PAYLOAD_TOO_LARGE', `fields exceed ${LIMITS.actFieldsMaxBytes} bytes per act`);
   }
 
-  // 2. datetime normalization in EVERY string before anything is checked or scanned (R-9, AC-29)
+  // 2. datetime normalization in EVERY string before anything is checked or scanned (R-9, AC-29) — the
+  //    fields are normalized in step 6c, once the type-def says which of them are `verbatim` (SPEC-R1 R-01)
   const req = normalizeDateTimes(reqIn);
-  const fieldsIn = normalizeDateTimes(rawFields) as Record<string, FieldValue>;
 
   // 3. provenance form (D7, AC-33/43)
   for (const issue of [validateSource(req.source), validateDerivedFrom(req.derived_from), validateLayer(req.layer)]) {
@@ -270,6 +341,20 @@ export function planRecord(
   }
   if (req.visibility !== undefined && req.visibility !== 'scoped' && req.visibility !== 'owner') {
     return brainError('BAD_REQUEST', "visibility must be 'scoped' | 'owner'");
+  }
+  // R-1.9: names never stand in ref positions
+  for (const [where, values] of [
+    ['scopes', Array.isArray(req.scopes) ? req.scopes : []],
+    ['edges[].to', Array.isArray(req.edges) ? req.edges.map((e) => e?.to) : []],
+    ['derived_from', Array.isArray(req.derived_from) ? req.derived_from : []],
+  ] as const) {
+    const e = nameInRefError(where, values);
+    if (e) return e;
+  }
+  // R-5.2: `initiative` from the request can only LOWER the status; owner initiative needs owner authority
+  const authority = authorityOf(reader);
+  if (req.initiative === 'owner' && authority !== 'owner') {
+    return brainError('WRITE_DENIED', "initiative 'owner' requires owner authority (an owner approves via the gateway, not the agent)");
   }
 
   // 4. existing record (update / retract)
@@ -295,7 +380,7 @@ export function planRecord(
 
   const now = ctx.clock.now();
   const iso = now.toISOString();
-  const id = existing ? existing.id : newUnitId(ctx.clock, ctx.random);
+  let id = existing ? existing.id : newUnitId(ctx.clock, ctx.random);
 
   // 5. label (AC: LABEL_REQUIRED)
   let label: string;
@@ -317,11 +402,12 @@ export function planRecord(
   if (existing) {
     declared = existing.declared_type;
     def = ctx.registry.activeType(declared) ?? ctx.registry.type(declared) ?? { name: declared, version: existing.type_v, status: 'active', fields: {} };
-    if (typeof req.type === 'string' && req.type !== '' && req.type !== existing.type && req.type !== declared) {
-      if (!ctx.registry.activeType(req.type)) {
+    if (typeof req.type === 'string' && req.type !== '' && !sameType(req.type, existing.type) && !sameType(req.type, declared)) {
+      const target = ctx.registry.activeType(req.type);
+      if (!target) {
         warnings.push({ code: 'UNKNOWN_TYPE_AS_RAW', message: `type '${req.type}' is not active; reclassification ignored` });
         friction.push({ code: 'UNKNOWN_TYPE', hash: sha256Hex(req.type) });
-      } else reclassTo = req.type;
+      } else reclassTo = target.name; // canonical (R-1.8)
     }
   } else {
     if (typeof req.type !== 'string' || req.type === '') return brainError('BAD_REQUEST', 'type is required');
@@ -341,6 +427,34 @@ export function planRecord(
       });
       friction.push({ code: 'UNKNOWN_TYPE', hash: sha256Hex(req.type) });
     }
+  }
+
+  // 6a'. SPEC-R1 R-04 (reviewer BLOCKER): an `approval: owner` record that is active (or someone else's proposal)
+  //      changes ONLY with owner authority — update, retract, edges alike. An agent's suggested change is a NEW
+  //      proposed record; it never edits the approved one. Its own proposal it may still edit or retract.
+  if (existing) {
+    const e = approvalOwnerChangeError(existing, def, authority, reader.principal);
+    if (e) return e;
+  }
+
+  // 6a. SPEC-R1 R-04: write policy-as-data — `write: owner` types (sys:target, sys:lens) take owner authority
+  if (authority !== 'owner') {
+    for (const t of [def, reclassTo ? ctx.registry.activeType(reclassTo) : undefined]) {
+      if (t?.write === 'owner') return brainError('WRITE_DENIED', `type ${t.name} is written only with owner authority (a service mandate)`);
+    }
+  }
+
+  // 6c. fields: verbatim ones stay byte-for-byte, every other string is datetime-normalized (R-9 / R-01);
+  //     the 8 KB budget covers only fields without their own `max_bytes`
+  const fieldsIn: Record<string, FieldValue> = {};
+  const budgeted: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(rawFields as Record<string, FieldValue>)) {
+    const spec = def.fields[k];
+    fieldsIn[k] = spec?.verbatim === true ? v : normalizeDateTimes(v);
+    if (spec?.max_bytes === undefined) budgeted[k] = v;
+  }
+  if (byteLen(JSON.stringify(budgeted)) > LIMITS.fieldsMaxBytes) {
+    return brainError('PAYLOAD_TOO_LARGE', `fields exceed ${LIMITS.fieldsMaxBytes} bytes`);
   }
 
   // 6b. `name` is lifted from the engine's PII-key list (BRAIN_ALLOW_KEYS) ONLY for person-typed records
@@ -367,6 +481,9 @@ export function planRecord(
       if (merged[f] === undefined && spec.default !== undefined) merged[f] = spec.default;
     }
   }
+  if (byteLen(JSON.stringify(merged)) > LIMITS.actFieldsMaxBytes) {
+    return brainError('PAYLOAD_TOO_LARGE', `merged fields exceed ${LIMITS.actFieldsMaxBytes} bytes per act`);
+  }
   if (!req.retract) {
     for (const [k, v] of Object.entries({ ...fieldsIn, ...extraFields })) {
       const err = checkFieldValue(k, v, def.fields[k]);
@@ -379,6 +496,20 @@ export function planRecord(
     }
   }
 
+  // 7b. SPEC-R1 (reviewer #3): an append-only VERSIONED node (`versioned_node` in the type-def, e.g. sys:lens →
+  //     `lens:<lens_id>@<version>`): a new version is new DATA under a deterministic id; an existing version is
+  //     immutable (CONFLICT) — `record` can never address it again (its id is not a `u_` id).
+  if (!existing && def.versioned_node) {
+    const vn = def.versioned_node;
+    const key = merged[vn.id_field];
+    const ver = merged[vn.version_field];
+    if (typeof key !== 'string' || key === '' || typeof ver !== 'number' || !Number.isInteger(ver) || ver < 1) {
+      return brainError('BAD_REQUEST', `${def.name} needs ${vn.id_field} (string) and ${vn.version_field} (integer ≥1)`);
+    }
+    id = `${vn.prefix}${key}@${ver}`;
+    if (ctx.lookup(id)) return brainError('CONFLICT', `${id} already exists — versions are append-only, write @${ver + 1}`);
+  }
+
   // 8. scopes ⊆ reader scopes (AC-04, AC-10)
   const edgesIn = req.edges ?? [];
   if (!Array.isArray(edgesIn)) return brainError('BAD_REQUEST', 'edges must be a list');
@@ -387,7 +518,8 @@ export function planRecord(
   if (reqScopes !== undefined && (!Array.isArray(reqScopes) || !reqScopes.every((s) => typeof s === 'string' && s !== ''))) {
     return brainError('BAD_REQUEST', 'scopes must be a list of slugs/ids');
   }
-  const scopeEdgeTargets = edgesIn.filter((e) => e?.pred === K.preds.inScope).map((e) => e.to);
+  const isScopeEdge = (e: { pred?: unknown } | null | undefined) => typeof e?.pred === 'string' && predicateKey(e.pred) === K.preds.inScope;
+  const scopeEdgeTargets = edgesIn.filter(isScopeEdge).map((e) => e.to);
   let scopes: string[];
   if (reqScopes !== undefined || scopeEdgeTargets.length) {
     scopes = [...(reqScopes ?? []), ...scopeEdgeTargets].map((s) => resolveScopeRef(s, ctx.lookup));
@@ -413,12 +545,14 @@ export function planRecord(
     if (!e || typeof e.pred !== 'string' || typeof e.to !== 'string' || e.to === '') {
       return brainError('BAD_REQUEST', 'edge must be {pred, to}');
     }
-    if (e.pred === K.preds.inScope) continue; // handled as scopes above
-    if (e.pred === K.preds.owner) return brainError('RESERVED_FIELD', `'${e.pred}' edge is set by the server`);
-    if (!ctx.registry.activePredicate(e.pred)) {
+    if (isScopeEdge(e)) continue; // handled as scopes above
+    if (predicateKey(e.pred) === K.preds.owner) return brainError('RESERVED_FIELD', `'${e.pred}' edge is set by the server`);
+    const pdef = ctx.registry.activePredicate(e.pred);
+    if (!pdef) {
       return brainError('UNKNOWN_PREDICATE', `unknown predicate '${e.pred}'`, { known: ctx.registry.predicateNames() });
     }
-    newEdges.push(makeEdge(id, e.pred, e.to, edgeMeta()));
+    const { main, retractions } = spellingAwareEdges(id, [...(existing?.edges ?? []), ...newEdges], pdef, e.to, () => edgeMeta());
+    newEdges.push(main, ...retractions);
   }
   // scope edges: add new, retract dropped (merge keeps author/created_at of surviving ones)
   const prevScopeEdges = existing ? existing.edges.filter((e) => e.predicate === K.preds.inScope) : [];
@@ -432,14 +566,23 @@ export function planRecord(
     }
   }
   if (!existing) newEdges.push(makeEdge(id, K.preds.owner, reader.principal, edgeMeta()));
-  if (reclassTo) newEdges.push(makeEdge(id, K.preds.instanceOf, typeDefId(reclassTo), edgeMeta()));
+  // R-1.6: the reclassification targets the def NODE of the type (legacy `typedef:idea` for `u:idea`)
+  if (reclassTo) newEdges.push(makeEdge(id, K.preds.instanceOf, ctx.registry.defNodeId('type', reclassTo) ?? typeDefId(reclassTo), edgeMeta()));
 
-  // 10. status (AC-45: agent initiative → proposed) and visibility (AC-10, AC-31)
+  // 10. status (AC-45: agent initiative → proposed; R-5: approval only from owner AUTHORITY) and visibility
   let status: RecordStatus;
   if (req.retract) status = 'retracted';
-  else if (!existing) status = req.initiative === 'agent' ? 'proposed' : 'active';
-  else if (existing.status === 'proposed' && req.initiative === 'owner') status = 'active';
+  else if (!existing) {
+    // R-5.5: a type whose def says `approval: owner` starts proposed when an agent-authority reader creates it
+    status = req.initiative === 'agent' || (authority !== 'owner' && def.approval === 'owner') ? 'proposed' : 'active';
+  } else if (existing.status === 'proposed' && req.initiative === 'owner') status = 'active'; // owner authority checked above
   else status = existing.status;
+  // R-5.3: leaving `proposed` — activation always, any status change of SOMEONE ELSE's proposal — owner authority only
+  if (existing?.status === 'proposed' && status !== 'proposed' && authority !== 'owner') {
+    if (status === 'active' || existing.meta.author !== actor) {
+      return brainError('WRITE_DENIED', `changing the status of a proposed record requires owner authority`);
+    }
+  }
 
   const ownerTarget = existing?.meta.owner ?? reader.principal;
   const allEdges = [...(existing?.edges ?? []), ...newEdges];
@@ -481,6 +624,8 @@ export function planRecord(
     extras: {
       ...(opts.idem ? { idem: opts.idem } : {}),
       ...(req.initiative ? { initiative: req.initiative } : {}),
+      authority,
+      ...(reader.pack ? { pack: reader.pack } : {}),
       ...(req.derived_from ? { derived_from: req.derived_from } : {}),
       ...(req.source ? { source: req.source } : {}),
       ...(req.layer !== undefined ? { layer: req.layer } : {}),
@@ -525,14 +670,19 @@ export function planLink(req: LinkRequest, reader: Reader, ctx: DomainContext, o
   if (!reader.write) return brainError('WRITE_DENIED', `reader '${reader.key}' has no write right`);
   for (const k of Object.keys(req)) {
     if (IDENTITY.has(k)) return brainError('IDENTITY_FIELD', `identity field '${k}' is not accepted in the body`);
+    if (SERVER_ONLY_LINK_KEYS.has(k)) return brainError('BAD_REQUEST', `'${k}' is server-owned (from the binding / credential)`);
   }
   if (typeof req.from !== 'string' || typeof req.to !== 'string' || req.to === '' || typeof req.pred !== 'string') {
     return brainError('BAD_REQUEST', 'link needs {from, pred, to}');
   }
-  if (req.pred === K.preds.owner || req.pred === K.preds.inScope) {
+  const predKey = predicateKey(req.pred);
+  if (predKey === K.preds.owner || predKey === K.preds.inScope) {
     return brainError('RESERVED_FIELD', `'${req.pred}' is changed via record (scopes) / by the server`);
   }
-  if (!ctx.registry.activePredicate(req.pred)) {
+  const nameErr = nameInRefError('to', [req.to]);
+  if (nameErr) return nameErr;
+  const pdef = ctx.registry.activePredicate(req.pred);
+  if (!pdef) {
     return brainError('UNKNOWN_PREDICATE', `unknown predicate '${req.pred}'`, { known: ctx.registry.predicateNames() });
   }
   if (req.confidence !== undefined && (typeof req.confidence !== 'number' || req.confidence < 0 || req.confidence > 1)) {
@@ -548,31 +698,37 @@ export function planLink(req: LinkRequest, reader: Reader, ctx: DomainContext, o
   if (!from.scopes.some((s) => mine.has(s))) {
     return brainError('SCOPE_DENIED', `${req.from} is outside the reader's scopes`);
   }
+  const fromDef = ctx.registry.type(from.declared_type);
+  const approvalErr = approvalOwnerChangeError(from, fromDef, authorityOf(reader), reader.principal);
+  if (approvalErr) return approvalErr;
 
   const now = ctx.clock.now();
   const status = req.status ?? 'active';
-  const prev = from.edges.find((e) => e.predicate === req.pred && e.target === req.to);
-  const prevMeta = (prev?.meta ?? {}) as Partial<EdgeMeta>;
-  const meta: EdgeMeta = {
-    author: prevMeta.author ?? reader.principal,
-    status,
-    created_at: prevMeta.created_at ?? now.toISOString(),
+  const linkMeta = (prev: Edge | undefined): EdgeMeta => {
+    const prevMeta = (prev?.meta ?? {}) as Partial<EdgeMeta>;
+    const meta: EdgeMeta = {
+      author: prevMeta.author ?? reader.principal,
+      status,
+      created_at: prevMeta.created_at ?? now.toISOString(),
+    };
+    const confidence = req.confidence ?? prevMeta.confidence;
+    if (confidence !== undefined) meta.confidence = confidence;
+    const note = req.note !== undefined ? normalizeDateTimes(req.note) : prevMeta.note;
+    if (note !== undefined) meta.note = note;
+    return meta;
   };
-  const confidence = req.confidence ?? prevMeta.confidence;
-  if (confidence !== undefined) meta.confidence = confidence;
-  const note = req.note !== undefined ? normalizeDateTimes(req.note) : prevMeta.note;
-  if (note !== undefined) meta.note = note;
-
-  const edge = makeEdge(from.id, req.pred, req.to, meta);
+  // R-1.7: one fact = one edge across spellings; `one` retracts the other spelling's other target
+  const { main: edge, retractions } = spellingAwareEdges(from.id, from.edges, pdef, req.to, linkMeta);
   const act = buildEdgeAct({
     from: from.id,
     actId: newActId(ctx.clock, ctx.random),
     actor: reader.principal,
     type: from.declared_type,
     type_v: from.type_v,
-    edges: [edge],
+    edges: [edge, ...retractions],
     now,
     ...(opts.idem ? { idem: opts.idem } : {}),
+    extras: { authority: authorityOf(reader), ...(reader.pack ? { pack: reader.pack } : {}) },
   });
   return {
     act,

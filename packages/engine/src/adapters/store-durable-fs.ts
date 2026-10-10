@@ -39,9 +39,10 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 import { foldInto, project } from '../core/projection.js';
-import { redactAct, splitAct } from '../core/erasure.js';
+import { redactAct } from '../core/erasure.js';
 import type { Act, EnvelopeNode, PredicateRegistry } from '../core/types.js';
 import type { StorePort } from '../ports/store-port.js';
+import { decodeLine, encodeLine, parseJournal } from './journal-codec.js';
 
 /** Thrown when the durable store cannot take the single-writer lock (a live writer already holds it). */
 export class DurableStoreError extends Error {
@@ -168,32 +169,17 @@ export class DurableFsStore implements StorePort {
 
   /**
    * V7 erasure seam ON DISK (S10 / §9-2) — serialize an act into a journal line whose IMMUTABLE audit meta
-   * and its ERASABLE payload zone are physically DE-INTERLEAVED via `splitAct`. The top-level line object
-   * carries the meta fields (`id · actor · provenance · recordedAt · actKind · edges · payloadRef ·
-   * payloadHash`) directly and holds the erasable content under a SEPARATE `erasable` key — never a flat
-   * top-level `payload` key sitting next to the meta. A future hard-erase can shred `erasable` without
-   * rewriting the append-only audit trail. When the act carried no payload, `splitAct` yields
-   * `erasable: undefined`, which JSON.stringify drops — the line is then pure meta (indistinguishable from a
-   * legacy inline line by read, see `lineToAct` back-compat branch).
+   * and its ERASABLE payload zone are physically DE-INTERLEAVED via `splitAct` (the erasable content lives
+   * under a SEPARATE `erasable` key, never a flat top-level `payload`). The line format itself (leading
+   * `"_v":1`, v0 back-compat) is owned by the ONE codec `journal-codec.ts` (SPEC-brain-data-doors R-4.1).
    */
   private actToLine(act: Act): string {
-    const { meta, erasable } = splitAct(act);
-    return `${JSON.stringify({ ...meta, erasable })}\n`;
+    return `${encodeLine(act)}\n`;
   }
 
-  /**
-   * Inverse of `actToLine` — reconstruct the ORIGINAL act from a journal line, re-merging the erasable zone
-   * back onto the meta so the read-model projection sees the same act the writer folded (RISK №1: split with
-   * no symmetric merge breaks round-trip). Back-compat: a legacy line serialized as the whole `act` inline
-   * has no `erasable` key and is returned as-is (its `payload` is already at top level).
-   */
+  /** Inverse of `actToLine` — the codec re-merges the erasable zone (v1 and legacy v0 lines alike). */
   private lineToAct(line: string): Act {
-    const parsed = JSON.parse(line) as Record<string, unknown>;
-    if ('erasable' in parsed) {
-      const { erasable, ...meta } = parsed;
-      return (erasable === undefined ? meta : { ...meta, payload: erasable }) as unknown as Act;
-    }
-    return parsed as unknown as Act; // legacy inline line (payload already at top level)
+    return decodeLine(line);
   }
 
   /**
@@ -212,31 +198,17 @@ export class DurableFsStore implements StorePort {
       this.projection = new Map();
       return;
     }
-    const buf = readFileSync(this.journalPath);
-    let start = 0;
-    let lineNo = 0;
-    while (start < buf.length) {
-      lineNo += 1;
-      const nl = buf.indexOf(0x0a, start);
-      const terminated = nl !== -1;
-      const end = terminated ? nl : buf.length;
-      const line = buf.toString('utf8', start, end);
-      const byteOffset = start;
-      start = end + 1;
-      if (line.trim() === '') continue;
-      if (!terminated) {
-        // C3: torn final chunk — writeAct always emits a full `...\n`, so an unterminated tail is incomplete.
-        this.torn = { lineNo, reason: 'torn-tail', byteOffset };
-        this.opts.onTornTail?.(this.torn);
-        break;
-      }
-      try {
-        this.journal.push(this.lineToAct(line));
-      } catch (e) {
-        this.badLines += 1;
-        this.opts.onBadLine?.({ lineNo, reason: (e as Error).message, byteOffset });
-      }
+    const parsed = parseJournal(readFileSync(this.journalPath));
+    // R-4 / AC-15: bad lines and the torn tail are reported in file order, exactly as before the codec
+    for (const b of parsed.bad) {
+      this.badLines += 1;
+      this.opts.onBadLine?.({ lineNo: b.lineNo, reason: b.reason, byteOffset: b.byteOffset });
     }
+    if (parsed.torn) {
+      this.torn = { lineNo: parsed.torn.lineNo, reason: 'torn-tail', byteOffset: parsed.torn.byteOffset };
+      this.opts.onTornTail?.(this.torn);
+    }
+    this.journal = parsed.acts;
     this.projection = project(this.journal, this.registry);
   }
 
