@@ -1,0 +1,161 @@
+{
+  "type": "decision-wizard",
+  "id": "ff-brain-owner-morning-2026-10-11",
+  "title": "🧭 Память — утренний визард (ночь 2026-10-11)",
+  "pool": "ff-brain",
+  "keyFiles": [
+    "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-11-night-waves/w5-synthesis/SYNTHESIS.md",
+    "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-11-night-waves/OVERVIEW.md",
+    "docs/02-project/core/01-brain/01-overview/05-brain-direction/launch-kit/RUNBOOK.md"
+  ],
+  "steps": [
+    {
+      "title": "0 · 🧭 Что было ночью + как отвечать (30 сек)",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/00-start.md",
+      "note": "Ночь в 5 строках + формат ответа; «ок» = дефолты ⭐, но М1/М2/пояс — твоим словом",
+      "comment": "Читать первым. Сначала абстрактное (М1/М2) → двери 🚪 (М3, М4) → обратимое → запуск → после недели → карта → агенты → итог."
+    },
+    {
+      "title": "1 · М1+М2 Твоя боль и точка «до»",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/01-M1-M2-baseline.question.md",
+      "note": "М1 эпизод «вот бы помнило» + М2 где ведёшь дела — свободный ответ, без дефолта",
+      "comment": "Рамка для остальных вопросов и база гейта. Можно голосом."
+    },
+    {
+      "title": "2 · 🚪 М3 Имена людей в неделю 1",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/02-M3-names.question.md",
+      "note": "🚪 М3 Имена людей: ⭐A роль вместо имени (было: зерно 7) · B близкие · C запись person",
+      "comment": "V7: журнал неудаляемый, сервер имена не ловит. Блок первой записи."
+    },
+    {
+      "title": "3 · 🚪 М4 Первая область personal",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/03-M4-area.question.md",
+      "note": "🚪 М4 Область personal без родителя, компании позже: ⭐да (было: зерно 11) · сразу компании",
+      "comment": "V6: корень над готовой областью потом не подвесить. Блок первой записи."
+    },
+    {
+      "title": "4 · В1 Что меряет неделя 1",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/04-V1-visions.question.md",
+      "note": "В1 Видения недели: ⭐туду+хвосты главное, A/B/C/D раздельно (было: одно видение «диктуешь ты»)",
+      "comment": "Сцеплено с М5/М6/М7."
+    },
+    {
+      "title": "5 · М5 Итоги из разговоров",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/05-M5-summaries.question.md",
+      "note": "М5 Итоги/решения: ⭐нет в неделю 1 · мягко с дня 4 · 🚪агент пишет сам (было: видение D)",
+      "comment": "Дверь только у варианта «пишет сам»."
+    },
+    {
+      "title": "6 · М6 Как ловить дела + список",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/06-M6-capture.question.md",
+      "note": "М6 Захват: ⭐B «записать?» после да + список ≤3 (было: диктуешь + итог хода)",
+      "comment": "C (пишет сам) = дверь по V7."
+    },
+    {
+      "title": "7 · М8 Кнопка «Всегда»",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/07-M8-always.question.md",
+      "note": "М8 ⭐«Всегда» (твоё решение 10-10) · или терпеть кнопку до чистого export дня 3",
+      "comment": "Кнопка = единственная проверка имён/секретов до записи. Обратимо: 2 строки в FF/.claude/settings.local.json."
+    },
+    {
+      "title": "8 · М7а Пороги и правило дня 3",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/08-M7a-gate.question.md",
+      "note": "М7а Одно правило дня 3 ⭐принять (было: два правила); порог 10 дел требует и диктовки",
+      "comment": "База 18 сообщений/нед — знать до «да»."
+    },
+    {
+      "title": "9 · М7б Часовой пояс",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/09-M7b-timezone.question.md",
+      "note": "М7б Назови пояс (машина сейчас в PDT, -0700); без ответа гейт не стартует",
+      "comment": "Дефолта нет (было: UTC)."
+    },
+    {
+      "title": "10 · Д1 Фикс дубля голосового",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/10-D1-voice-dup.question.md",
+      "note": "Д1 Дубль голосового: ⭐спасти патч до запуска, посадка в неделю 1 (было: живём с дублем)",
+      "comment": "Каждый git-шаг — после «да»; рестарт делает владелец."
+    },
+    {
+      "title": "11 · 🚀 Запуск по RUNBOOK",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/11-launch.md",
+      "note": "🚀 Запуск: RUNBOOK шаги 0→7, смоук 6.2/6.6/6.8",
+      "comment": "Канон кита: launch-kit/."
+    },
+    {
+      "title": "12 · После недели 1/2 — двери П1–П4",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/12-after-week-doors.question.md",
+      "note": "После недели: 🚪П1 стирание · П2 секретарь · П3 первый проект · П4 дом задачи",
+      "comment": "Сейчас не отвечать — день 7 или триггер."
+    },
+    {
+      "title": "13 · После недели 2/2 — П5–П8",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/13-after-week-reversible.question.md",
+      "note": "После недели: П5 доверие по месту · П6 push · 🚪П7 второй читатель · П8 приборы",
+      "comment": "По данным недели."
+    },
+    {
+      "title": "14 · 🗺 Направления и триггеры",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/14-directions.md",
+      "note": "🗺 Карта: память · шлюз · cardex · ga-rentacar · лупы — когда стартуют",
+      "comment": "Сквозное не построено при триггере → стоп-кран только для этого направления."
+    },
+    {
+      "title": "15 · 🤖 Как запускать агентов",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/15-agent-launch.question.md",
+      "note": "🤖 Карточка 5 пунктов + 3 конверта; Р1 подтверди 3 правила",
+      "comment": "Спорные S1–S12 решает лид."
+    },
+    {
+      "title": "16 · ✅ Итог и хендофф",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-owner-morning/16-summary.md",
+      "note": "✅ Итог: шаблон ответа одной строкой + что дальше",
+      "comment": "Открыто +17 / закрыто 4 поломки + 3 развилки."
+    }
+  ],
+  "thinking": {
+    "goal": "Провести владельца утром по вопросам ночи: сначала абстрактное (боль и точка «до», по просьбе владельца), затем односторонние двери, обратимое, запуск, после-недельный слой, карта направлений и запуск агентов.",
+    "phase": "DESIGN → запуск памяти (день 0)",
+    "answer_format": "Одна строка в топик: «М1 … · М2 … · М3 A · М4 да · … · М7б -7» или «ок» = дефолты ⭐ + М1/М2/пояс своими словами",
+    "stage_map": [
+      {
+        "stage": "W1–W4",
+        "text": "Ночь: 4 волны, 19 отчётов",
+        "status": "done"
+      },
+      {
+        "stage": "W5",
+        "text": "Свод + патчи кита + этот визард",
+        "status": "done"
+      },
+      {
+        "stage": "W6",
+        "text": "ТЫ ЗДЕСЬ: ответы М1–М8 (М7а/М7б), В1, Д1, Р1",
+        "status": "in-progress"
+      },
+      {
+        "stage": "W7",
+        "text": "Запуск по RUNBOOK, 7 дней гейта",
+        "status": "waiting-owner"
+      },
+      {
+        "stage": "W8",
+        "text": "П1–П8 на дне 7 или по триггеру",
+        "status": "later"
+      }
+    ],
+    "open_for_owner": [
+      "М1+М2 боль и точка «до» (без дефолта)",
+      "М3 имена (🚪)",
+      "М4 область personal (🚪)",
+      "В1 видения недели",
+      "М5 итоги",
+      "М6 захват + список",
+      "М8 «Всегда» (решено 10-10 — подтвердить)",
+      "М7а пороги + день 3",
+      "М7б часовой пояс (без дефолта)",
+      "Д1 путь фикса дубля",
+      "Р1 три правила агентов"
+    ],
+    "source": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-11-night-waves/w5-synthesis/SYNTHESIS.md §6"
+  }
+}
