@@ -53,3 +53,6 @@
 Хендофф арки: `docs/_log/2026-10-05-personal-memory-launch/HANDOFF-2026-10-09.md` (блок ОБНОВЛЕНИЕ) ·
 Плагины/типы: `docs/02-project/core/01-brain/02-infrastructure/04-modules/M-G3-type-registry-policy/analyses/2026-10-09-plugins-and-system-types/OVERVIEW.md` ·
 G1: `docs/_log/2026-10-05-personal-memory-launch/g1/BUILD-g1.md`.
+
+## Видение «конструктор для ИИ» (2026-10-11, candidate)
+Один экран: `ideas/2026-10-11-constructor-for-ai.idea.md` — 6 слоёв (принципы → паттерны → пакеты → системы → экземпляры → виды), первая система «луп — развивать память», 5 корневых вопросов К1–К5. Новая сессия «захват в граф» стартует отсюда (вход: `analyses/2026-10-11-capture-graph-intake/INTAKE.md`).
