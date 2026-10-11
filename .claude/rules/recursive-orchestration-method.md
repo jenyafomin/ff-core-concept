@@ -9,6 +9,7 @@
   - Скиллы: `~/.claude/skills/fable-orchestrator/SKILL.md` · `~/.claude/skills/movement-selfcheck/SKILL.md` · `~/.claude/skills/concept-first/SKILL.md` · `~/.claude/skills/ask-council/SKILL.md` · `~/.claude/skills/value-decomposition/SKILL.md`
   - Агент: `.claude/agents/co-orchestrator.md` (ПОМОЩНИК)
   - Правила: `~/.claude/rules/orchestration-sync-under-gateway.md` (синхронно волнами) · `.claude/rules/doc-tree.md` (дерево) · `docs/01-organization/rules-and-skills/investigation-economics/RULE.md` (экономика веера)
+  - Петля вопросов: `.claude/rules/altitude-question-loop.md` (обязательный цикл правильных вопросов на старте/конце сессии; форма законов 1/6/8)
 
 > Зачем это правило ОТДЕЛЬНО от скиллов: скиллы грузятся только по триггеру, поэтому метод регулярно
 > забывается (сессия сваливается в детали, помощник не привлекается, ценности не проверяются). Это
