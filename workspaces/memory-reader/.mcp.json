@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gw-reader": {
+      "command": "node",
+      "args": ["--no-warnings", "/Users/mac16/Documents/IT/Apps/FF-Personal-Managment/packages/gw-reader/dist/index.js"]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@ff/gw-reader",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Read-only stdio MCP over the gateway message log (ADR-0018): gw_recent · gw_resolve · gw_topics · gw_label · gw_labels. Owner-only inbound, forwarded excluded, secrets redacted line-by-line BEFORE the model sees text. Never writes the gateway DB.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "ff-gw-reader": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit",
+    "test": "vitest run",
+    "smoke:live": "tsx smoke/live-counts.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1"
+  }
+}
