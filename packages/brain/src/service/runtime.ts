@@ -47,7 +47,7 @@ import type { ScopeSeed } from '../domain/genesis.js';
 import { cryptoRandom, systemClock } from '../domain/ids.js';
 import { bootBrain, type BrainDomain } from '../domain/schemas.js';
 import { brainError, commitRecord, engineRefusalToError } from '../domain/to-act.js';
-import { planLink, planRecord, targetMissingFor, type DomainContext } from '../domain/validate-act.js';
+import { planLink, planRecord, readerScopeIds, targetMissingFor, type DomainContext } from '../domain/validate-act.js';
 import { createReadGate, createReaderResolver, isRecordNode, type ReadDeps } from '../read/access.js';
 import { find as findVerb } from '../read/find.js';
 import { lens as lensVerb } from '../read/lens.js';
@@ -218,7 +218,7 @@ export class BrainService implements BrainPort {
       const payload = plan.act.payload;
       // F-7/F-8: the receipt the owner reads — the task's own status, every scope (same builder as idem replay)
       return payload && typeof payload === 'object'
-        ? { ...res, receipt: recordReceipt(payload as Record<string, unknown>, res.id, res.type, this.domain.store, new Set(reader.scopes)) }
+        ? { ...res, receipt: recordReceipt(payload as Record<string, unknown>, res.id, res.type, this.domain.store, readerScopeIds(reader, (id) => this.domain.store.readNode(id))) }
         : res;
     });
   }
@@ -356,7 +356,7 @@ export class BrainService implements BrainPort {
   /** F-8: every scope of the link's source record (falls back to the plan's single scope label). */
   private linkScopes(plan: { act: Parameters<typeof sourceRefOf>[0]; scopeLabel: string }, reader: Reader): string {
     const from = sourceRefOf(plan.act);
-    return (typeof from === 'string' ? scopesLabelOf(from, this.domain.store, new Set(reader.scopes)) : '') || plan.scopeLabel;
+    return (typeof from === 'string' ? scopesLabelOf(from, this.domain.store, readerScopeIds(reader, (id) => this.domain.store.readNode(id))) : '') || plan.scopeLabel;
   }
 
   private readDeps(): ReadDeps {
@@ -406,7 +406,7 @@ export class BrainService implements BrainPort {
           if (prev.verb !== verb) return fail(brainError('BAD_REQUEST', `idem already used for '${prev.verb}', not '${verb}'`));
           const ctx = this.ctx(reader);
           const dangling = (target: string) => targetMissingFor(reader, target, ctx);
-          return replayAnswer(prev, prev.body !== undefined && prev.body !== bodyTag, new Set(reader.scopes), dangling) as T;
+          return replayAnswer(prev, prev.body !== undefined && prev.body !== bodyTag, readerScopeIds(reader, ctx.lookup), dangling) as T;
         }
       }
       if (!this.rate.take(rateKey(caller, reader), Date.now())) {

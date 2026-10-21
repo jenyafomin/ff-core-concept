@@ -34,7 +34,16 @@ bash packages/brain/scripts/launch-brain.sh
 ```
 Ожидаемо: `node v22.23.2` · `dist built` · `wrote service.json` · `wrote readers.json` · `socket up` · health `"ok": true` ·
 `service created token` · в конце dry-run импортёра (`failed []`). Подробности и откат — `RUNBOOK.md` шаг 1.
+- Отдельно собирать не нужно: скрипт сам пересобирает `dist` всех четырёх пакетов памяти (строка `dist built`), поэтому последние
+  исправления кода попадают в запуск автоматически.
+- ⚠️ **Не выполняй `pm2 update` и `pm2 kill`**, даже если pm2 пишет красным «In-memory PM2 is out-of-date, do: pm2 update». Это
+  только баннер (в памяти pm2 5.4.2, локально 7.0.3, на работу `ff-brain` не влияет), а `pm2 update` перезапускает живого агента шлюза и
+  обрывает идущие ходы в Telegram.
+- ⚠️ **В конце скрипт напечатает блок «NEXT … pm2 restart agent … .env».** Это шаги RUNBOOK 3–5 (подключение шлюза), **в Этапе 1
+  их НЕ делаем**: ни `prompt:import`, ни правки `.env`, ни `pm2 restart agent`. `pm2 save` (шаг C ниже) делаем, остальное из блока пропускаем.
 - **Откат:** `pm2 stop ff-brain` и затем `pm2 delete ff-brain`. Папка памяти остаётся.
+- Файл `~/.config/ff-brain/mcp.json` (нужен в шагах E и F) уже есть, проверить: `cat ~/.config/ff-brain/mcp.json`. Если файла нет — скопируй
+  шаблон: `mkdir -p ~/.config/ff-brain && cp $KIT/mcp-config.template.json ~/.config/ff-brain/mcp.json`.
 
 ## Шаг B. Бэкап есть (RUNBOOK шаг 1б), ~3 мин
 ```
@@ -91,9 +100,8 @@ claude --mcp-config ~/.config/ff-brain/mcp.json
    > `"source": {"kind": "file", "ref": "repo:ff/docs/architecture/ADR/ADR-0016-cross-project-brain.md", "hash": "<хеш>"}`.
    > Больше ничего не меняй. Покажи ответ инструмента целиком.
 5. На кнопку разрешения инструмента ответь «да» (разово). Ожидаемо: `"ok": true`, `"type": "note"`, `"warnings": []` и строка
-   `Записано: ADR-0016: один мозг на все проекты → … · note/active · #xxxxxx`. **Запиши себе полный `id` (`u_…`)**, он нужен в шаге H.
-   ⚠️ Известная мелочь: в строке «Записано» после стрелки область может быть пустой (`→  ·`). Это косметика квитанции, запись при этом
-   в нужных областях. Агент нашёл это на копии, см. отчёт.
+   `Записано: ADR-0016: один мозг на все проекты → ff, agents-manager · note/active · #xxxxxx`. **Запиши себе полный `id` (`u_…`)**, он понадобится в Этапе 2
+   (метка тождества в ADR-0016, см. блок «Перенесено в Этап 2» ниже).
 - **Проверка:** `cd /Users/mac16/Documents/IT/Apps/FF-Personal-Managment && node packages/brain/dist/bin/ff-brain.js stats`.
   Ожидаемо: `"by_type": {"note": 1, …}`, `"by_scope"` содержит `ff` и `agents-manager`.
 - **Если `DEFAULT_DENY`:** Claude Code запущен не из папки FF, или шаг D не применён.
@@ -104,6 +112,7 @@ cd /Users/mac16/Documents/IT/Apps/TOOLS/agents-manager
 claude --mcp-config ~/.config/ff-brain/mcp.json
 ```
 Спроси: **«что решено про мозг в FF? посмотри в памяти ff-brain»**.
+Claude Code спросит разрешение на инструменты `find` и `read` — отвечай «да» (разово).
 Ожидаемо: агент вызывает `find` (scope `ff`, text «мозг»), затем `read` по найденному id и отвечает: label «ADR-0016: один мозг на все
 проекты», путь `repo:ff/docs/architecture/ADR/ADR-0016-cross-project-brain.md`. Если нужно подробнее, он открывает сам файл.
 - Это и есть выход этапа: запись сделана в одном проекте, а прочитана в другом.
@@ -117,20 +126,16 @@ pm2 restart ff-brain
 ```
 Затем:
 ```
-bash $KIT/restore-rehearsal.sh
+bash $KIT/restore-rehearsal.sh --cleanup
 ```
+`--cleanup` удаляет временную копию в `/tmp` в конце (в ней копия личных данных, не оставляй её лежать). Если будет `FAIL`, а копия нужна
+для разбора, запусти без `--cleanup`: путь к копии скрипт напечатает.
 Ожидаемо: `sha256 OK` · `last line is valid JSON` · `mirror holds the same file` · `copy bad_lines 0` · `copy acts N = backup lines` ·
 `copy stats … by_type {"note":1}` · `backup lag: 0 act(s)` · `REHEARSAL PASS`. Копия остаётся в `/tmp/ff-brain-restore.XXXXXX`,
 удалить её можно командой, которую напечатает скрипт (или добавь `--cleanup`).
 - Если `FAIL`, на этот бэкап не полагаться. Настоящее восстановление при аварии описано в `RUNBOOK.md`, раздел «Восстановление из бэкапа».
 
-## Шаг H. Метка тождества в ADR-0016 (агент + твоё «да»), ~2 мин
-Скажи лиду «да» на отдельный коммит: агент впишет `brain_id: u_…` (id из шага E) во frontmatter ADR-0016.
-⚠️ После этого хеш файла изменится, и `source.hash` в карточке станет старым. Сразу после коммита агент FF (Claude Code с `--mcp-config` в
-папке FF) обновляет запись: `record` с тем же `id`, `type: note`, тем же `label` и новым `source.hash`. Это одна команда, и
-в roadmap она отмечена как находка.
-
-## Шаг I (по желанию). Ежедневный снимок M5
+## Шаг H (по желанию). Ежедневный снимок M5
 Разово, вручную. Ожидаемо: `m5: appended to …/docs/_log/ff-brain-metrics/<дата>.jsonl (ok:true)`:
 ```
 node $KIT/m5-snapshot.mjs
@@ -141,14 +146,20 @@ node $KIT/m5-snapshot.mjs
 
 ---
 
+## Перенесено в Этап 2: метка тождества `brain_id` в ADR-0016
+В Этапе 1 ADR-0016 **не правим**. Круг хеша: `brain_id` меняет файл → hash записи устаревает; решаем в ADR-0019
+(hash без строки `brain_id` или `brain_id` вне файла). `id` записи из шага E сохрани до Этапа 2.
+
+---
+
 ## Если что-то пошло не так
 | Симптом | Что делать |
 |---|---|
 | `stage1-scopes.sh` пишет `STOP: … missing` | не выполнен шаг A |
 | `STOP: scope … exists with kind …` | область с таким именем уже есть с другим видом. Ничего не записано, спроси лида |
-| `acts N → N` после `--apply` | `pm2 logs ff-brain --lines 50`, затем откат командой из вывода скрипта |
+| `acts N → N` после `--apply` | чаще всего скрипт спросил сервис раньше, чем тот перезапустился. Подожди 10 секунд, выполни `cd /Users/mac16/Documents/IT/Apps/FF-Personal-Managment && node packages/brain/dist/bin/ff-brain.js stats`: в `by_scope` должны быть `ff` и `agents-manager`. Если нет: `pm2 logs ff-brain --lines 50`, затем откат командой из вывода скрипта |
 | Claude Code не видит инструментов `ff-brain` | проверь путь `~/.config/ff-brain/mcp.json`, а в Claude Code выполни `/mcp` (сервер `ff-brain` должен быть connected) |
 | `SCOPE_DENIED` при записи | FF-запись не получила области, повтори шаг D |
 | Всё сломалось | урезание по roadmap: запись в `personal` и чтение через `ff-brain.js export personal` руками |
 
-Итог: решение — Этап 1 исполним шагами A–H (руки владельца ~1–1.5 ч, 1 рестарт `ff-brain`, 0 рестартов шлюза); открыто: «Что обнаружили» заполняет владелец после шага F.
+Итог: решение — Этап 1 исполним шагами A–G (+H по желанию; руки владельца ~1–1.5 ч, 1 рестарт `ff-brain`, 0 рестартов шлюза); открыто: «Что обнаружили» заполняет владелец после шага F; метка `brain_id` в ADR-0016 — Этап 2 (ADR-0019).

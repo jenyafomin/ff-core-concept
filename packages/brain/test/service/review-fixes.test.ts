@@ -14,7 +14,7 @@ import { MAX_BODY_BYTES } from '../../src/service/http.js';
 import { nodeIo, repairTornTail, type DurableIo } from '../../src/service/journal.js';
 import { argsHash } from '../../src/service/runtime.js';
 import type { RunningBrain } from '../../src/service/server.js';
-import { GROUP, THREAD_AGENTS, UNKNOWN_CHAT, makeBrainFixture, type BrainFixture } from '../support/brain-fixture.js';
+import { GROUP, THREAD_AGENTS, THREAD_BRAIN, UNKNOWN_CHAT, defaultReaders, makeBrainFixture, type BrainFixture } from '../support/brain-fixture.js';
 
 import { BRAIN_ROUTES, client, makeHome, OWNER_ID, ownerClient, raw, recordsOfType, start, userRecords } from './_helpers.js';
 
@@ -178,6 +178,42 @@ describe('F-7 / F-8: the receipt the owner reads', () => {
     const note = await ag.record({ type: 'note', label: 'Агентская', fields: { text: 'x' } });
     const l = await ag.link({ from: r.id, pred: 'about', to: note.ok ? note.id : '' });
     expect(l.ok && l.receipt).toMatch(/^Записано: Общая задача → agents · task\/active · #/);
+  });
+
+  it('readers.json lists scopes as SLUGS (real Stage-1 config) → the live receipt still names the scope', async () => {
+    const readers = defaultReaders();
+    readers.chats[THREAD_BRAIN] = { default_scope: 'brain', scopes: ['brain'] };
+    fx = makeHome(readers);
+    b = await start(fx);
+    const r = await ownerClient(fx, '20').record({ type: 'note', label: 'Слаг-область', fields: { text: 'x' } });
+    expect(r.ok && r.receipt).toMatch(/^Записано: Слаг-область → brain · note\/active · #[a-z0-9]{6}$/);
+  });
+
+  it('SLUG scopes → the link receipt names EVERY scope of the source record', async () => {
+    const readers = defaultReaders();
+    readers.chats[THREAD_BRAIN] = { default_scope: 'brain', scopes: ['brain', 'agents'] };
+    fx = makeHome(readers);
+    b = await start(fx);
+    const r = await ownerClient(fx, '21').record({ type: 'note', label: 'Слаг-источник', scopes: ['brain', 'agents'], fields: { text: 'x' } });
+    const n = await ownerClient(fx, '22').record({ type: 'note', label: 'Слаг-цель', fields: { text: 'y' } });
+    expect(r.ok && n.ok).toBe(true);
+    if (!r.ok || !n.ok) return;
+    const l = await ownerClient(fx, '23').link({ from: r.id, pred: 'about', to: n.id });
+    expect(l.ok && l.receipt).toMatch(/^Записано: Слаг-источник → brain, agents · note\/active · #/);
+  });
+
+  it('SLUG scopes → the idem replay after a restart repeats the same receipt (scope named)', async () => {
+    const readers = defaultReaders();
+    readers.chats[THREAD_BRAIN] = { default_scope: 'brain', scopes: ['brain'] };
+    fx = makeHome(readers);
+    b = await start(fx);
+    const r = await ownerClient(fx, '24').record({ type: 'note', label: 'Слаг-повтор', fields: { text: 'x' } });
+    expect(r.ok && r.receipt).toMatch(/^Записано: Слаг-повтор → brain · note\/active · #[a-z0-9]{6}$/);
+    if (!r.ok) return;
+    await b.stop();
+    b = await start(fx);
+    const replay = await ownerClient(fx, '24').record({ type: 'note', label: 'Слаг-повтор', fields: { text: 'x' } });
+    expect(replay).toMatchObject({ ok: true, id: r.id, dedup: true, receipt: r.receipt });
   });
 });
 
