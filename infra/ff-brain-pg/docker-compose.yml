@@ -1,0 +1,33 @@
+# ff-brain Postgres — separate from Cardex `pg` (5432). Bind 127.0.0.1:5433 only.
+# Up:   docker compose -f infra/ff-brain-pg/docker-compose.yml --env-file infra/ff-brain-pg/.env up -d
+# Docs: infra/ff-brain-pg/README.md
+name: ff-brain
+
+services:
+  ff-brain-pg:
+    image: postgres:17.6-alpine
+    container_name: ff-brain-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?set in .env}
+      POSTGRES_USER: ${POSTGRES_USER:?set in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in .env}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - ff-brain-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    labels:
+      com.ff.project: "ff-brain"
+      com.ff.role: "postgres"
+
+volumes:
+  ff-brain-pg-data:
+    name: ff-brain-pg-data
+    labels:
+      com.ff.project: "ff-brain"

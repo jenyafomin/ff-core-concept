@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "ff-brain": {
+      "type": "stdio",
+      "command": "/Users/mac16/.nvm/versions/node/v22.23.2/bin/node",
+      "args": ["/Users/mac16/Documents/IT/Apps/FF-Personal-Managment/packages/brain-mcp/dist/index.js"]
+    }
+  }
+}
