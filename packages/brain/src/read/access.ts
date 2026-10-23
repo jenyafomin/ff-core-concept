@@ -120,8 +120,10 @@ function applyWriteScopes(reader: Reader, binding: ChatBinding | CliBinding): vo
   const ws = Array.isArray(binding.write_scopes)
     ? binding.write_scopes.filter((s): s is string => typeof s === 'string' && s !== '')
     : [];
-  reader.write_scopes = ws;
-  reader.write = ws.length > 0;
+  // an explicit `write: false` on the (merged) binding wins — fail closed, never re-opened by inherited write_scopes
+  const off = binding.write === false;
+  reader.write_scopes = off ? [] : ws;
+  reader.write = !off && ws.length > 0;
 }
 
 /** Why a readers.json binding is unusable (R-2.2), or null. Never echoes the value (it may be a typo of a secret). */

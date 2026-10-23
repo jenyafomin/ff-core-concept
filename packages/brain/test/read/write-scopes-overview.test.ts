@@ -37,11 +37,17 @@ describe('A1 — resolveReader carries write_scopes', () => {
     chats: { [GROUP]: { scopes: ['scope:brain', 'scope:personal'], write: true }, [THREAD_BRAIN]: thread },
   });
 
-  it('write_scopes set → carried; write = non-empty (a topic-level write:false does not matter)', () => {
-    const r = asReader(resolveReader(readers({ write_scopes: ['scope:brain'], write: false }), ownerInTopic(THREAD_BRAIN)));
+  it('write_scopes set → carried; write = non-empty', () => {
+    const r = asReader(resolveReader(readers({ write_scopes: ['scope:brain'] }), ownerInTopic(THREAD_BRAIN)));
     expect(r.write_scopes).toEqual(['scope:brain']);
     expect(r.write).toBe(true);
     expect(r.scopes).toEqual(['scope:brain', 'scope:personal']); // inherited from the chat (shallow merge)
+  });
+
+  it('explicit write:false wins over write_scopes (fail closed)', () => {
+    const r = asReader(resolveReader(readers({ write_scopes: ['scope:brain'], write: false }), ownerInTopic(THREAD_BRAIN)));
+    expect(r.write_scopes).toEqual([]);
+    expect(r.write).toBe(false);
   });
 
   it('empty or malformed write_scopes → no write (fail closed), legacy write:true is NOT used', () => {
