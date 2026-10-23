@@ -84,6 +84,7 @@ export function resolveReader(readers: ReadersFile, caller: CallerContext): Read
       idem: typeof caller.message_id === 'string' && caller.message_id !== '',
       authority: 'agent',
     };
+    applyWriteScopes(reader, merged);
     if (merged.default_scope) reader.default_scope = merged.default_scope;
     if (merged.pack !== undefined) reader.pack = merged.pack;
     return reader;
@@ -103,9 +104,24 @@ export function resolveReader(readers: ReadersFile, caller: CallerContext): Read
     idem: false,
     authority: 'agent',
   };
+  applyWriteScopes(reader, cli);
   if (cli.default_scope) reader.default_scope = cli.default_scope;
   if (cli.pack !== undefined) reader.pack = cli.pack;
   return reader;
+}
+
+/**
+ * SPEC-access-and-overview: a binding that SETS `write_scopes` writes only there and `write` = non-empty list
+ * (a malformed value → no write, fail closed). ⊆ `scopes` is enforced on canonical ids at write time
+ * (`writeScopeIds`), since slugs and ids may be mixed. Absent → legacy `write` over all `scopes`, untouched.
+ */
+function applyWriteScopes(reader: Reader, binding: ChatBinding | CliBinding): void {
+  if (binding.write_scopes === undefined) return;
+  const ws = Array.isArray(binding.write_scopes)
+    ? binding.write_scopes.filter((s): s is string => typeof s === 'string' && s !== '')
+    : [];
+  reader.write_scopes = ws;
+  reader.write = ws.length > 0;
 }
 
 /** Why a readers.json binding is unusable (R-2.2), or null. Never echoes the value (it may be a typo of a secret). */

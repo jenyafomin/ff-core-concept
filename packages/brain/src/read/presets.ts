@@ -1,9 +1,11 @@
-// @ff/brain/read/presets — morning · evening · open · scope digests (SPEC R-6, AC-44).
+// @ff/brain/read/presets — morning · evening · open · scope · overview digests (SPEC R-6, AC-44;
+// overview: SPEC-access-and-overview A3).
 //
 // Ceiling for every digest: ≤4000 chars, ≤12 lines, the remainder as «ещё N»; every item line carries the
 // label and the id tail. Presets are data-driven by FIELD VALUES (`status`, `priority`, `due`), never by
 // type names (AC-14): any record whose `status` field is an open/done value takes part.
 // Cold records are hidden from presets unless `include_cold` (find itself still finds them).
+// `overview` is the exception: a body-less MAP (counts only, no items), cold records counted as such, ≤1500 chars.
 import { LIMITS, RECEIPT_ID_TAIL, type FindPreset } from '../contract.js';
 
 import type { VisibleRecord } from './access.js';
@@ -22,6 +24,20 @@ export interface PresetResult {
   items: VisibleRecord[];
   digest: string;
   overdue?: number;
+  /** Overrides `total` when the preset returns no items but counts records (overview). */
+  total?: number;
+}
+
+/** One reader scope as the overview shows it. */
+export interface OverviewScope {
+  /** Canonical scope id. */
+  id: string;
+  slug: string;
+  name?: string;
+  /** The reader may write here (✍️), else read only (👁). */
+  write: boolean;
+  /** Scope ids whose records count toward this scope (the scope itself + its member-of descendants). */
+  covers(recordScopes: readonly string[]): boolean;
 }
 
 // ─── helpers ───────────────────────────────────────────────────────────────────────────────────────
@@ -120,6 +136,8 @@ export interface PresetInput {
   includeCold: boolean;
   /** Human label of the scope filter (preset `scope`). */
   scopeLabel?: string;
+  /** The reader's scopes, in binding order (preset `overview`). */
+  scopes?: OverviewScope[];
 }
 
 export function runPreset(i: PresetInput): PresetResult {
@@ -133,6 +151,8 @@ export function runPreset(i: PresetInput): PresetResult {
       return openPreset(pool);
     case 'scope':
       return scopePreset(pool, i.scopeLabel);
+    case 'overview':
+      return overview(i.records, i.scopes ?? []);
   }
 }
 
@@ -184,4 +204,51 @@ function scopePreset(pool: VisibleRecord[], scopeLabel?: string): PresetResult {
     ...all.map((v) => ({ text: itemLine(v), item: true })),
   ];
   return { items: all, digest: capDigest(lines) };
+}
+
+/** Join overview lines under `overviewMaxChars`; the cut tail becomes one «… обрезано» line. */
+function capOverview(lines: string[]): string {
+  const max = LIMITS.overviewMaxChars;
+  const all = lines.join('\n');
+  if (all.length <= max) return all;
+  const kept = [...lines];
+  const render = () => [...kept, `… обрезано (ещё ${lines.length - kept.length} строк)`].join('\n');
+  while (kept.length > 1 && render().length > max) kept.pop();
+  return render().slice(0, max);
+}
+
+const countBy = (xs: string[]): [string, number][] => {
+  const m = new Map<string, number>();
+  for (const x of xs) m.set(x, (m.get(x) ?? 0) + 1);
+  return [...m].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+};
+
+/**
+ * overview: the memory map — per reader scope its mode (✍️ / 👁), record count, type × status counts, cold count
+ * and the day of the last write; plus a total over distinct records. Never items, never bodies (labels neither).
+ */
+function overview(records: VisibleRecord[], scopes: OverviewScope[]): PresetResult {
+  const lastDay = (vs: VisibleRecord[]): string =>
+    vs.reduce((m, v) => {
+      const t = v.touched_at || updatedAtOf(v);
+      return t > m ? t : m;
+    }, '').slice(0, 10);
+  const isCold = (v: VisibleRecord) => v.rec.meta.temperature === 'cold';
+  const writable = scopes.filter((s) => s.write).length;
+  const coldAll = records.filter(isCold).length;
+  const lines: string[] = [
+    `Карта памяти · областей ${scopes.length} (✍️ ${writable} · 👁 ${scopes.length - writable}) · записей ${records.length}` +
+      `${coldAll ? ` · cold ${coldAll}` : ''}${records.length ? ` · посл. ${lastDay(records)}` : ''}`,
+  ];
+  for (const s of scopes) {
+    const mine = records.filter((v) => s.covers(v.rec.scopes));
+    const cold = mine.filter(isCold).length;
+    const head = `${s.write ? '✍️' : '👁'} ${s.slug}${s.name && s.name !== s.slug ? ` «${s.name}»` : ''} · ${mine.length}`;
+    lines.push(`${head}${cold ? ` · cold ${cold}` : ''}${mine.length ? ` · посл. ${lastDay(mine)}` : ''}`);
+    for (const [type, n] of countBy(mine.map((v) => v.rec.type))) {
+      const statuses = countBy(mine.filter((v) => v.rec.type === type).map((v) => statusFieldOf(v) ?? v.rec.status));
+      lines.push(`  ${type} ${n}: ${statuses.map(([st, k]) => `${st} ${k}`).join(', ')}`);
+    }
+  }
+  return { items: [], digest: capOverview(lines), total: records.length };
 }

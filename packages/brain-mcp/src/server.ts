@@ -25,7 +25,7 @@ export const BRAIN_MCP_VERSION = '0.6.0' as const;
 
 const fieldValue = z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(z.string())]);
 const sourceKind = z.enum(SOURCE_KINDS as unknown as ['file', 'act', 'url']);
-const findPreset = z.enum(FIND_PRESETS as unknown as ['morning', 'evening', 'open', 'scope']);
+const findPreset = z.enum(FIND_PRESETS as unknown as ['morning', 'evening', 'open', 'scope', 'overview']);
 
 export const recordInput = {
   type: z.string().min(1).describe('task · decision · note · person · day · raw (сомневаешься — raw)'),
@@ -106,7 +106,8 @@ export function createBrainMcpServer(client: BrainClient): McpServer {
   server.registerTool(
     'find',
     {
-      description: 'Найти записи (без тел). preset: morning|evening|open|scope — сжатый дайджест.',
+      description:
+        'Найти записи (без тел). preset: morning|evening|open|scope — сжатый дайджест; overview — карта памяти (области ✍️/👁, счётчики по типам и статусам, без записей), первый вызов.',
       inputSchema: asSdkShape(findInput),
     },
     async (args: unknown) => toToolResult(await client.find(clean(args as FindRequest))),

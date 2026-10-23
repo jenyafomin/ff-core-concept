@@ -110,6 +110,35 @@ export function readerScopeIds(reader: Reader, lookup: DomainContext['lookup']):
   return new Set(reader.scopes.map((s) => resolveScopeRef(s, lookup)));
 }
 
+/**
+ * Scopes the reader may WRITE to, as canonical ids (SPEC-access-and-overview): `write_scopes ∩ scopes` when the
+ * binding sets `write_scopes` (write ⇒ read; extras outside `scopes` are ignored), else every reader scope (legacy).
+ */
+export function writeScopeIds(reader: Reader, lookup: DomainContext['lookup']): Set<string> {
+  const read = readerScopeIds(reader, lookup);
+  if (reader.write_scopes === undefined) return read;
+  return new Set(reader.write_scopes.map((s) => resolveScopeRef(s, lookup)).filter((s) => read.has(s)));
+}
+
+/**
+ * The scope a record lands in when none is given: `default_scope`, unless the binding sets `write_scopes` and
+ * it is not among them — then the first write scope (SPEC-access-and-overview).
+ */
+function defaultWriteScope(reader: Reader, lookup: DomainContext['lookup']): string | undefined {
+  const def = reader.default_scope ? resolveScopeRef(reader.default_scope, lookup) : undefined;
+  if (reader.write_scopes === undefined) return def;
+  const writable = writeScopeIds(reader, lookup);
+  return def && writable.has(def) ? def : [...writable][0];
+}
+
+/** A scope the reader sees but may not write to → SCOPE_DENIED with a read-only hint (names the scope by slug). */
+function readOnlyScopeError(scope: string, lookup: DomainContext['lookup']): BrainError {
+  const slug = scopeLabelOf(scope, lookup) || scope;
+  return brainError('SCOPE_DENIED', `scope '${slug}' is read-only for this reader`, {
+    hint: `Запись в область ${slug} закрыта для этого чата, есть только чтение — не обходи, скажи владельцу.`,
+  });
+}
+
 // ─── Target visibility (F-2: no references into scopes the reader cannot see) ───────────────────────
 
 const BASE_IDS = new Set(brainBase().map((n) => n.id));
@@ -525,8 +554,8 @@ export function planRecord(
     scopes = [...(reqScopes ?? []), ...scopeEdgeTargets].map((s) => resolveScopeRef(s, ctx.lookup));
   } else if (existing) {
     scopes = [...existing.scopes];
-  } else if (reader.default_scope) {
-    scopes = [resolveScopeRef(reader.default_scope, ctx.lookup)];
+  } else if (defaultWriteScope(reader, ctx.lookup)) {
+    scopes = [defaultWriteScope(reader, ctx.lookup)!];
   } else {
     return brainError('BAD_REQUEST', 'no scopes given and the binding has no default_scope');
   }
@@ -536,6 +565,12 @@ export function planRecord(
   const readerScopes = readerScopeIds(reader, ctx.lookup);
   const denied = scopes.filter((s) => !readerScopes.has(s));
   if (denied.length) return brainError('SCOPE_DENIED', `scope(s) outside the reader: ${denied.join(', ')}`);
+  // per-scope write right: every scope written to AND every reader scope the existing record already sits in
+  // (an update rewrites the record there too) must be writable — legacy bindings: all reader scopes are
+  const writable = writeScopeIds(reader, ctx.lookup);
+  const touched = existing ? [...scopes, ...existing.scopes.filter((s) => readerScopes.has(s))] : scopes;
+  const readOnly = touched.find((s) => !writable.has(s));
+  if (readOnly) return readOnlyScopeError(readOnly, ctx.lookup);
 
   // 9. edges: known predicates only (AC-38); server-owned `owner`
   const actor = reader.principal;
@@ -698,6 +733,10 @@ export function planLink(req: LinkRequest, reader: Reader, ctx: DomainContext, o
   if (!from.scopes.some((s) => mine.has(s))) {
     return brainError('SCOPE_DENIED', `${req.from} is outside the reader's scopes`);
   }
+  // per-scope write right: an edge rewrites the record in every reader scope it sits in
+  const writable = writeScopeIds(reader, ctx.lookup);
+  const readOnly = from.scopes.find((s) => mine.has(s) && !writable.has(s));
+  if (readOnly) return readOnlyScopeError(readOnly, ctx.lookup);
   const fromDef = ctx.registry.type(from.declared_type);
   const approvalErr = approvalOwnerChangeError(from, fromDef, authorityOf(reader), reader.principal);
   if (approvalErr) return approvalErr;

@@ -16,8 +16,10 @@ import {
 import { samePredicate, typeKey } from '../domain/names.js';
 import { brainError, edgeStatus } from '../domain/to-act.js';
 
-import { createReadGate, visibleRecords, type ReadDeps, type VisibleRecord } from './access.js';
-import { byUpdatedDesc, dueOf, runPreset, statusFieldOf, updatedAtOf } from './presets.js';
+import { writeScopeIds } from '../domain/validate-act.js';
+
+import { createReadGate, visibleRecords, type ReadDeps, type ReadGate, type VisibleRecord } from './access.js';
+import { byUpdatedDesc, dueOf, runPreset, statusFieldOf, updatedAtOf, type OverviewScope } from './presets.js';
 
 const FIND_KEYS = new Set([
   'scope', 'type', 'status', 'text', 'due_before', 'edge', 'preset', 'include_cold', 'limit', 'cursor',
@@ -123,6 +125,7 @@ export function find(reader: Reader, req: FindRequest, deps: ReadDeps): BrainRes
 
   let digest: string | undefined;
   let overdue: number | undefined;
+  let total: number | undefined;
   if (req.preset) {
     const scopeLabel = scopeFilter ? labelOfScope(scopeFilter, deps) : undefined;
     const r = runPreset({
@@ -131,21 +134,40 @@ export function find(reader: Reader, req: FindRequest, deps: ReadDeps): BrainRes
       now: deps.clock?.now() ?? new Date(),
       includeCold: req.include_cold === true,
       ...(scopeLabel ? { scopeLabel } : {}),
+      ...(req.preset === 'overview' ? { scopes: overviewScopes(reader, gate, deps) } : {}),
     });
     pool = r.items;
     digest = r.digest;
     overdue = r.overdue;
+    total = r.total;
   } else {
     pool.sort(byUpdatedDesc);
   }
 
   const { limit, offset } = checked;
   const page = pool.slice(offset, offset + limit);
-  const res: FindResponse = { ok: true, items: page.map(toFindItem), total: pool.length };
+  const res: FindResponse = { ok: true, items: page.map(toFindItem), total: total ?? pool.length };
   if (offset + limit < pool.length) res.next_cursor = encodeCursor(offset + limit);
   if (digest !== undefined) res.digest = digest;
   if (overdue !== undefined) res.overdue = overdue;
   return res;
+}
+
+/** The reader's scopes for the overview (binding order), each with its mode and the records it covers. */
+function overviewScopes(reader: Reader, gate: ReadGate, deps: ReadDeps): OverviewScope[] {
+  const writable = reader.write ? writeScopeIds(reader, (id) => deps.store.readNode(id)) : new Set<string>();
+  return [...gate.scopes].map((id) => {
+    const b = (deps.store.readNode(id)?.body ?? {}) as Record<string, unknown>;
+    const slug = typeof b.slug === 'string' ? b.slug : id;
+    const s: OverviewScope = {
+      id,
+      slug,
+      write: writable.has(id),
+      covers: (recordScopes) => gate.closure(recordScopes).has(id),
+    };
+    if (typeof b.name === 'string' && b.name !== '') s.name = b.name;
+    return s;
+  });
 }
 
 function labelOfScope(id: string, deps: ReadDeps): string {

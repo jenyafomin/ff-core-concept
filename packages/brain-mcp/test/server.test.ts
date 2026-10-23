@@ -60,6 +60,19 @@ describe('MCP tools', () => {
     expect(JSON.parse(text)).toMatchObject({ ok: true, id: 'u_1' });
   });
 
+  it('find accepts preset overview and the tool description names it as the memory map', async () => {
+    const h = makeHome();
+    cleanups.push(h.cleanup);
+    const fake = await startFakeBrain(h.socket, () => ({ ok: true, items: [], total: 0, digest: 'Карта памяти' }));
+    cleanups.push(fake.close);
+    const mcp = await connect(new BrainClient({ env: ENV(h.home) }));
+    const { tools } = await mcp.listTools();
+    expect(tools.find((t) => t.name === 'find')!.description).toContain('overview — карта памяти');
+    const res = await mcp.callTool({ name: 'find', arguments: { preset: 'overview' } });
+    expect(res.isError).toBeFalsy();
+    expect(fake.seen[0]!.body).toEqual({ preset: 'overview' });
+  });
+
   it('service down: find → isError SERVICE_DOWN; record → isError queued (no ok:true)', async () => {
     const h = makeHome();
     cleanups.push(h.cleanup);

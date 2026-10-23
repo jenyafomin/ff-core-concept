@@ -136,6 +136,8 @@ export const LIMITS = {
   readMaxNodesMax: 50,
   presetMaxChars: 4000,
   presetMaxLines: 12,
+  /** Preset `overview` (the memory map): ≤1500 chars, cut with a «… обрезано» marker. */
+  overviewMaxChars: 1500,
   morningCarriersMax: 2,
   sourceRefMaxChars: 200,
   frictionPerDay: 50,
@@ -218,8 +220,8 @@ export type Temperature = 'hot' | 'cold';
 export type SourceKind = 'file' | 'act' | 'url';
 export const SOURCE_KINDS: readonly SourceKind[] = ['file', 'act', 'url'];
 export type ScopeKind = 'personal' | 'company' | 'project';
-export type FindPreset = 'morning' | 'evening' | 'open' | 'scope';
-export const FIND_PRESETS: readonly FindPreset[] = ['morning', 'evening', 'open', 'scope'];
+export type FindPreset = 'morning' | 'evening' | 'open' | 'scope' | 'overview';
+export const FIND_PRESETS: readonly FindPreset[] = ['morning', 'evening', 'open', 'scope', 'overview'];
 
 /** D7 provenance pointer (form only in v0.5; `stale` is NOT computed — AC-43). */
 export interface SourceRef {
@@ -313,7 +315,10 @@ export interface FindResponse {
   items: FindItem[];
   total: number;
   next_cursor?: string;
-  /** Preset digest (≤4000 chars, ≤12 lines, remainder as «ещё N»). Present only with `preset`. */
+  /**
+   * Preset digest (≤4000 chars, ≤12 lines, remainder as «ещё N»). Present only with `preset`. `overview` = the
+   * memory map: per visible scope its mode, type × status counts, cold count, last write; no items (≤1500 chars).
+   */
   digest?: string;
   /** morning preset: count of overdue items. */
   overdue?: number;
@@ -510,12 +515,18 @@ export function formatReceipt(p: ReceiptParts): Receipt {
  * One allowlist entry keyed by `chatId` or `chatId:threadId` (narrower key wins). `principal` must be
  * `user:` / `agent:` / `cli:` (ADR-0017 D1); `pack: 'pack:<id>'` = this binding writes ON BEHALF of a pack
  * (stamped into `provenance.pack`, `actor` stays the principal). Malformed → DEFAULT_DENY.
+ *
+ * `write_scopes` (SPEC-access-and-overview): when SET, writes go ONLY to these scopes (each must also be in
+ * `scopes` — write ⇒ read; extras are ignored), `write` is `write_scopes.length > 0`, and a `default_scope` outside
+ * them is replaced by the first write scope. When ABSENT, legacy: `write: true` = write to every scope in `scopes`.
  */
 export interface ChatBinding {
   principal?: string;
   scopes?: string[];
   default_scope?: string;
   write?: boolean;
+  /** Per-scope write right (slugs/ids, ⊆ `scopes`). Absent = legacy `write` over all `scopes`. */
+  write_scopes?: string[];
   personal?: boolean;
   pack?: string;
 }
@@ -526,6 +537,8 @@ export interface CliBinding {
   scopes: string[];
   default_scope?: string;
   write?: boolean;
+  /** Per-scope write right (slugs/ids, ⊆ `scopes`). Absent = legacy `write` over all `scopes`. */
+  write_scopes?: string[];
   personal?: boolean;
   pack?: string;
 }
@@ -555,6 +568,11 @@ export interface Reader {
   scopes: string[];
   default_scope?: string;
   write: boolean;
+  /**
+   * Present only when the binding sets `write_scopes`: the scopes writes may go to (∩ `scopes`, checked on
+   * canonical ids at write time). Absent = every scope in `scopes` (legacy `write`).
+   */
+  write_scopes?: string[];
   personal: boolean;
   /** False for CLI (no message_id → no idem, AC-26). */
   idem: boolean;
