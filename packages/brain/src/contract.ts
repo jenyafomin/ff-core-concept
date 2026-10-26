@@ -322,6 +322,22 @@ export interface FindResponse {
   digest?: string;
   /** morning preset: count of overdue items. */
   overdue?: number;
+  /**
+   * `overview` only: the reader's scopes in binding order (the same set the digest lists, never cut by the
+   * digest ceiling) — so a UI can offer one button per scope. Counts only, no labels or bodies.
+   */
+  scopes?: OverviewScopeView[];
+}
+
+/** One reader scope of the `overview` map (structured twin of its digest line). */
+export interface OverviewScopeView {
+  id: string;
+  slug: string;
+  name?: string;
+  /** ✍️ the reader may write here, else 👁 read only. */
+  write: boolean;
+  /** Visible records covered by the scope (itself + member-of descendants), cold included. */
+  count: number;
 }
 
 // ─── read ───────────────────────────────────────────────────────────────────────────────────────────

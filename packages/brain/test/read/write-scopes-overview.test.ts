@@ -150,6 +150,23 @@ describe('A3 — preset overview (the memory map)', () => {
     expect(d).not.toContain('Агенты');
     expect(d).not.toContain('Секретная');
     expect(d).not.toContain('ТЕЛО');
+    // the scope list as data: binding order, reader scopes only, counts match the digest
+    expect(r.scopes).toEqual([
+      { id: 'scope:brain', slug: 'brain', name: 'Мозг', write: true, count: 3 },
+      { id: 'scope:personal', slug: 'personal', name: 'Личное', write: false, count: 1 },
+    ]);
+    expect(JSON.stringify(r.scopes)).not.toContain('Секретная');
+  });
+
+  it('scopes list is never cut by the digest ceiling; non-overview presets carry no scopes', () => {
+    const many = Array.from({ length: 40 }, (_, i) => ({ slug: `p${i}`, name: `Проект номер ${i} с длинным именем`, kind: 'project' as const }));
+    b = openBrain({ scopes: many });
+    const owner = topicReader({ scopes: many.map((s) => s.slug), write_scopes: ['p0'] });
+    const r = ok(find(owner, { preset: 'overview' }, deps(b)));
+    expect(r.scopes).toHaveLength(40);
+    expect(r.scopes!.at(-1)!.slug).toBe('p39');
+    expect(ok(find(owner, { preset: 'open' }, deps(b))).scopes).toBeUndefined();
+    expect(ok(find(owner, {}, deps(b))).scopes).toBeUndefined();
   });
 
   it('a scope with no records is still listed; legacy writer shows ✍️ everywhere', () => {

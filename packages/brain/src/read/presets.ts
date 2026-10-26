@@ -6,7 +6,7 @@
 // type names (AC-14): any record whose `status` field is an open/done value takes part.
 // Cold records are hidden from presets unless `include_cold` (find itself still finds them).
 // `overview` is the exception: a body-less MAP (counts only, no items), cold records counted as such, ≤1500 chars.
-import { LIMITS, RECEIPT_ID_TAIL, type FindPreset } from '../contract.js';
+import { LIMITS, RECEIPT_ID_TAIL, type FindPreset, type OverviewScopeView } from '../contract.js';
 
 import type { VisibleRecord } from './access.js';
 
@@ -26,6 +26,8 @@ export interface PresetResult {
   overdue?: number;
   /** Overrides `total` when the preset returns no items but counts records (overview). */
   total?: number;
+  /** overview: the scope list as data (binding order, never cut). */
+  scopes?: OverviewScopeView[];
 }
 
 /** One reader scope as the overview shows it. */
@@ -240,8 +242,12 @@ function overview(records: VisibleRecord[], scopes: OverviewScope[]): PresetResu
     `Карта памяти · областей ${scopes.length} (✍️ ${writable} · 👁 ${scopes.length - writable}) · записей ${records.length}` +
       `${coldAll ? ` · cold ${coldAll}` : ''}${records.length ? ` · посл. ${lastDay(records)}` : ''}`,
   ];
+  const views: OverviewScopeView[] = [];
   for (const s of scopes) {
     const mine = records.filter((v) => s.covers(v.rec.scopes));
+    const view: OverviewScopeView = { id: s.id, slug: s.slug, write: s.write, count: mine.length };
+    if (s.name !== undefined) view.name = s.name;
+    views.push(view);
     const cold = mine.filter(isCold).length;
     const head = `${s.write ? '✍️' : '👁'} ${s.slug}${s.name && s.name !== s.slug ? ` «${s.name}»` : ''} · ${mine.length}`;
     lines.push(`${head}${cold ? ` · cold ${cold}` : ''}${mine.length ? ` · посл. ${lastDay(mine)}` : ''}`);
@@ -250,5 +256,5 @@ function overview(records: VisibleRecord[], scopes: OverviewScope[]): PresetResu
       lines.push(`  ${type} ${n}: ${statuses.map(([st, k]) => `${st} ${k}`).join(', ')}`);
     }
   }
-  return { items: [], digest: capOverview(lines), total: records.length };
+  return { items: [], digest: capOverview(lines), total: records.length, scopes: views };
 }
