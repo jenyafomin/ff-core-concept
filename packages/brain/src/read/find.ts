@@ -130,6 +130,7 @@ export function find(reader: Reader, req: FindRequest, deps: ReadDeps): BrainRes
   let digest: string | undefined;
   let overdue: number | undefined;
   let total: number | undefined;
+  let scopeViews: FindResponse['scopes'];
   if (req.preset) {
     const scopeLabel = scopeFilter ? labelOfScope(scopeFilter, deps) : undefined;
     const r = runPreset({
@@ -144,6 +145,7 @@ export function find(reader: Reader, req: FindRequest, deps: ReadDeps): BrainRes
     digest = r.digest;
     overdue = r.overdue;
     total = r.total;
+    scopeViews = r.scopes;
   } else {
     pool.sort(byUpdatedDesc);
   }
@@ -154,6 +156,7 @@ export function find(reader: Reader, req: FindRequest, deps: ReadDeps): BrainRes
   if (offset + limit < pool.length) res.next_cursor = encodeCursor(offset + limit);
   if (digest !== undefined) res.digest = digest;
   if (overdue !== undefined) res.overdue = overdue;
+  if (scopeViews !== undefined) res.scopes = scopeViews;
   return res;
 }
 
