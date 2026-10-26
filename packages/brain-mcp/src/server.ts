@@ -18,6 +18,7 @@ import {
   type ReadRequest,
   type RecordRequest,
 } from './contract.js';
+import { BRAIN_CHARTER } from './charter.js';
 import type { BrainClient } from './client.js';
 
 export const BRAIN_MCP_NAME = 'ff-brain' as const;
@@ -91,13 +92,14 @@ function clean<T extends object>(o: T): T {
 const asSdkShape = (shape: z.ZodRawShape): SdkShape => shape as unknown as SdkShape;
 
 export function createBrainMcpServer(client: BrainClient): McpServer {
-  const server = new McpServer({ name: BRAIN_MCP_NAME, version: BRAIN_MCP_VERSION });
+  // `instructions` → the client's system prompt: every connected agent gets the charter (charter.ts).
+  const server = new McpServer({ name: BRAIN_MCP_NAME, version: BRAIN_MCP_VERSION }, { instructions: BRAIN_CHARTER });
 
   server.registerTool(
     'record',
     {
       description:
-        'Записать/исправить единицу памяти. Передай receipt владельцу дословно. Нет ok:true — НЕ говори «записал»; queued:true — «запись в очереди».',
+        'Записать/исправить единицу памяти по уставу сервера: перед записью find; проектные области — сам, personal и третьи лица — только по слову владельца. Нет ok:true — НЕ говори «записал»; queued:true — «запись в очереди».',
       inputSchema: asSdkShape(recordInput),
     },
     async (args: unknown) => toToolResult(await client.record(clean(args as RecordRequest))),

@@ -10,6 +10,7 @@ import { BrainClient } from './client.js';
 import { createBrainMcpServer } from './server.js';
 
 export { BRAIN_MCP_NAME, BRAIN_MCP_VERSION, createBrainMcpServer } from './server.js';
+export { BRAIN_CHARTER, CHARTER_MAX_CHARS } from './charter.js';
 export { BrainClient, callerFromEnv, callerHeaders, resolvePaths } from './client.js';
 export { Outbox } from './outbox.js';
 export { OrdinalCounter, computeIdem } from './ordinal.js';

@@ -5,7 +5,8 @@
 // label and the id tail. Presets are data-driven by FIELD VALUES (`status`, `priority`, `due`), never by
 // type names (AC-14): any record whose `status` field is an open/done value takes part.
 // Cold records are hidden from presets unless `include_cold` (find itself still finds them).
-// `overview` is the exception: a body-less MAP (counts only, no items), cold records counted as such, ≤1500 chars.
+// `overview` is the exception: a body-less MAP (counts only, no items), cold records counted as such, ≤1500 chars;
+// find's record filters (text/type/status/…) never narrow it (find.ts).
 import { LIMITS, RECEIPT_ID_TAIL, type FindPreset } from '../contract.js';
 
 import type { VisibleRecord } from './access.js';

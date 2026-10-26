@@ -105,7 +105,11 @@ export function find(reader: Reader, req: FindRequest, deps: ReadDeps): BrainRes
   const edgeTo = req.edge?.to;
   // R-1.8: names in either spelling (`core:task` ≡ `task`, `meeting` ≡ `u:meeting`); records read canonical
   const wantType = req.type ? typeKey(req.type) : undefined;
+  // overview is the WHOLE map of what the reader sees: record filters (text/type/status/due_before/edge/scope)
+  // would silently shrink its counts while it still lists every scope, so they are ignored there.
+  const isMap = req.preset === 'overview';
   let pool = visibleRecords(gate, deps).filter((v) => {
+    if (isMap) return true;
     if (scopeFilter && !gate.closure(v.rec.scopes).has(scopeFilter)) return false;
     if (wantType && v.rec.type !== wantType) return false;
     if (req.status && statusFieldOf(v) !== req.status && v.rec.status !== req.status) return false;

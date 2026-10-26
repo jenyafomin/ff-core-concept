@@ -152,6 +152,27 @@ describe('A3 — preset overview (the memory map)', () => {
     expect(d).not.toContain('ТЕЛО');
   });
 
+  it('record filters (text/type/status/due_before/edge/scope) never narrow the map', () => {
+    b = openBrain();
+    const owner = topicReader();
+    const t = ok(b.record({ type: 'task', label: 'Задача', fields: { status: 'open' }, scopes: ['brain'] }, owner));
+    ok(b.record({ type: 'note', label: 'Заметка', scopes: ['brain'] }, owner));
+    ok(b.record({ type: 'note', label: 'Личная', scopes: ['personal'] }, owner));
+    const full = ok(find(mixed(), { preset: 'overview' }, deps(b)));
+    for (const filters of [
+      { text: 'нет-такого' },
+      { type: 'decision' },
+      { status: 'done' },
+      { due_before: '2000-01-01' },
+      { edge: { pred: 'about', to: t.id } },
+      { scope: 'personal' },
+    ]) {
+      const r = ok(find(mixed(), { preset: 'overview', ...filters }, deps(b)));
+      expect(r.total).toBe(3);
+      expect(r.digest).toBe(full.digest);
+    }
+  });
+
   it('a scope with no records is still listed; legacy writer shows ✍️ everywhere', () => {
     b = openBrain();
     const d = ok(find(topicReader({ scopes: ['scope:brain', 'scope:personal'] }), { preset: 'overview' }, deps(b))).digest!;
