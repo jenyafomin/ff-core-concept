@@ -99,7 +99,7 @@ export function createBrainMcpServer(client: BrainClient): McpServer {
     'record',
     {
       description:
-        'Записать/исправить единицу памяти по уставу сервера: перед записью find; проектные области — сам, personal и третьи лица — только по слову владельца. Нет ok:true — НЕ говори «записал»; queued:true — «запись в очереди».',
+        'Записать/исправить единицу памяти по уставу сервера: перед записью find; проектные области — сам (≤3 за ход), personal — только по слову владельца, третьи лица — никогда. Нет ok:true — НЕ говори «записал»; queued:true — «запись в очереди».',
       inputSchema: asSdkShape(recordInput),
     },
     async (args: unknown) => toToolResult(await client.record(clean(args as RecordRequest))),

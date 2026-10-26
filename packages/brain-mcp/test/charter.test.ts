@@ -1,5 +1,5 @@
 // The memory charter rides in `initialize` as server `instructions` (one home: src/charter.ts), within budget,
-// and the record tool description agrees with it (no «only by the owner's word» for project scopes).
+// and the record tool description agrees with it (no «only by the owner's word» for project scopes; third parties — never).
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -38,7 +38,11 @@ describe('memory charter as MCP instructions', () => {
     for (const must of [
       'find preset:overview',
       'пиши САМ',
-      'personal и всё о третьих лицах — только по слову владельца',
+      'personal — только по слову владельца',
+      'Не больше 3 record за ход',
+      'один note за сессию',
+      '«со слов владельца» или «вывод агента»',
+      'Имена и факты о третьих лицах — никогда',
       'Перед record — find',
       'source.ref+hash',
       'Без секретов и ПДн',
@@ -52,7 +56,7 @@ describe('memory charter as MCP instructions', () => {
     const mcp = await connect();
     const { tools } = await mcp.listTools();
     const d = tools.find((t) => t.name === 'record')!.description!;
-    expect(d).toContain('personal и третьи лица — только по слову владельца');
+    expect(d).toContain('personal — только по слову владельца, третьи лица — никогда');
     expect(d).toContain('НЕ говори «записал»');
   });
 });
