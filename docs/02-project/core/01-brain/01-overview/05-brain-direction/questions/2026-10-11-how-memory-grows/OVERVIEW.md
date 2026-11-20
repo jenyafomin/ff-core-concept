@@ -1,5 +1,7 @@
 # 🧭 ОБЗОР темы: куда развивать память СЕЙЧАС, чтобы она начала себя отыгрывать
 
+> **⚠️ 2026-10-23: `maps/ROADMAP.md` — superseded** (генерируемый, руками не правим; сроки 10-14/10-18 сорваны). Действующий порядок этапов: `docs/00-states/03-brain-productization/state.md` (навигатор трека), детали — `docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md` §6. Узлы `maps/MINDMAP.graph.jsonl` + `rank.mjs` остаются банком бэклога (LOSE-NOTHING).
+
 - **Status:** draft · **Owner:** jenya.stasik@gmail.com · **Date:** 2026-10-11 (ночь)
 - **Потребитель:** владелец утром (30 секунд) + лид следующей сессии · **Поглощает:** ничего (вид над домом; истина в `analyses/`, `maps/`, `questions/`)
 - Дом: `docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-how-memory-grows/`

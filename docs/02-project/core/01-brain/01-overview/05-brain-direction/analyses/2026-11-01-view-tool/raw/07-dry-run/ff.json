@@ -1,0 +1,285 @@
+{
+  "dryRun": true,
+  "generatedAt": "2026-11-01T09:55:18.705Z",
+  "scope": "ff",
+  "docsRoot": "docs",
+  "skipped": {
+    "dirs": {
+      "_archived": 4,
+      "_log": 1
+    },
+    "secretLike": 1
+  },
+  "units": 1448,
+  "bytesTotal": 15309340,
+  "folderNodes": 580,
+  "byKind": {
+    "analysis": 309,
+    "navigator": 306,
+    "note": 212,
+    "question": 136,
+    "raw": 88,
+    "idea": 71,
+    "synthesis": 54,
+    "design": 53,
+    "critique": 38,
+    "decision": 35,
+    "concept": 29,
+    "plan": 26,
+    "product": 20,
+    "spec": 19,
+    "adr": 19,
+    "rule": 12,
+    "other": 8,
+    "trace": 6,
+    "research": 3,
+    "risk": 2,
+    "theses": 1,
+    "qa": 1
+  },
+  "kindRawDistinct": 59,
+  "kindSource": {
+    "suffix": 523,
+    "filename": 349,
+    "folder": 312,
+    "default": 212,
+    "frontmatter": 52
+  },
+  "byBrainType": {
+    "u:doc": 1300,
+    "skip:raw": 88,
+    "u:doc (+decision)": 54,
+    "skip:trace": 6
+  },
+  "byStatusCategory": {
+    "open": 1075,
+    "unknown": 166,
+    "active": 157,
+    "done": 27,
+    "cold": 23
+  },
+  "statusRawTop": {
+    "draft": 747,
+    "review": 153,
+    "∅": 131,
+    "active": 127,
+    "draft — дивергенция": 42,
+    "open": 39,
+    "superseded": 14,
+    "approved": 9,
+    "resolved": 9,
+    "experimental": 9,
+    "draft — цикл 1 (дивергенция)": 7,
+    "scaffold": 7,
+    "draft — цикл 3": 6,
+    "draft (пишется по ходу, среда нестабильн": 4,
+    "✅ решено.": 4
+  },
+  "withFrontmatter": 983,
+  "withDate": 1365,
+  "withOwner": 1219,
+  "labelOver60": 697,
+  "sourceRefInvalid": {
+    "total": 10,
+    "byProblem": {
+      "ok": 1438,
+      "charset": 10
+    },
+    "samples": [
+      "docs/_inbox/2026-08-22-db-as-files-representation/01-что-это.md",
+      "docs/_inbox/2026-08-22-db-as-files-representation/02-модель-данных.md",
+      "docs/_inbox/2026-08-22-db-as-files-representation/03-что-реально-записано-VERIFIED.md",
+      "docs/_inbox/2026-08-22-db-as-files-representation/04-возможности-и-линзы.md",
+      "docs/_inbox/2026-08-22-db-as-files-representation/05-вижн-vs-построено.md",
+      "docs/_inbox/2026-08-22-memory-capabilities-showcase/01-возможности-на-дне-1.md",
+      "docs/_inbox/2026-08-22-memory-capabilities-showcase/02-почему-это-интересно-как-субстрат.md",
+      "docs/_inbox/2026-08-22-memory-capabilities-showcase/03-дёшево-разблокировать.md"
+    ]
+  },
+  "duplicateContentHashes": 1,
+  "edges": {
+    "links": 2651,
+    "mentions": 1172,
+    "brokenLinks": 472,
+    "brokenMentions": 2900,
+    "resolvedOutsideUnitSet": 452,
+    "brokenSamples": [
+      "docs/00-states/00-global-build/GLOBAL-plan-2026-07-14.md → ../05-plan-family/README.md",
+      "docs/00-states/00-global-build/GLOBAL-plan-2026-07-14.md → design-queue.md",
+      "docs/00-states/03-brain-productization/_history/state.v1-2026-07-21.md → ../00-global-build/state.md",
+      "docs/00-states/03-brain-productization/_history/state.v1-2026-07-21.md → ../02-agent-system-mechanics/state.md",
+      "docs/00-states/03-brain-productization/_history/state.v1-2026-07-21.md → ../../02-project/core/01-brain/INDEX.md",
+      "docs/00-states/04-improvement-plans/state.md → ../../01-organization/session-handoff/STATE.md",
+      "docs/00-states/05-assemble-and-direct/_shared/owner-decisions-2026-09-15.concept.json → 🟢 EDGE-IDENTITY (D4) — у связей памяти теперь своё «имя» (id/canonical_id). Единственное retrofit-невозможное; форма ратифицирована владельцем, поведение отложено (Reserved-Form). Прогнали architect→critic→builder→2×reviewer, тесты 222→238. Детали: docs/architecture/ADR/ADR-0015-edge-identity.md",
+      "docs/00-states/05-assemble-and-direct/_shared/topics/01-completeness-census/completeness-census.question.md → ../../plans/01-S1-ratify-two-laws/work/two-laws.invariant-candidate.md",
+      "docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/DOC-SWEEP-relocation-plan.md → ../../../../../../../.claude/rules/doc-tree.md",
+      "docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/DOC-SWEEP-relocation-plan.md → ../../../../../../.doc-types.json",
+      "docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/DOC-SWEEP-relocation-plan.md → ../../../../../../INDEX.md",
+      "docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/DOC-SWEEP-relocation-plan.md → ../../../../../../_log/2026-08-12-isolation-model-and-seam-freeze/HANDOFF.md",
+      "docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/OWNER-PROXY-clear-bucket.decision.md → ../../../../../../architecture/ADR/ADR-0010-principal-authority-vs-attribution.md",
+      "docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/2026-08-12-owner-eye-forks/OWNER-PROXY-clear-bucket.decision.md → ../../../../../../architecture/ADR/ADR-0011-agent-isolation-model.md",
+      "docs/00-states/05-assemble-and-direct/_shared/topics/03-actor-model/decisions/FORK-decision5-topology.decision.md → ../../../../../../architecture/ADR/ADR-0006-strangler-gateway-extraction.md"
+    ]
+  },
+  "orphans": 195,
+  "topNodes": [
+    {
+      "ref": "docs/02-project/core/01-brain/questions/INDEX.md",
+      "in": 33,
+      "out": 28
+    },
+    {
+      "ref": "docs/02-project/core/01-brain/01-overview/L0-memory-unit.md",
+      "in": 56,
+      "out": 0
+    },
+    {
+      "ref": "docs/02-project/core/00-kernel/invariants.md",
+      "in": 50,
+      "out": 4
+    },
+    {
+      "ref": "docs/02-project/core/01-brain/INDEX.md",
+      "in": 32,
+      "out": 22
+    },
+    {
+      "ref": "docs/03-projects/ga-rentacar/INDEX.md",
+      "in": 21,
+      "out": 33
+    },
+    {
+      "ref": "docs/INDEX.md",
+      "in": 46,
+      "out": 4
+    },
+    {
+      "ref": "docs/00-states/STATE.md",
+      "in": 22,
+      "out": 27
+    },
+    {
+      "ref": "docs/00-states/05-assemble-and-direct/state.md",
+      "in": 14,
+      "out": 33
+    },
+    {
+      "ref": "docs/00-states/05-assemble-and-direct/_shared/task-pool.md",
+      "in": 24,
+      "out": 11
+    },
+    {
+      "ref": "docs/02-project/core/00-kernel/open-questions.md",
+      "in": 25,
+      "out": 10
+    },
+    {
+      "ref": "docs/03-projects/cardex/priorities.md",
+      "in": 7,
+      "out": 26
+    },
+    {
+      "ref": "docs/architecture/ADR/ADR-0006-persistence-as-policy.md",
+      "in": 21,
+      "out": 11
+    }
+  ],
+  "pii": {
+    "note": "heuristic COUNTS only; values are never emitted",
+    "totals": {
+      "email_owner": 1147,
+      "ipv4": 37,
+      "long_id": 88,
+      "secret_like": 1,
+      "phone": 4
+    },
+    "filesWithAny": 38,
+    "filesByKind": {
+      "email_owner": {
+        "files": 1131,
+        "paths": [
+          "docs/00-states/00-global-build/GLOBAL-plan-2026-07-14.md",
+          "docs/00-states/00-global-build/realization-plan/README.md",
+          "docs/00-states/00-global-build/realization-plan/phase-0-gates/README.md",
+          "docs/00-states/00-global-build/realization-plan/phase-1-engine/M0-spec.md",
+          "docs/00-states/00-global-build/realization-plan/phase-1-engine/README.md",
+          "docs/00-states/00-global-build/realization-plan/phase-1-engine/vertical-scenario.spec.md",
+          "docs/00-states/00-global-build/realization-plan/phase-2-memory/README.md",
+          "docs/00-states/00-global-build/realization-plan/phase-3-deploy/README.md",
+          "docs/00-states/00-global-build/state.md",
+          "docs/00-states/01-tree-rules-and-librarian/log.md",
+          "docs/00-states/01-tree-rules-and-librarian/state.md",
+          "docs/00-states/02-agent-system-mechanics/log.md",
+          "docs/00-states/02-agent-system-mechanics/state.md",
+          "docs/00-states/03-brain-productization/_history/state.v1-2026-07-21.md",
+          "docs/00-states/03-brain-productization/log.md",
+          "docs/00-states/03-brain-productization/progress.concept.json",
+          "docs/00-states/03-brain-productization/state.md",
+          "docs/00-states/04-improvement-plans/PLAN-01-brain-core.md",
+          "docs/00-states/04-improvement-plans/PLAN-02-agent-orchestration.md",
+          "docs/00-states/04-improvement-plans/PLAN-03-docs-structure.md",
+          "docs/00-states/04-improvement-plans/PLAN-04-plugin-modularity.md",
+          "docs/00-states/04-improvement-plans/PLAN-05-gateway-build.md",
+          "docs/00-states/04-improvement-plans/PLAN-06-process-anti-churn.md",
+          "docs/00-states/04-improvement-plans/READINESS-2026-07-21.analysis.md",
+          "docs/00-states/04-improvement-plans/state.md"
+        ]
+      },
+      "ipv4": {
+        "files": 7,
+        "paths": [
+          "docs/00-states/03-brain-productization/state.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-12-groups-and-reader/05-critic-redact-redteam.analysis.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/OWNER-ANSWERS-2026-10-21.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/02-pg-compose.md",
+          "docs/03-projects/cardex/devops/443-redirect-loop/443-redirect-loop.analysis.md",
+          "docs/03-projects/cardex/devops/443-redirect-loop/README.md"
+        ]
+      },
+      "long_id": {
+        "files": 31,
+        "paths": [
+          "docs/01-organization/idea-studio/TOPIC-PROMPT.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-11-night-waves/w3-teams/F-gateway-preflight.analysis.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-12-groups-and-reader/05-critic-redact-redteam.analysis.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/raw/05-value-usecases.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/05-live-launch.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/launch-kit/GATE-7days.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/launch-kit/PROMPT-memory-protocol.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/launch-kit/RUNBOOK.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/launch-kit/_history/2026-10-10-rev1/GATE-7days.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/launch-kit/_history/2026-10-10-rev1/PROMPT-memory-protocol.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/launch-kit/_history/2026-10-10-rev1/RUNBOOK.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-how-memory-grows/analyses/w3-breadth/B6-autocapture.analysis.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-how-memory-grows/analyses/w4-deepen/02-first-heartbeat.design.md",
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/questions/2026-10-11-how-memory-grows/analyses/w6-gate/BUNDLE-night.md",
+          "docs/02-project/core/02-agents/01-orchestration/node-types.md",
+          "docs/02-project/core/02-agents/examples/01-agent-manager/02-defectovka/02-user/user.design.md",
+          "docs/02-project/core/02-agents/examples/01-agent-manager/02-defectovka/04-space-team-role/space-team-role.design.md",
+          "docs/03-projects/ga-rentacar/analyses/03-capability-potential.analysis.md",
+          "docs/03-projects/ga-rentacar/analyses/04-real-data-grounding.analysis.md",
+          "docs/03-projects/ga-rentacar/specs/04-m2-dedup-and-customer-lens.spec.md",
+          "docs/03-projects/ga-rentacar/specs/06-m2-build-steps.spec.md",
+          "docs/_inbox/2026-08-04-assemble-and-direct/design/d1b-width-census/build/stage2-reports/03-runtime-verify.report.md",
+          "docs/_inbox/2026-08-04-assemble-and-direct/design/d1b-width-census/build/stage2-reports/04-wave-synthesis.report.md",
+          "docs/_inbox/2026-08-04-assemble-and-direct/design/d1b-width-census/build/stage2-reports/05-fork3-critic.report.md",
+          "docs/architecture/ADR/ADR-0016-cross-project-brain.md"
+        ]
+      },
+      "secret_like": {
+        "files": 1,
+        "paths": [
+          "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-12-groups-and-reader/05-critic-redact-redteam.analysis.md"
+        ]
+      },
+      "phone": {
+        "files": 2,
+        "paths": [
+          "docs/02-project/core/01-brain/analyses/2026-07-05-L1-values/_SYNTHESIS-2026-07-08.md",
+          "docs/03-projects/ga-rentacar/specs/06-m2-build-steps.spec.md"
+        ]
+      }
+    }
+  }
+}

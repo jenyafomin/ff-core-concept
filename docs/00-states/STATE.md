@@ -10,6 +10,8 @@ Scope: project
 > Это единственная «точка входа при старте новой сессии»: сначала сюда, потом — свежий HANDOFF.
 > Обновляется в конце каждой сессии. Полная карта канона — `docs/INDEX.md` (переписан 2026-07-21, живой).
 
+> ▶️ **2026-10-23 · трек «мозг ff-brain» → `docs/00-states/03-brain-productization/state.md`** (единственный навигатор: этапы, вторая волна W1–W27; хендофф `docs/_log/2026-10-05-personal-memory-launch/HANDOFF-2026-10-23.md`).
+
 > ⛔ (историч.) 2026-08-04 · ga-rentacar форки+ценности → docs/03-projects/ga-rentacar/_inbox/HANDOFF-2026-08-04-forks-and-values.md
 
 ## ⭐⭐⭐ RESUME (2026-09-17 · вектор-гард Закон 8 + ПЕРВЫЙ реальный код: value-collision tests)

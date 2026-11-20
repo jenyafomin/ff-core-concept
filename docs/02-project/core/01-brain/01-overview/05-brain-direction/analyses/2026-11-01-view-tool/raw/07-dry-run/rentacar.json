@@ -1,0 +1,284 @@
+{
+  "dryRun": true,
+  "generatedAt": "2026-11-01T09:55:18.889Z",
+  "scope": "rentacar",
+  "docsRoot": "docs",
+  "skipped": {
+    "dirs": {
+      "_logs": 1
+    },
+    "secretLike": 1
+  },
+  "units": 792,
+  "bytesTotal": 6418105,
+  "folderNodes": 154,
+  "byKind": {
+    "plan": 547,
+    "navigator": 66,
+    "design": 36,
+    "research": 25,
+    "note": 18,
+    "qa": 18,
+    "spec": 16,
+    "product": 13,
+    "risk": 10,
+    "trace": 10,
+    "concept": 9,
+    "analysis": 8,
+    "synthesis": 7,
+    "adr": 4,
+    "runbook": 4,
+    "question": 1
+  },
+  "kindRawDistinct": 18,
+  "kindSource": {
+    "folder": 620,
+    "filename": 154,
+    "default": 18
+  },
+  "byBrainType": {
+    "u:doc": 778,
+    "skip:trace": 10,
+    "u:doc (+decision)": 4
+  },
+  "byStatusCategory": {
+    "unknown": 365,
+    "open": 214,
+    "done": 109,
+    "active": 86,
+    "cold": 18
+  },
+  "statusRawTop": {
+    "∅": 357,
+    "draft": 113,
+    "active": 46,
+    "Draft": 32,
+    "pending": 18,
+    "✅ READY": 8,
+    "PASS-WITH-NOTES": 7,
+    "approved": 6,
+    "complete": 6,
+    "✅ DONE": 6,
+    "Active": 5,
+    "done": 5,
+    "Done": 5,
+    "COMPLETE": 4,
+    "Approved": 3
+  },
+  "withFrontmatter": 55,
+  "withDate": 400,
+  "withOwner": 228,
+  "labelOver60": 55,
+  "sourceRefInvalid": {
+    "total": 16,
+    "byProblem": {
+      "ok": 776,
+      "charset": 16
+    },
+    "samples": [
+      "docs/old (deprecated)/01-project-overview.md",
+      "docs/old (deprecated)/02-data-extraction-strategy.md",
+      "docs/old (deprecated)/03-analytics-and-ux.md",
+      "docs/old (deprecated)/04-questions.md",
+      "docs/old (deprecated)/05-implementation-plan.md",
+      "docs/old (deprecated)/06-sync-config-review.md",
+      "docs/old (deprecated)/07-business-questions.md",
+      "docs/old (deprecated)/08-analytics-spec.md"
+    ]
+  },
+  "duplicateContentHashes": 4,
+  "edges": {
+    "links": 566,
+    "mentions": 539,
+    "brokenLinks": 68,
+    "brokenMentions": 472,
+    "resolvedOutsideUnitSet": 92,
+    "brokenSamples": [
+      "docs/discovery/bp-restructuring/ANALYSIS-DOCS-INCONSISTENCIES.md → ../../plan/BUSINESS-PROCESS-MAP.md",
+      "docs/discovery/bp-restructuring/DEBATE-RESULT.md → ./MOD-finance.md",
+      "docs/discovery/bp-restructuring/PROMPTER-ELICITATION.md → ../../plan/BUSINESS-PROCESS-MAP.md",
+      "docs/discovery/bp-restructuring/QUESTIONING-STRATEGY.md → ../../plan/BUSINESS-PROCESS-MAP.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W0-tech-debt/PLAN.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W1-foundation/W1.2-module-structure/MODULE-STRUCTURE.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W1-foundation/W1.3-event-system/EVENT-SYSTEM.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W1-foundation/W1.4-feed-operations/FEED-OPERATIONS.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W1-foundation/W1.1-auth/AUTH-ARCHITECTURE.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W2-infrastructure/W2.1-rbac/RBAC-DESIGN.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W2-infrastructure/W2.5-polymorphic-infra/POLYMORPHIC-DESIGN.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W2-infrastructure/W2.2-activity-history/ACTIVITY-HISTORY-DESIGN.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W2-infrastructure/W2.4-file-storage/FILE-STORAGE-DESIGN.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W2-infrastructure/W2.3-task-management/TASK-MANAGEMENT-DESIGN.md",
+      "docs/plan/0-project-creation/PLAN.md → ../architecture/phase5/W3-analytics/W3.2-notifications/NOTIFICATION-DESIGN.md"
+    ]
+  },
+  "orphans": 125,
+  "topNodes": [
+    {
+      "ref": "docs/plan/domains/investor-platform/_INDEX.md",
+      "in": 5,
+      "out": 42
+    },
+    {
+      "ref": "docs/architecture/phase5/ARCHITECTURE.md",
+      "in": 12,
+      "out": 18
+    },
+    {
+      "ref": "docs/plan/p2-platform/phase-4-5/_IMPLEMENTATION-PLAN/_PLAN/_INDEX.md",
+      "in": 1,
+      "out": 24
+    },
+    {
+      "ref": "docs/plan/_INDEX.md",
+      "in": 0,
+      "out": 24
+    },
+    {
+      "ref": "docs/plan/domains/orders-vehicles-tasks/_INDEX.md",
+      "in": 3,
+      "out": 20
+    },
+    {
+      "ref": "docs/plan/domains/abac/_INDEX.md",
+      "in": 3,
+      "out": 15
+    },
+    {
+      "ref": "docs/spec/abac-fields/_INDEX.md",
+      "in": 9,
+      "out": 8
+    },
+    {
+      "ref": "docs/plan/domains/_INDEX.md",
+      "in": 2,
+      "out": 14
+    },
+    {
+      "ref": "docs/plan/domains/investor-platform/09-investor-journey-map.md",
+      "in": 9,
+      "out": 7
+    },
+    {
+      "ref": "docs/plan/p2-platform/phase-4-5/_CONSISTENCY-REPORT.md",
+      "in": 1,
+      "out": 15
+    },
+    {
+      "ref": "docs/plan/p2-platform/phase-4-5/_IMPLEMENTATION-PLAN/_PROGRESS.md",
+      "in": 2,
+      "out": 14
+    },
+    {
+      "ref": "docs/plan/domains/abac/phase-6-implementation-plan/_INDEX.md",
+      "in": 3,
+      "out": 11
+    }
+  ],
+  "pii": {
+    "note": "heuristic COUNTS only; values are never emitted",
+    "totals": {
+      "long_id": 61,
+      "email_owner": 49,
+      "ipv4": 6,
+      "phone": 3,
+      "email_other": 10,
+      "person_near_role": 1
+    },
+    "filesWithAny": 40,
+    "filesByKind": {
+      "long_id": {
+        "files": 30,
+        "paths": [
+          "docs/DATA-MODELS.md",
+          "docs/deploy/action-log.md",
+          "docs/discovery/audit-2026-05-02/A/BP-1-rental-lifecycle.md",
+          "docs/discovery/audit-2026-05-02/C/UX-1-driver-journey.md",
+          "docs/discovery/audit-2026-05-02/F/CR-1-creative-gaps.md",
+          "docs/discovery/audit-2026-05-02/_SYNTHESIS.md",
+          "docs/discovery/phase-4-5-schema-audit/03-customer.md",
+          "docs/discovery/phase-4-5-schema-audit/04-fine-maintenance-transaction.md",
+          "docs/old (deprecated)/07-business-questions.md",
+          "docs/old (deprecated)/09-data-analysis-issues.md",
+          "docs/old (deprecated)/10-database-schema.md",
+          "docs/plan/domains/abac/phase-7-execution/p2-stage-1-taxonomy/progress-log.md",
+          "docs/plan/domains/abac/phase-7-execution/p7-types-restructure/review-reports/BE-02-abac-consistency.md",
+          "docs/plan/domains/abac/phase-7-execution/p7-types-restructure/review-reports/BE-03-recent-changes-quality.md",
+          "docs/plan/domains/abac/phase-7-execution/p7-types-restructure/review-reports/BE-04-data-integrity.md",
+          "docs/plan/domains/abac/phase-7-execution/p7-types-restructure/review-reports/FE-02-abac-usage.md",
+          "docs/plan/domains/orders-vehicles-tasks/PROGRESS_LOG.md",
+          "docs/plan/p2-platform/phase-4/progress/A2-outbox.md",
+          "docs/plan/p2-platform/phase-4/progress/B1-B2-orders.md",
+          "docs/plan/p2-platform/phase-4/progress/B5-customer-softdelete.md",
+          "docs/plan/p2-platform/phase-4/progress/C2-C4-availability-transport.md",
+          "docs/plan/p2-platform/phase-4/progress/REVIEW-pack-B.md",
+          "docs/plan/p2-platform/phase-4-5/_IMPLEMENTATION-PLAN/_ANALYSIS-codebase/07-gotchas.md",
+          "docs/plan/p2-platform/phase-4-5/_IMPLEMENTATION-PLAN/_ANALYSIS-codebase/08-critical-paths.md",
+          "docs/plan/p2-platform/phase-4-5/_IMPLEMENTATION-PLAN/_ANALYSIS-risks/02-f12-cascade-risks.md"
+        ]
+      },
+      "email_owner": {
+        "files": 47,
+        "paths": [
+          "docs/architecture/investor-sync.md",
+          "docs/concept/investor-platform/values.md",
+          "docs/concept/storage-structure-upgrade/_INDEX.md",
+          "docs/deploy/action-log.md",
+          "docs/deploy/gateway-install.md",
+          "docs/deploy/hetzner-cx53-setup.md",
+          "docs/deploy/plans-and-ideas.md",
+          "docs/plan/domains/abac/phase-7-execution/p4a-stage-3-adapter-extract/resolution.md",
+          "docs/plan/domains/investor-platform/08-design-variants.md",
+          "docs/plan/domains/investor-platform/14-handoff-2026-09-05.md",
+          "docs/plan/domains/investor-platform/15-build-plan/00-MASTER-STAGE-PLAN.md",
+          "docs/plan/domains/investor-platform/15-build-plan/01-screens-data-spec.md",
+          "docs/plan/domains/investor-platform/15-build-plan/02-drilldown-reuse.md",
+          "docs/plan/domains/investor-platform/15-build-plan/03-ux-mobile-desktop.md",
+          "docs/plan/domains/investor-platform/15-build-plan/05-admin-map-module.md",
+          "docs/plan/domains/investor-platform/15-build-plan/06-critique-findings.md",
+          "docs/plan/domains/investor-platform/15-build-plan/07-creative-variants.md",
+          "docs/plan/domains/investor-platform/15-build-plan/08-differentiators.md",
+          "docs/plan/domains/investor-platform/15-build-plan/_INDEX.md",
+          "docs/plan/domains/investor-platform/15-build-plan/design-system/_INDEX.md",
+          "docs/plan/domains/investor-platform/15-build-plan/design-system/claude-design-brief.md",
+          "docs/plan/domains/investor-platform/15-build-plan/design-system/external-agent-brief.md",
+          "docs/plan/domains/investor-platform/15-build-plan/design-system/greenage-reference.md",
+          "docs/plan/domains/investor-platform/15-build-plan/design-system/merge-decisions.md",
+          "docs/plan/domains/investor-platform/16-handoff-plan-ready.md"
+        ]
+      },
+      "ipv4": {
+        "files": 4,
+        "paths": [
+          "docs/deploy/action-log.md",
+          "docs/deploy/gateway-install.md",
+          "docs/deploy/hetzner-cx53-setup.md",
+          "docs/plan/p2-platform/phase-4/progress/REVIEW-pack-A.md"
+        ]
+      },
+      "phone": {
+        "files": 3,
+        "paths": [
+          "docs/discovery/audit-2026-05-02/C/UX-4-cards-tables-strategy.md",
+          "docs/plan/p2-platform/phase-2/users-module-design/04-ui-design.md",
+          "docs/plan/p2-platform/phase-4-5/_IMPLEMENTATION-PLAN/_ANALYSIS-risks/03-sync-engine-risks.md"
+        ]
+      },
+      "email_other": {
+        "files": 5,
+        "paths": [
+          "docs/old (deprecated)/04-questions.md",
+          "docs/plan/domains/abac/phase-7-execution/_SESSION-HANDOFF-2026-04-22.md",
+          "docs/plan/domains/investor-platform/30-handoff-greenage-v7-live.md",
+          "docs/plan/p2-platform/phase-1/ux-ui/screens/M1-users.md",
+          "docs/plan/p2-platform/phase-2/users-module-design/04-ui-design.md"
+        ]
+      },
+      "person_near_role": {
+        "files": 1,
+        "paths": [
+          "docs/plan/domains/orders-vehicles-tasks/03-customer.md"
+        ]
+      }
+    }
+  }
+}

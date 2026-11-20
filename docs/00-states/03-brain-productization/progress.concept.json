@@ -1,0 +1,103 @@
+{
+  "type": "progress",
+  "id": "brain-productization-progress-2026-10-23",
+  "title": "🧠 Мозг ff-brain — поэтапное выполнение (вид над state.md)",
+  "summary": "Вид, не второй дом истины: статусы этапов и второй волны из docs/00-states/03-brain-productization/state.md. Детали — в ROADMAP v3. Обновлять вместе со state.md в конце сессии.",
+  "status": "active",
+  "owner": "jenya.stasik@gmail.com",
+  "date": "2026-10-23",
+  "relatesTo": "docs/00-states/03-brain-productization/state.md",
+  "pool": "brain-productization",
+  "createdBy": "agent",
+  "keyFiles": [
+    "docs/00-states/03-brain-productization/state.md",
+    "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+    "docs/_log/2026-10-05-personal-memory-launch/HANDOFF-2026-10-23.md"
+  ],
+  "steps": [
+    {
+      "title": "Э0 · Свод и roadmap v3 (волны 1–4, ответы владельца)",
+      "status": "done",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+      "note": "12 сырых линз, 2 раунда ответов; холодный прогон roadmap не проведён (W22)"
+    },
+    {
+      "title": "Э1-подг · Подготовка запуска (скан секретов, compose PG, скрипты)",
+      "status": "done",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/03-stage1-prep.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/03-stage1-prep.md",
+      "note": "stage1/01…04"
+    },
+    {
+      "title": "Э1 · Запись в FF → чтение в agents-manager",
+      "status": "done",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/05-live-launch.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/05-live-launch.md",
+      "note": "u_mvkcmjbs153v21; путь и hash совпали; импорт 47/0; репетиция PASS"
+    },
+    {
+      "title": "Э1 · MCP в шлюзе (флаги .env + pm2 restart agent) + смоук",
+      "status": "blocked",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/05-live-launch.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/05-live-launch.md",
+      "note": "руки владельца; иначе откатить PROMPT.md топика 56 (W21)"
+    },
+    {
+      "title": "Э1 · Бэкап с первой записью (lag 0)",
+      "status": "blocked",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/05-live-launch.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/05-live-launch.md",
+      "note": "руки владельца: pm2 restart ff-brain + restore-rehearsal"
+    },
+    {
+      "title": "Э1 · Скиллы ff-brain-use / ff-brain-build rev 2",
+      "status": "in-progress",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/06-critic-skills.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/stage1/06-critic-skills.md",
+      "note": "rev 2 после критика; сверка P1, холодный тест в cardex (W19)"
+    },
+    {
+      "title": "Э1-крит · Критика итогов Э1 (другой агент) — СЛЕДУЮЩИЙ ШАГ",
+      "status": "pending",
+      "path": "docs/00-states/03-brain-productization/state.md",
+      "link": "docs/00-states/03-brain-productization/state.md",
+      "note": "state + хендофф + отчёт 05 против выхода Э1 и приёмки RM §9"
+    },
+    {
+      "title": "Гейт 2026-10-27 · запись+чтение есть → дорожка B идёт",
+      "status": "pending",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+      "note": "RM §6 Э1 «Гейт 10-27»"
+    },
+    {
+      "title": "B · Дорожка Postgres: ADR-0020 + критик, P0–P6 в worktree",
+      "status": "pending",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/raw/09-pg-now-path.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/raw/09-pg-now-path.md",
+      "note": "compose готов, не поднят — ждёт .env владельца (W1, W11, W12)"
+    },
+    {
+      "title": "Э2 · Живёт у одного: PG + неделя пользования (до 2026-11-07)",
+      "status": "pending",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+      "note": "PG → RUNBOOK 3–7 → root + правило → ротация паролей → недельная сводка"
+    },
+    {
+      "title": "Вторая волна W1–W27 — не потерять",
+      "status": "pending",
+      "path": "docs/00-states/03-brain-productization/state.md",
+      "link": "docs/00-states/03-brain-productization/state.md",
+      "note": "таблица в state.md, раздел «ВТОРАЯ ВОЛНА»"
+    },
+    {
+      "title": "Банк Э3–Э5 (много проектов, поиск, удалённый доступ, пол, платформа)",
+      "status": "pending",
+      "path": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+      "link": "docs/02-project/core/01-brain/01-overview/05-brain-direction/analyses/2026-10-20-direction-and-roadmap/00-SYNTHESIS-and-ROADMAP.md",
+      "note": "без дат, по триггерам RM §6–§7"
+    }
+  ]
+}
